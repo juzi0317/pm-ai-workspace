@@ -343,16 +343,16 @@
     <!-- MODULE: 代扣模式配置 (P1) -->
     <!-- ============================================================ -->
     <div id="module-guankou" class="page-section">
-      <h1 style="font-size:20px;font-weight:700;margin-bottom:4px">代扣模式配置</h1>
-      <p class="subtitle" style="font-size:13px;color:#888;margin-bottom:20px">管理平台观严代办申报开关 · 默认由云账户代办，开启后由观严主体代办申报</p>
+      <h1 style="font-size:20px;font-weight:700;margin-bottom:4px">观严代扣模式配置</h1>
+      <p class="subtitle" style="font-size:13px;color:#888;margin-bottom:20px">开启后由成都双流观严互联网医院有限公司代办申报</p>
 
       <!-- 总闸 -->
       <div class="switch-area" id="switchArea">
         <div class="switch-area-left">
           <button class="toggle on" id="masterToggle" onclick="toggleMaster()"></button>
           <div>
-            <div class="switch-label">人员差异化代扣配置</div>
-            <div class="switch-desc" id="switchDesc">人员差异化代扣配置已开启，可按人员开启观严代办申报；未开启的人员继续由云账户代办</div>
+            <div class="switch-label">过渡期人员差异化代扣配置</div>
+            <div class="switch-desc" id="switchDesc">过渡期，可按人员开启观严代办申报；未开启的人员继续由三方代办</div>
           </div>
         </div>
       </div>
@@ -368,6 +368,7 @@
         <label>实名状态</label>
         <select class="filter-select"><option>全部</option><option>已实名</option><option>未实名</option></select>
         <input type="text" class="search-input" placeholder="搜索姓名 / 手机号 / 证件号">
+        <button class="btn btn-primary btn-sm" onclick="protoAction('查询完成')">查询</button><button class="btn btn-sm" onclick="protoAction('已重置')">重置</button>
         <div style="flex:1"></div>
         <div class="batch-actions" id="batchActions">
           <span class="batch-count" id="batchCount">已选择 0 人</span>
@@ -627,7 +628,7 @@
               <td><span class="tag tag-published">已发布</span></td>
               <td>2026-10-28 14:30</td><td>1,286</td><td style="color:#ff4d4f;font-weight:600">23</td>
               <td style="max-width:140px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:#999">—</td>
-              <td><button class="btn-link" onclick="showModal('view-protocol')">查看协议</button><button class="btn-link" onclick="showModal('position-editor')">签署位置</button><button class="btn-link" style="color:#ff4d4f" onclick="showModal('stop-confirm')">停用</button></td>
+              <td><button class="btn-link" onclick="showModal('view-protocol')">查看协议</button><button class="btn-link" onclick="showModal('position-editor')">签署位置</button></td>
             </tr>
             <tr>
               <td><b>V1.2</b></td>
@@ -1356,7 +1357,7 @@
     <div class="modal-header"><h3>关闭观严代办</h3><button class="modal-close" onclick="hideModal('close-guanyan-modal')">✕</button></div>
     <div class="modal-body">
       <p>确认关闭 <strong id="closeName">—</strong> 的观严代办申报？</p>
-      <p>关闭后，该人员将回到云账户代办模式，无需签署知情同意书</p>
+      <p>关闭后，该人员将由三方进行代扣代缴与申报，无需签署知情同意书</p>
     </div>
     <div class="modal-footer"><button class="btn-modal-cancel" onclick="hideModal('close-guanyan-modal')">取消</button><button class="btn-modal-primary" onclick="doCloseGuanyan()">确认关闭</button></div>
   </div>
@@ -1837,18 +1838,6 @@
   </div>
 </div>
 
-<!-- 停用确认 -->
-<div id="stop-confirm" class="modal-overlay" onclick="if(event.target===this)hideModal('stop-confirm')">
-  <div class="modal" style="width:400px">
-    <div class="modal-header"><h3>无法停用 V1.3</h3><button class="modal-close" onclick="hideModal('stop-confirm')">✕</button></div>
-    <div class="modal-body">
-      <div class="warning-box">当前仅此一个已发布版本，停用后用户将无法签署任何协议，因此不可停用。</div>
-      <p style="font-size:12px;color:#999;margin-top:8px">请先新建并发布新版本，旧版本将自动停用。</p>
-    </div>
-    <div class="modal-footer"><button class="btn btn-primary" onclick="hideModal('stop-confirm')">我知道了</button></div>
-  </div>
-</div>
-
 <!-- 签署协议PDF预览 -->
 <div id="protocol-pdf-panel" class="modal-overlay" onclick="if(event.target===this)hideModal('protocol-pdf-panel')">
   <div class="modal" style="width:560px">
@@ -2045,11 +2034,6 @@ function deleteDraft(btn) {
   var row = btn.closest('tr');
   if (row) row.style.display = 'none';
   protoAction('草稿已删除');
-}
-
-function doStopVersion() {
-  hideModal('stop-confirm');
-  protoAction('已发布版本不可停用，请先发布新版本');
 }
 
 function saveDraft() {
