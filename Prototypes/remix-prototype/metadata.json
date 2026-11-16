@@ -1,0 +1,8 @@
+{
+  "name": "Remix: Remix: 临研通系统整合-知识库",
+  "description": "融合架构已确定，调整项目知识库",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}

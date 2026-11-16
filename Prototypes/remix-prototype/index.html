@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>My Google AI Studio App</title>
+    <script>
+      window.PROJECT_KNOWLEDGE_STORE = {
+        "project_01": {
+          name: "冠心宁片中保临床方案",
+          kb_files: [
+            { id: "f1", name: "临床试验质量管理规范.pdf", size: "1.4 MB", date: "2026-05-15", status: "已向量化" },
+            { id: "f2", name: "项目方案.pdf", size: "2.1 MB", date: "2026-05-16", status: "已向量化" },
+            { id: "f3", name: "演示病历-1.pdf", size: "890 KB", date: "2026-05-17", status: "已向量化" }
+          ],
+          ai_products: [
+            { id: "p1", name: "审评意见反馈.docx", size: "120 KB", date: "2026-05-18", is_archived: false },
+            { id: "p2", name: "方案筛选汇总表.xlsx", size: "38 KB", date: "2026-05-19", is_archived: true }
+          ]
+        }
+      };
+    </script>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>
+

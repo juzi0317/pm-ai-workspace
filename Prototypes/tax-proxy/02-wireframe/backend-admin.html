@@ -1,0 +1,2236 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=1440">
+<title>观严代扣代缴 - 管理端 黑白原型</title>
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { font-family:"PingFang SC","Microsoft YaHei","Helvetica Neue",sans-serif; font-size:13px; color:#1f1f1f; background:#f5f5f5; display:flex; height:100vh; overflow:hidden; }
+
+  /* ===== Sidebar ===== */
+  .sidebar { width:220px; background:#1f1f1f; color:#fff; flex-shrink:0; display:flex; flex-direction:column; }
+  .sidebar-logo { padding:20px 16px 12px; font-size:15px; font-weight:600; border-bottom:1px solid #333; }
+  .sidebar-logo span { font-weight:400; font-size:11px; color:#999; display:block; margin-top:4px; }
+  .nav-group { padding:12px 0; }
+  .nav-group-title { padding:4px 16px 8px; font-size:11px; color:#888; text-transform:uppercase; letter-spacing:1px; }
+  .nav-item { padding:9px 16px 9px 28px; cursor:pointer; display:flex; align-items:center; gap:8px; color:#bbb; transition:all .15s; font-size:13px; position:relative; }
+  .nav-item:hover { background:#2a2a2a; color:#fff; }
+  .nav-item.active { background:#333; color:#fff; }
+  .nav-item.active::before { content:""; position:absolute; left:0; top:0; bottom:0; width:3px; background:#1a1a1a; }
+  .nav-item .dot { width:6px; height:6px; border-radius:50%; background:#555; flex-shrink:0; }
+  .nav-item.active .dot { background:#1a1a1a; }
+
+  /* ===== Main ===== */
+  .main { flex:1; display:flex; flex-direction:column; overflow:hidden; }
+  .header { height:48px; background:#fff; border-bottom:1px solid #e5e5e5; display:flex; align-items:center; justify-content:space-between; padding:0 24px; flex-shrink:0; }
+  .header-left { display:flex; align-items:center; gap:8px; font-size:13px; color:#666; }
+  .header-left b { color:#1f1f1f; font-weight:600; }
+  .header-right { display:flex; align-items:center; gap:16px; font-size:12px; color:#999; }
+  .content { flex:1; overflow-y:auto; padding:20px 24px; }
+
+  /* ===== Tabs ===== */
+  .tabs { display:flex; gap:0; margin-bottom:20px; border-bottom:2px solid #e5e5e5; }
+  .tab { padding:8px 20px; cursor:pointer; font-size:13px; color:#888; border-bottom:2px solid transparent; margin-bottom:-2px; transition:all .15s; }
+  .tab:hover { color:#333; }
+  .tab.active { color:#1f1f1f; font-weight:600; border-bottom-color:#1f1f1f; }
+
+  /* ===== Page Section ===== */
+  .page-section { display:none; }
+  .page-section.active { display:block; }
+
+  /* ===== Buttons ===== */
+  .btn { padding:6px 16px; border:1px solid #d9d9d9; background:#fff; border-radius:4px; cursor:pointer; font-size:12px; display:inline-flex; align-items:center; gap:4px; transition:all .15s; white-space:nowrap; }
+  .btn:hover { border-color:#999; }
+  .btn-primary { background:#1f1f1f; color:#fff; border-color:#1f1f1f; }
+  .btn-primary:hover { background:#333; }
+  .btn-danger { color:#d4380d; border-color:#d4380d; }
+  .btn-danger:hover { background:#fff1f0; }
+  .btn-link { border:none; background:none; color:#1a1a1a; padding:2px 4px; cursor:pointer; font-size:12px; text-decoration:underline; }
+  .btn-link:hover { color:#666; }
+  .btn-sm { padding:4px 10px; font-size:11px; }
+
+  /* ===== Filter / Toolbar ===== */
+  .toolbar { display:flex; align-items:center; justify-content:space-between; margin-bottom:16px; }
+  .toolbar-left { display:flex; align-items:center; gap:10px; }
+  .toolbar-right { display:flex; align-items:center; gap:8px; }
+  .filter-bar { display:flex; align-items:center; gap:10px; margin-bottom:16px; flex-wrap:wrap; }
+  .filter-bar label { font-size:12px; color:#666; white-space:nowrap; }
+  .filter-bar select, .filter-bar input[type="text"], .filter-bar input[type="date"] { padding:5px 8px; border:1px solid #d9d9d9; border-radius:4px; font-size:12px; background:#fff; }
+  .filter-bar select { min-width:100px; }
+  .search-input { width:180px; }
+
+  /* ===== Table ===== */
+  table { width:100%; border-collapse:collapse; background:#fff; border:1px solid #e5e5e5; }
+  thead th { padding:10px 12px; background:#fafafa; border-bottom:1px solid #e5e5e5; text-align:left; font-size:12px; color:#666; font-weight:600; white-space:nowrap; }
+  tbody td { padding:10px 12px; border-bottom:1px solid #f0f0f0; font-size:12px; vertical-align:middle; }
+  tbody tr:hover { background:#fafafa; }
+  .checkbox-cell { width:40px; text-align:center; }
+  input[type="checkbox"] { width:16px; height:16px; cursor:pointer; }
+
+  /* ===== Tags ===== */
+  .tag { display:inline-block; padding:2px 8px; border-radius:3px; font-size:11px; font-weight:500; }
+  .tag-draft { background:#f0f0f0; color:#999; }
+  .tag-published { background:#e6f7e6; color:#389e0d; }
+  .tag-stopped { background:#fff1f0; color:#cf1322; }
+  .tag-success { color:#389e0d; }
+  .tag-fail { color:#cf1322; }
+  .tag-configured { background:#e6f7ff; color:#1890ff; }
+  .tag-unconfigured { background:#fff7e6; color:#ad6800; }
+
+  /* ===== Status ===== */
+  .status-verified { color:#1f1f1f; font-weight:500; }
+  .status-unverified { color:#999; }
+  .status-signed { color:#1f1f1f; font-weight:500; }
+  .status-unsigned { color:#999; font-style:italic; }
+  .status-resign { color:#d4380d; font-weight:600; }
+
+  /* ===== Balance ===== */
+  .balance-cell { font-variant-numeric:tabular-nums; }
+  .balance-available { font-weight:500; }
+  .balance-frozen { font-size:12px; color:#999; margin-top:2px; }
+  .balance-frozen-reason { font-size:11px; color:#bbb; }
+
+  /* ===== Master Switch ===== */
+  .switch-area { background:#fff; border:1px solid #e5e5e5; border-radius:4px; padding:20px 24px; margin-bottom:16px; display:flex; align-items:center; justify-content:space-between; }
+  .switch-area-left { display:flex; align-items:center; gap:16px; }
+  .switch-label { font-size:15px; font-weight:600; }
+  .switch-desc { font-size:13px; color:#666; max-width:640px; }
+
+  /* ===== Toggle ===== */
+  .toggle { width:44px; height:24px; background:#ccc; border-radius:12px; position:relative; cursor:pointer; transition:background .2s; flex-shrink:0; border:none; }
+  .toggle.on { background:#1a1a1a; }
+  .toggle::after { content:''; position:absolute; width:20px; height:20px; background:#fff; border-radius:50%; top:2px; left:2px; transition:transform .2s; }
+  .toggle.on::after { transform:translateX(20px); }
+  .toggle.disabled { opacity:.4; cursor:not-allowed; }
+
+  /* ===== Row Toggle ===== */
+  .row-toggle-cell { width:100px; text-align:center; }
+  .row-toggle { display:inline-flex; align-items:center; gap:6px; }
+  .row-toggle .toggle { width:36px; height:20px; }
+  .row-toggle .toggle::after { width:16px; height:16px; top:2px; left:2px; }
+  .row-toggle .toggle.on::after { transform:translateX(16px); }
+  .row-toggle-text { font-size:12px; color:#999; white-space:nowrap; }
+  .row-toggle-text.on { color:#1f1f1f; font-weight:500; }
+  .row-readonly-text { display:none; font-size:12px; color:#1f1f1f; font-weight:500; }
+  body.readonly .row-toggle { display:none; }
+  body.readonly .row-readonly-text { display:inline; }
+  body.readonly .checkbox-cell { display:none; }
+
+  /* ===== Batch ===== */
+  .batch-actions { display:none; align-items:center; gap:8px; }
+  .batch-actions.visible { display:flex; }
+  .batch-count { font-size:13px; color:#666; }
+  .batch-btn { height:30px; padding:0 14px; border:1px solid #1a1a1a; border-radius:4px; background:#fff; font-size:12px; cursor:pointer; }
+  .batch-btn:hover { background:#f0f0f0; }
+
+  /* ===== Pagination ===== */
+  .pagination { display:flex; align-items:center; justify-content:space-between; margin-top:16px; font-size:12px; color:#999; }
+  .pagination-btns { display:flex; gap:4px; }
+  .pagination-btns span { padding:4px 10px; border:1px solid #d9d9d9; border-radius:3px; cursor:pointer; background:#fff; }
+  .pagination-btns span:hover { border-color:#999; }
+  .pagination-btns span.active { background:#1f1f1f; color:#fff; border-color:#1f1f1f; }
+
+  /* ===== Tooltip ===== */
+  .tooltip-wrap { position:relative; display:inline-block; }
+  .tooltip { display:none; position:absolute; bottom:calc(100% + 6px); left:50%; transform:translateX(-50%); background:#1a1a1a; color:#fff; padding:6px 10px; border-radius:4px; font-size:12px; white-space:nowrap; z-index:50; }
+  .tooltip-wrap:hover .tooltip { display:block; }
+
+  /* ===== Action ===== */
+  .action-btn { background:none; border:none; font-size:13px; cursor:pointer; padding:4px 8px; color:#1a1a1a; text-decoration:underline; }
+
+  /* ===== Modal ===== */
+  .modal-overlay { display:none; position:fixed; top:0; left:0; right:0; bottom:0; background:rgba(0,0,0,.45); z-index:1000; align-items:center; justify-content:center; }
+  .modal-overlay.show { display:flex; }
+  .modal { background:#fff; border-radius:8px; width:640px; max-height:85vh; display:flex; flex-direction:column; box-shadow:0 6px 30px rgba(0,0,0,.15); }
+  .modal-wide { width:960px; }
+  .modal-header { padding:16px 20px; border-bottom:1px solid #f0f0f0; display:flex; align-items:center; justify-content:space-between; }
+  .modal-header h3 { font-size:15px; font-weight:600; }
+  .modal-close { width:28px; height:28px; border:none; background:none; cursor:pointer; font-size:18px; color:#999; display:flex; align-items:center; justify-content:center; border-radius:4px; }
+  .modal-close:hover { background:#f5f5f5; color:#333; }
+  .modal-body { padding:20px; overflow-y:auto; flex:1; font-size:14px; line-height:1.8; }
+  .modal-body p { margin-bottom:6px; }
+  .modal-body .warning { background:#f5f5f5; padding:10px 14px; border-radius:4px; border-left:3px solid #1a1a1a; margin:12px 0; font-size:13px; }
+  .modal-body .skip-info { background:#f9f9f9; padding:10px 14px; border-radius:4px; margin:12px 0; font-size:13px; color:#666; }
+  .modal-footer { padding:12px 20px; border-top:1px solid #f0f0f0; display:flex; align-items:center; justify-content:flex-end; gap:8px; }
+  .modal-input { width:100%; height:36px; border:1px solid #ccc; border-radius:4px; padding:0 12px; font-size:14px; margin-top:8px; }
+  .btn-modal-cancel { height:36px; padding:0 20px; border:1px solid #ccc; border-radius:4px; background:#fff; font-size:14px; cursor:pointer; }
+  .btn-modal-cancel:hover { background:#f5f5f5; }
+  .btn-modal-danger { height:36px; padding:0 20px; border:1px solid #1a1a1a; border-radius:4px; background:#1a1a1a; color:#fff; font-size:14px; cursor:pointer; }
+  .btn-modal-danger:disabled { background:#ccc; border-color:#ccc; cursor:not-allowed; }
+  .btn-modal-primary { height:36px; padding:0 20px; border:1px solid #1a1a1a; border-radius:4px; background:#1a1a1a; color:#fff; font-size:14px; cursor:pointer; }
+
+  /* ===== Side Panel (P2) ===== */
+  .slide-overlay { display:none; position:fixed; top:0; left:0; right:0; bottom:0; background:rgba(0,0,0,.3); z-index:100; }
+  .slide-overlay.show { display:block; }
+  .slide-panel { display:none; position:fixed; top:0; right:0; bottom:0; width:520px; background:#fff; box-shadow:-4px 0 16px rgba(0,0,0,.1); z-index:101; overflow-y:auto; flex-direction:column; }
+  .slide-panel.show { display:flex; }
+  .slide-header { padding:20px 24px; border-bottom:1px solid #eee; display:flex; align-items:center; justify-content:space-between; flex-shrink:0; }
+  .slide-header h2 { margin:0; font-size:16px; }
+  .slide-close { background:none; border:none; font-size:20px; cursor:pointer; color:#888; padding:4px; }
+  .slide-close:hover { color:#1a1a1a; }
+  .slide-body { padding:24px; flex:1; overflow-y:auto; }
+
+  /* ===== Detail Info ===== */
+  .info-section { margin-bottom:24px; }
+  .info-section-title { font-size:14px; font-weight:600; margin-bottom:12px; padding-bottom:8px; border-bottom:1px solid #eee; }
+  .info-grid { display:grid; grid-template-columns:1fr 1fr; gap:10px 24px; }
+  .info-item { display:flex; gap:8px; font-size:13px; }
+  .info-label { color:#888; min-width:70px; flex-shrink:0; }
+  .info-value { color:#1a1a1a; }
+
+  /* ===== Timeline ===== */
+  .timeline { position:relative; padding-left:24px; }
+  .timeline::before { content:''; position:absolute; left:7px; top:8px; bottom:8px; width:1px; background:#ddd; }
+  .timeline-item { position:relative; padding-bottom:20px; }
+  .timeline-item:last-child { padding-bottom:0; }
+  .timeline-dot { position:absolute; left:-20px; top:6px; width:10px; height:10px; border-radius:50%; background:#1a1a1a; border:2px solid #fff; }
+  .timeline-dot.pending { background:#ccc; }
+  .timeline-time { font-size:12px; color:#999; margin-bottom:4px; }
+  .timeline-type { font-size:13px; font-weight:600; }
+  .timeline-meta { color:#888; font-size:12px; margin-top:2px; }
+  .timeline-result { font-size:12px; margin-top:2px; }
+  .timeline-result.success { color:#1a1a1a; }
+  .timeline-result.pending { color:#999; font-style:italic; }
+
+  /* ===== Form (Agreement modals) ===== */
+  .form-group { margin-bottom:16px; }
+  .form-group label { display:block; font-size:12px; color:#666; margin-bottom:6px; font-weight:500; }
+  .form-group label .required { color:#d4380d; }
+  .form-input { width:100%; padding:7px 10px; border:1px solid #d9d9d9; border-radius:4px; font-size:12px; }
+  .form-input:focus { outline:none; border-color:#1a1a1a; }
+  .form-hint { font-size:11px; color:#999; margin-top:4px; }
+  .confirm-input { width:100%; padding:7px 10px; border:1px solid #d9d9d9; border-radius:4px; font-size:13px; margin-top:8px; }
+  .confirm-input:focus { outline:none; border-color:#d4380d; }
+  .warning-box { background:#fff7e6; border:1px solid #ffe58f; border-radius:4px; padding:10px 14px; margin:12px 0; font-size:12px; color:#ad6800; display:flex; align-items:flex-start; gap:6px; line-height:1.6; }
+  .warning-box::before { content:"⚠"; flex-shrink:0; }
+
+  /* ===== PDF Upload ===== */
+  .pdf-upload { border:2px dashed #d9d9d9; border-radius:8px; padding:40px 24px; text-align:center; cursor:pointer; transition:all .15s; background:#fafafa; }
+  .pdf-upload:hover { border-color:#1a1a1a; background:#f0f0f0; }
+  .pdf-upload-icon { font-size:36px; color:#bbb; margin-bottom:12px; }
+  .pdf-upload-title { font-size:14px; color:#666; margin-bottom:4px; }
+  .pdf-upload-sub { font-size:12px; color:#999; }
+  .pdf-uploaded { border:1px solid #e5e5e5; border-radius:8px; padding:16px; display:flex; align-items:center; gap:16px; background:#fafafa; }
+  .pdf-uploaded-icon { width:40px; height:48px; background:#e6f7ff; border-radius:4px; display:flex; align-items:center; justify-content:center; font-size:16px; color:#1890ff; flex-shrink:0; font-weight:700; }
+  .pdf-uploaded-info { flex:1; }
+  .pdf-uploaded-name { font-size:13px; font-weight:500; }
+  .pdf-uploaded-meta { font-size:11px; color:#999; margin-top:2px; }
+
+  /* ===== Position Config ===== */
+  .position-config { border:1px solid #e5e5e5; border-radius:8px; overflow:hidden; }
+  .position-config-header { padding:10px 16px; background:#fafafa; border-bottom:1px solid #e5e5e5; display:flex; align-items:center; justify-content:space-between; }
+  .position-config-header span { font-size:12px; font-weight:500; }
+  .position-config-body { position:relative; height:560px; overflow-y:auto; background:#e8e8e8; padding:24px; }
+  .position-page { position:relative; margin:0 auto 24px; width:595px; min-height:842px; background:#fff; box-shadow:0 1px 4px rgba(0,0,0,.12); padding:48px 40px; }
+  .position-page-label { position:absolute; top:-10px; right:12px; background:#fff; padding:0 6px; font-size:10px; color:#999; border:1px solid #e5e5e5; border-radius:3px; }
+  .content-line { height:18px; border-bottom:1px solid #f5f5f5; margin-bottom:6px; }
+  .position-mark { position:absolute; border:2px dashed; border-radius:4px; display:flex; align-items:center; justify-content:center; font-size:11px; font-weight:500; cursor:move; user-select:none; transition:box-shadow .15s; }
+  .position-mark:hover { box-shadow:0 0 0 3px rgba(0,0,0,.06); }
+  .position-mark.sign { border-color:#1890ff; background:rgba(24,144,255,.06); color:#1890ff; }
+  .position-mark.seal { border-color:#d4380d; background:rgba(212,56,13,.06); color:#d4380d; }
+  .position-mark-label { pointer-events:none; display:flex; align-items:center; gap:4px; }
+  .position-mark-del { position:absolute; top:-8px; right:-8px; width:18px; height:18px; border-radius:50%; background:#fff; border:1px solid #d9d9d9; display:none; align-items:center; justify-content:center; cursor:pointer; font-size:10px; color:#999; z-index:10; line-height:1; }
+  .position-mark:hover .position-mark-del { display:flex; }
+  .position-mark-del:hover { background:#ff4d4f; border-color:#ff4d4f; color:#fff; }
+  .position-toolbar { display:flex; align-items:center; gap:8px; margin-bottom:12px; }
+  .position-toolbar .mode-hint { font-size:11px; color:#999; margin-left:auto; }
+
+  /* ===== Seal ===== */
+  .seal-upload { border:2px dashed #d9d9d9; border-radius:8px; padding:32px; text-align:center; cursor:pointer; transition:all .15s; }
+  .seal-upload:hover { border-color:#1a1a1a; }
+  .seal-upload-icon { font-size:28px; color:#bbb; margin-bottom:8px; }
+  .seal-upload-text { font-size:12px; color:#999; }
+  .seal-preview { width:100px; height:100px; border:1px solid #e5e5e5; border-radius:4px; display:flex; align-items:center; justify-content:center; margin:0 auto; }
+  .seal-preview-circle { width:72px; height:72px; border:2px solid #d4380d; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:9px; color:#d4380d; text-align:center; line-height:1.3; }
+
+  /* ===== Sign Position Info ===== */
+  .sign-pos-info { display:flex; align-items:center; gap:6px; font-size:11px; }
+  .sign-pos-info .pos-icon { display:inline-flex; align-items:center; gap:2px; padding:1px 6px; border-radius:3px; }
+  .sign-pos-info .pos-icon.sign-icon { background:rgba(24,144,255,.08); color:#1890ff; }
+  .sign-pos-info .pos-icon.seal-icon { background:rgba(212,56,13,.08); color:#d4380d; }
+
+  /* ===== Protocol Preview ===== */
+  .protocol-preview { background:#fff; border:1px solid #e5e5e5; padding:48px 40px; font-size:12px; line-height:2; color:#333; }
+  .protocol-preview h4 { text-align:center; font-size:16px; font-weight:600; margin-bottom:24px; }
+  .protocol-preview p { margin-bottom:12px; text-indent:2em; }
+  .protocol-preview .sign-area { margin-top:48px; display:flex; justify-content:space-between; }
+  .protocol-preview .sign-box { width:45%; }
+  .protocol-preview .sign-box .sign-label { font-weight:500; margin-bottom:8px; }
+  .protocol-preview .sign-box .sign-line { border-bottom:1px solid #333; height:40px; }
+
+  .info-row { display:flex; padding:8px 0; border-bottom:1px solid #f5f5f5; font-size:12px; }
+  .info-row-label { width:120px; color:#999; flex-shrink:0; }
+  .info-row-value { flex:1; color:#1f1f1f; }
+
+  /* ===== State Nav (demo) ===== */
+  .state-nav { position:fixed; bottom:16px; left:50%; transform:translateX(-50%); background:#1a1a1a; color:#fff; padding:8px 16px; border-radius:20px; z-index:200; display:flex; gap:6px; font-size:12px; align-items:center; }
+  .state-btn { padding:4px 12px; border-radius:12px; cursor:pointer; background:transparent; border:1px solid #666; color:#999; font-size:12px; }
+  .state-btn:hover { border-color:#fff; color:#fff; }
+  .state-btn.active { background:#fff; color:#1a1a1a; border-color:#fff; }
+
+  /* ===== Placeholder module ===== */
+  .module-placeholder { text-align:center; padding:80px 24px; color:#ccc; }
+  .module-placeholder-icon { font-size:48px; margin-bottom:12px; }
+  .module-placeholder-title { font-size:16px; font-weight:600; color:#999; margin-bottom:6px; }
+  .module-placeholder-desc { font-size:13px; color:#bbb; }
+
+  /* ===== Tax Config Card ===== */
+  .config-card { background:#fff; border:1px solid #e5e5e5; border-radius:6px; padding:20px 24px; margin-bottom:16px; }
+  .config-card-title { font-size:14px; font-weight:600; margin-bottom:16px; display:flex; align-items:center; gap:8px; }
+  .config-card-title .card-badge { font-size:11px; font-weight:500; padding:2px 8px; border-radius:3px; }
+  .config-card-title .badge-active { background:#e6f7e6; color:#389e0d; }
+  .config-card-title .badge-pending { background:#fff7e6; color:#ad6800; }
+  .config-grid { display:grid; grid-template-columns:repeat(5,1fr); gap:16px; }
+  .config-item { display:flex; flex-direction:column; gap:4px; }
+  .config-item-label { font-size:12px; color:#999; }
+  .config-item-value { font-size:15px; font-weight:600; color:#1f1f1f; }
+  .config-item-value.small { font-size:13px; font-weight:500; }
+  .config-item-sub { font-size:11px; color:#bbb; margin-top:1px; }
+  .config-card-pending { border-left:3px solid #ad6800; }
+  .config-card-active { border-left:3px solid #389e0d; }
+
+  /* ===== Tax Config Form ===== */
+  .tax-form-row { display:flex; gap:16px; margin-bottom:16px; }
+  .tax-form-row .form-group { flex:1; margin-bottom:0; }
+  .tax-form-row .form-group.half { flex:0 0 calc(50% - 8px); }
+  .tax-form-toggle-row { display:flex; align-items:center; gap:12px; margin-bottom:16px; }
+  .tax-form-toggle-row label { font-size:12px; color:#666; font-weight:500; }
+  .tax-form-toggle-row .toggle-desc { font-size:11px; color:#999; }
+  .tax-form-effect { background:#f5f5f5; border-left:3px solid #1a1a1a; padding:10px 14px; border-radius:4px; margin:16px 0 0; font-size:13px; }
+  .tax-form-effect b { color:#1a1a1a; }
+  .form-suffix { position:relative; }
+  .form-suffix input { padding-right:28px; }
+  .form-suffix::after { content:attr(data-suffix); position:absolute; right:10px; top:50%; transform:translateY(-50%); font-size:12px; color:#999; pointer-events:none; }
+  .form-suffix.data-unit-yuan::after { content:'元'; }
+  .form-suffix.data-unit-pct::after { content:'%'; }
+</style>
+</head>
+<body>
+
+<!-- ===== SIDEBAR ===== -->
+<div class="sidebar">
+  <div class="sidebar-logo">观严平台<span>管理后台</span></div>
+  <div class="nav-group">
+    <div class="nav-group-title">观严代办</div>
+    <div class="nav-item" onclick="switchModule('guankou',this)"><span class="dot"></span>代扣模式配置</div>
+    <div class="nav-item active" onclick="switchModule('agreement',this)"><span class="dot"></span>协议管理</div>
+    <div class="nav-item" onclick="switchModule('tax-config',this)"><span class="dot"></span>增附税税点配置</div>
+    <div class="nav-item" onclick="switchModule('declare',this)"><span class="dot"></span>申报管理</div>
+    <div class="nav-item" onclick="switchModule('warning',this)"><span class="dot"></span>500万预警</div>
+  </div>
+  <div class="nav-group" style="margin-top:auto;border-top:1px solid #333;padding-top:12px;">
+    <div class="nav-group-title">其他</div>
+    <div class="nav-item" style="color:#555"><span class="dot"></span>用户管理</div>
+    <div class="nav-item" style="color:#555"><span class="dot"></span>财务管理</div>
+  </div>
+</div>
+
+<!-- ===== MAIN ===== -->
+<div class="main">
+  <div class="header">
+    <div class="header-left">观严代办 / <b id="header-title">协议管理</b></div>
+    <div class="header-right">管理员：张三 ｜ 2026-11-05</div>
+  </div>
+  <div class="content">
+
+    <!-- ============================================================ -->
+    <!-- MODULE: 代扣模式配置 (P1) -->
+    <!-- ============================================================ -->
+    <div id="module-guankou" class="page-section">
+      <h1 style="font-size:20px;font-weight:700;margin-bottom:4px">代扣模式配置</h1>
+      <p class="subtitle" style="font-size:13px;color:#888;margin-bottom:20px">管理平台观严代办申报开关 · 默认由云账户代办，开启后由观严主体代办申报</p>
+
+      <!-- 总闸 -->
+      <div class="switch-area" id="switchArea">
+        <div class="switch-area-left">
+          <button class="toggle on" id="masterToggle" onclick="toggleMaster()"></button>
+          <div>
+            <div class="switch-label">人员差异化代扣配置</div>
+            <div class="switch-desc" id="switchDesc">人员差异化代扣配置已开启，可按人员开启观严代办申报；未开启的人员继续由云账户代办</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 筛选栏 -->
+      <div class="filter-bar">
+        <label>观严代办</label>
+        <select class="filter-select"><option>全部</option><option>已开启</option><option>未开启</option></select>
+        <label>签署状态</label>
+        <select class="filter-select"><option>全部</option><option>已签署</option><option>未签署</option><option>需重签</option></select>
+        <label>计算方式</label>
+        <select class="filter-select"><option>全部</option><option>连续劳务报酬（适用累计预扣法）</option><option>一般劳务报酬（使用按次预扣法）</option></select>
+        <label>实名状态</label>
+        <select class="filter-select"><option>全部</option><option>已实名</option><option>未实名</option></select>
+        <input type="text" class="search-input" placeholder="搜索姓名 / 手机号 / 证件号">
+        <div style="flex:1"></div>
+        <div class="batch-actions" id="batchActions">
+          <span class="batch-count" id="batchCount">已选择 0 人</span>
+          <button class="batch-btn" onclick="showModal('batch-modal')">批量开启观严代办</button>
+        </div>
+      </div>
+
+      <!-- 人员列表 -->
+      <table>
+        <thead>
+          <tr>
+            <th class="checkbox-cell"><input type="checkbox" id="selectAll" onchange="toggleSelectAll()"></th>
+            <th>姓名</th><th>手机号</th><th>证件号码</th><th>实名状态</th>
+            <th class="row-toggle-cell">观严代办</th><th>签署状态</th><th>计算方式</th><th>余额</th><th>操作</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr data-guanyan="on" data-balance="12580">
+            <td class="checkbox-cell"><input type="checkbox" class="row-check" onchange="updateBatch()"></td>
+            <td>张明远</td><td>138****6721</td><td>**4********4</td>
+            <td><span class="status-verified">已实名</span></td>
+            <td class="row-toggle-cell"><div class="row-toggle"><div class="toggle on" onclick="tryCloseGuanyan(this,'张明远',12580)"></div><span class="row-toggle-text on">已开启</span></div><span class="row-readonly-text">已开启</span></td>
+            <td><span class="status-signed">已签署</span></td>
+            <td>连续劳务报酬（适用累计预扣法）</td>
+            <td class="balance-cell"><div class="balance-available">¥12,580.00</div></td>
+            <td><button class="btn-link" onclick="showDetail()">详情</button></td>
+          </tr>
+          <tr data-guanyan="on" data-balance="0">
+            <td class="checkbox-cell"><input type="checkbox" class="row-check" onchange="updateBatch()"></td>
+            <td>李晓红</td><td>159****3342</td><td>**3********7</td>
+            <td><span class="status-verified">已实名</span></td>
+            <td class="row-toggle-cell"><div class="row-toggle"><div class="toggle on" onclick="tryCloseGuanyan(this,'李晓红',0)"></div><span class="row-toggle-text on">已开启</span></div><span class="row-readonly-text">已开启</span></td>
+            <td><span class="status-signed">已签署</span></td>
+            <td>一般劳务报酬（使用按次预扣法）</td>
+            <td class="balance-cell"><div class="balance-available">¥0.00</div></td>
+            <td><button class="btn-link" onclick="showDetail()">详情</button></td>
+          </tr>
+          <tr data-guanyan="on" data-balance="0">
+            <td class="checkbox-cell"><input type="checkbox" class="row-check" onchange="updateBatch()"></td>
+            <td>王建国</td><td>186****9908</td><td>**5********2</td>
+            <td><span class="status-verified">已实名</span></td>
+            <td class="row-toggle-cell"><div class="row-toggle"><div class="toggle on" onclick="tryCloseGuanyan(this,'王建国',0)"></div><span class="row-toggle-text on">已开启</span></div><span class="row-readonly-text">已开启</span></td>
+            <td><span class="status-unsigned">未签署</span></td>
+            <td>—</td>
+            <td class="balance-cell"><div class="balance-available">¥0.00</div><div class="balance-frozen">冻结 ¥8,200.00</div><div class="balance-frozen-reason">待签署知情同意书</div></td>
+            <td><button class="btn-link" onclick="showDetail()">详情</button></td>
+          </tr>
+          <tr data-guanyan="on" data-balance="0">
+            <td class="checkbox-cell"><input type="checkbox" class="row-check" onchange="updateBatch()"></td>
+            <td>陈思雨</td><td>177****4456</td><td>**2********9</td>
+            <td><span class="status-unverified">未实名</span></td>
+            <td class="row-toggle-cell"><div class="row-toggle"><div class="toggle on" onclick="tryCloseGuanyan(this,'陈思雨',0)"></div><span class="row-toggle-text on">已开启</span></div><span class="row-readonly-text">已开启</span></td>
+            <td><span class="status-unsigned">未签署</span></td>
+            <td>—</td>
+            <td class="balance-cell"><div class="balance-available">¥0.00</div></td>
+            <td><button class="btn-link" onclick="showDetail()">详情</button></td>
+          </tr>
+          <tr data-guanyan="on" data-balance="0">
+            <td class="checkbox-cell"><input type="checkbox" class="row-check" onchange="updateBatch()"></td>
+            <td>赵文博</td><td>135****7789</td><td>**6********1</td>
+            <td><span class="status-verified">已实名</span></td>
+            <td class="row-toggle-cell"><div class="row-toggle"><div class="toggle on" onclick="tryCloseGuanyan(this,'赵文博',0)"></div><span class="row-toggle-text on">已开启</span></div><span class="row-readonly-text">已开启</span></td>
+            <td><span class="status-resign">需重签</span></td>
+            <td>连续劳务报酬（适用累计预扣法）</td>
+            <td class="balance-cell"><div class="balance-available">¥0.00</div><div class="balance-frozen">冻结 ¥15,300.00</div><div class="balance-frozen-reason">待签署知情同意书</div></td>
+            <td><button class="btn-link" onclick="showDetail()">详情</button></td>
+          </tr>
+          <tr data-guanyan="off" data-balance="6400">
+            <td class="checkbox-cell"><input type="checkbox" class="row-check" onchange="updateBatch()"></td>
+            <td>刘佳音</td><td>152****2201</td><td>**8********3</td>
+            <td><span class="status-verified">已实名</span></td>
+            <td class="row-toggle-cell"><div class="row-toggle"><div class="tooltip-wrap"><div class="toggle disabled"></div><span class="tooltip">该用户有余额，无法开启观严代办</span></div><span class="row-toggle-text">未开启</span></div><span class="row-readonly-text">未开启</span></td>
+            <td>—</td><td>—</td>
+            <td class="balance-cell"><div class="balance-available">¥6,400.00</div></td>
+            <td><button class="btn-link" onclick="showDetail()">详情</button></td>
+          </tr>
+          <tr data-guanyan="off" data-balance="0">
+            <td class="checkbox-cell"><input type="checkbox" class="row-check" onchange="updateBatch()"></td>
+            <td>孙浩然</td><td>188****5567</td><td>**1********6</td>
+            <td><span class="status-unverified">未实名</span></td>
+            <td class="row-toggle-cell"><div class="row-toggle"><div class="toggle" onclick="openGuanyan(this,'孙浩然')"></div><span class="row-toggle-text">未开启</span></div><span class="row-readonly-text">未开启</span></td>
+            <td>—</td><td>—</td>
+            <td class="balance-cell"><div class="balance-available">¥0.00</div></td>
+            <td><button class="btn-link" onclick="showDetail()">详情</button></td>
+          </tr>
+          <tr data-guanyan="on" data-balance="22100">
+            <td class="checkbox-cell"><input type="checkbox" class="row-check" onchange="updateBatch()"></td>
+            <td>周雅琴</td><td>139****8834</td><td>**7********5</td>
+            <td><span class="status-verified">已实名</span></td>
+            <td class="row-toggle-cell"><div class="row-toggle"><div class="tooltip-wrap"><div class="toggle on disabled"></div><span class="tooltip">该用户有余额，无法关闭观严代办</span></div><span class="row-toggle-text on">已开启</span></div><span class="row-readonly-text">已开启</span></td>
+            <td><span class="status-signed">已签署</span></td>
+            <td>一般劳务报酬（使用按次预扣法）</td>
+            <td class="balance-cell"><div class="balance-available">¥22,100.00</div></td>
+            <td><button class="btn-link" onclick="showDetail()">详情</button></td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="pagination">
+        <span>共 156 人 · 已开启观严代办 114 人 · 第 1/8 页</span>
+        <div class="pagination-btns"><span>&lt;</span><span class="active">1</span><span>2</span><span>3</span><span>...</span><span>8</span><span>&gt;</span></div>
+      </div>
+    </div>
+
+    <!-- ============================================================ -->
+    <!-- MODULE: 增附税税点配置 (P5) -->
+    <!-- ============================================================ -->
+    <div id="module-tax-config" class="page-section">
+      <h1 style="font-size:20px;font-weight:700;margin-bottom:4px">增附税税点配置</h1>
+      <p class="subtitle" style="font-size:13px;color:#888;margin-bottom:20px">配置增值税及附加税费税率 · 平台代缴后与上游客户结算</p>
+
+      <!-- 当前生效配置 -->
+      <div class="config-card config-card-active">
+        <div class="config-card-title">
+          当前生效配置
+          <span class="card-badge badge-active">生效中</span>
+        </div>
+        <div class="config-grid">
+          <div class="config-item">
+            <div class="config-item-label">增值税率</div>
+            <div class="config-item-value">1%</div>
+          </div>
+          <div class="config-item">
+            <div class="config-item-label">附加税综合税率</div>
+            <div class="config-item-value">6%</div>
+            <div class="config-item-sub">含减半优惠</div>
+          </div>
+          <div class="config-item">
+            <div class="config-item-label">免税额度阈值（含税收入）</div>
+            <div class="config-item-value">¥100,000</div>
+            <div class="config-item-sub">月累计含税收入不超过此值免征</div>
+          </div>
+          <div class="config-item">
+            <div class="config-item-label">减半优惠</div>
+            <div class="config-item-value small">✓ 适用（原 12% ÷ 2）</div>
+          </div>
+          <div class="config-item">
+            <div class="config-item-label">生效时间</div>
+            <div class="config-item-value small">2026-07-01 00:00</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 历史版本 -->
+      <div class="toolbar">
+        <div class="toolbar-left"><span style="font-size:14px;font-weight:600">配置记录</span><span style="font-size:12px;color:#999;margin-left:8px">共 5 条</span></div>
+        <div class="toolbar-right">
+          <button class="btn btn-primary" onclick="showModal('tax-config-modal')">+ 新建配置</button>
+        </div>
+      </div>
+      <table>
+        <thead><tr><th style="width:140px">生效时间</th><th>增值税率</th><th>附加税综合税率</th><th>免税额度阈值（含税收入）</th><th>减半优惠</th><th>备注</th><th style="width:72px">状态</th><th style="width:80px">操作</th></tr></thead>
+        <tbody>
+          <tr style="background:#f6ffed">
+            <td style="white-space:nowrap"><b>2026-07-01 00:00</b></td>
+            <td style="white-space:nowrap">1%</td>
+            <td style="white-space:nowrap">6%</td>
+            <td style="white-space:nowrap">¥100,000</td>
+            <td style="white-space:nowrap"><span class="tag tag-success">● 适用</span></td>
+            <td style="max-width:180px;color:#999;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">依据财税〔2026〕15号，附加税减半优惠延续</td>
+            <td style="white-space:nowrap"><span class="tag tag-published">生效中</span></td>
+            <td style="white-space:nowrap">—</td>
+          </tr>
+          <tr id="pending-row">
+            <td style="white-space:nowrap"><b>2026-12-01 00:00</b></td>
+            <td style="white-space:nowrap">1%</td>
+            <td style="white-space:nowrap">12%</td>
+            <td style="white-space:nowrap">¥100,000</td>
+            <td style="white-space:nowrap"><span class="tag tag-fail">● 不适用</span></td>
+            <td style="max-width:180px;color:#999;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">减半优惠到期恢复原税率</td>
+            <td style="white-space:nowrap"><span class="tag" style="background:#fff7e6;color:#ad6800">待生效</span></td>
+            <td style="white-space:nowrap"><button class="btn-link" onclick="showModal('tax-config-modal');prefillPending()">编辑</button><button class="btn-link" style="color:#d4380d" onclick="showModal('cancel-pending-modal')">删除</button></td>
+          </tr>
+          <tr>
+            <td style="white-space:nowrap">2026-01-01 00:00</td>
+            <td style="white-space:nowrap">1%</td>
+            <td style="white-space:nowrap">6%</td>
+            <td style="white-space:nowrap">¥100,000</td>
+            <td style="white-space:nowrap"><span class="tag tag-success">● 适用</span></td>
+            <td style="max-width:180px;color:#999;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">延续2025年减半政策</td>
+            <td style="white-space:nowrap"><span class="tag tag-stopped">已失效</span></td>
+            <td style="white-space:nowrap">—</td>
+          </tr>
+          <tr>
+            <td style="white-space:nowrap">2025-07-01 00:00</td>
+            <td style="white-space:nowrap">3%</td>
+            <td style="white-space:nowrap">6%</td>
+            <td style="white-space:nowrap">¥100,000</td>
+            <td style="white-space:nowrap"><span class="tag tag-success">● 适用</span></td>
+            <td style="max-width:180px;color:#999;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">增值税率由1%恢复至3%</td>
+            <td style="white-space:nowrap"><span class="tag tag-stopped">已失效</span></td>
+            <td style="white-space:nowrap">—</td>
+          </tr>
+          <tr>
+            <td style="white-space:nowrap">2025-01-01 00:00</td>
+            <td style="white-space:nowrap">1%</td>
+            <td style="white-space:nowrap">6%</td>
+            <td style="white-space:nowrap">¥100,000</td>
+            <td style="white-space:nowrap"><span class="tag tag-success">● 适用</span></td>
+            <td style="max-width:180px;color:#999;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">初始配置，依据小规模纳税人政策</td>
+            <td style="white-space:nowrap"><span class="tag tag-stopped">已失效</span></td>
+            <td style="white-space:nowrap">—</td>
+          </tr>
+        </tbody>
+      </table>
+      <div style="margin-top:12px;font-size:11px;color:#bbb">生效中/已失效记录不可删除、不可修改 · 待生效记录可编辑或删除 · 同一生效日不可重复配置</div>
+    </div>
+
+    <!-- ============================================================ -->
+    <!-- MODULE: 协议管理 (P6) -->
+    <!-- ============================================================ -->
+    <div id="module-agreement" class="page-section active">
+      <div class="tabs">
+        <div class="tab active" onclick="switchTab('version-list',this)">协议版本管理</div>
+        <div class="tab" onclick="switchTab('sign-records',this)">签署记录查询</div>
+      </div>
+
+      <!-- TAB: 协议版本管理 -->
+      <div id="page-version-list" class="page-section active">
+        <div class="toolbar">
+          <div class="toolbar-left"><span style="font-size:12px;color:#999">共 4 个协议版本</span></div>
+          <div class="toolbar-right">
+            <button class="btn" onclick="showModal('seal-modal')">🏢 公司电子章</button>
+            <button class="btn btn-primary" onclick="openCreateModal(null)">+ 新建版本</button>
+          </div>
+        </div>
+        <table>
+          <thead><tr><th>协议版本号</th><th>协议名称</th><th>状态</th><th>生效时间</th><th>已签署人数</th><th>需重签人数</th><th>签署位置</th><th>备注</th><th>操作</th></tr></thead>
+          <tbody>
+            <tr>
+              <td><b>V1.3</b></td>
+              <td style="max-width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">个人所得税、增值税等代办申报知情同意书</td>
+              <td><span class="tag tag-published">已发布</span></td>
+              <td>2026-10-28 14:30</td><td>1,286</td><td style="color:#d4380d;font-weight:600">23</td>
+              <td><div class="sign-pos-info"><span class="pos-icon sign-icon">👤 1</span><span class="pos-icon seal-icon">🏛 1</span></div></td>
+              <td style="max-width:140px;color:#999;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">依据财税〔2026〕12号调整代扣条款</td>
+              <td><button class="btn-link" onclick="showModal('view-protocol')">查看协议</button><button class="btn-link" onclick="showModal('position-editor')">签署位置</button><button class="btn-link" style="color:#d4380d" onclick="showModal('stop-confirm')">停用</button></td>
+            </tr>
+            <tr>
+              <td><b>V1.2</b></td>
+              <td style="max-width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">个人所得税、增值税等代办申报知情同意书</td>
+              <td><span class="tag tag-stopped">已停用</span></td>
+              <td>2026-09-15 10:00</td><td>3,412</td><td>—</td>
+              <td><div class="sign-pos-info"><span class="pos-icon sign-icon">👤 1</span><span class="pos-icon seal-icon">🏛 1</span></div></td>
+              <td style="max-width:140px;color:#999">新增增值税代扣条款</td>
+              <td><button class="btn-link" onclick="showModal('view-protocol')">查看协议</button><button class="btn-link" onclick="showModal('position-editor')">签署位置</button></td>
+            </tr>
+            <tr>
+              <td><b>V1.1</b></td>
+              <td style="max-width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">个人所得税、增值税等代办申报知情同意书</td>
+              <td><span class="tag tag-stopped">已停用</span></td>
+              <td>2026-07-01 09:00</td><td>5,890</td><td>—</td>
+              <td><div class="sign-pos-info"><span class="pos-icon sign-icon">👤 1</span><span class="pos-icon seal-icon">🏛 1</span></div></td>
+              <td style="max-width:140px;color:#999">调整减除费用说明</td>
+              <td><button class="btn-link" onclick="showModal('view-protocol')">查看协议</button><button class="btn-link" onclick="showModal('position-editor')">签署位置</button></td>
+            </tr>
+            <tr>
+              <td><b>V1.0</b></td>
+              <td style="max-width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">观严平台代办申报知情同意书</td>
+              <td><span class="tag tag-stopped">已停用</span></td>
+              <td>2026-04-20 10:00</td><td>12,340</td><td>—</td>
+              <td><div class="sign-pos-info"><span class="pos-icon sign-icon">👤 1</span><span class="pos-icon seal-icon">🏛 1</span></div></td>
+              <td style="max-width:140px;color:#999">初始版本</td>
+              <td><button class="btn-link" onclick="showModal('view-protocol')">查看协议</button><button class="btn-link" onclick="showModal('position-editor')">签署位置</button></td>
+            </tr>
+            <tr style="background:#fcfcfc">
+              <td><b>V1.4</b></td>
+              <td style="max-width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:#999">个人所得税、增值税等代办申报知情同意书</td>
+              <td><span class="tag tag-draft">草稿</span></td>
+              <td style="color:#ccc">—</td><td style="color:#ccc">—</td><td style="color:#ccc">—</td>
+              <td><span class="tag tag-unconfigured" style="font-size:10px">未配置</span></td>
+              <td style="max-width:140px;color:#ccc">更新第五条条款</td>
+              <td><button class="btn-link" onclick="openCreateModal('V1.4')">编辑</button><button class="btn-link" onclick="showModal('position-editor')">签署位置</button><button class="btn-link" style="color:#d4380d" onclick="deleteDraft(this)">删除</button></td>
+            </tr>
+          </tbody>
+        </table>
+        <div class="warning-box" style="margin-top:16px">当前有 <b>23</b> 名用户尚未完成 V1.3 版本重签（已签署 V1.2），将受到未签署限制</div>
+      </div>
+
+      <!-- TAB: 签署记录查询 -->
+      <div id="page-sign-records" class="page-section">
+        <div class="filter-bar">
+          <label>时间范围</label><input type="date" value="2026-10-01"> — <input type="date" value="2026-10-31">
+          <label>操作类型</label><select><option>全部</option><option>首次签署</option><option>重新签署</option><option>取消授权</option><option>协议更新重签</option></select>
+          <label>申报方式</label><select><option>全部</option><option>连续劳务报酬（适用累计预扣法）</option><option>一般劳务报酬（使用按次预扣法）</option></select>
+          <label>协议版本</label><select><option>全部</option><option>V1.3</option><option>V1.2</option><option>V1.1</option><option>V1.0</option></select>
+          <label>签署状态</label><select><option>全部</option><option>成功</option><option>失败</option></select>
+        </div>
+        <div class="filter-bar" style="margin-bottom:16px">
+          <input type="text" class="search-input" placeholder="姓名 / 手机号 / 证件号">
+          <button class="btn btn-primary" onclick="protoAction('查询完成')">查询</button><button class="btn" onclick="protoAction('已重置')">重置</button>
+          <div style="flex:1"></div>
+          <button class="btn" onclick="protoAction('导出 Excel')">📤 导出 Excel</button>
+        </div>
+        <table>
+          <thead><tr><th>姓名</th><th>手机号</th><th>证件号码</th><th>操作类型</th><th>申报方式</th><th>协议版本</th><th>签署状态</th><th>操作时间</th><th>签署协议</th></tr></thead>
+          <tbody>
+            <tr><td>李明</td><td>138****5678</td><td>**4********4</td><td>首次签署</td><td>连续劳务报酬（适用累计预扣法）</td><td>V1.3</td><td><span class="tag tag-success">● 成功</span></td><td>2026-10-28 15:23:41</td><td><button class="btn-link" onclick="showModal('protocol-pdf-panel')">查看</button></td></tr>
+            <tr><td>王芳</td><td>139****1234</td><td>**3********7</td><td>协议更新重签</td><td>一般劳务报酬（使用按次预扣法）</td><td>V1.3</td><td><span class="tag tag-success">● 成功</span></td><td>2026-10-28 16:01:22</td><td><button class="btn-link" onclick="showModal('protocol-pdf-panel')">查看</button></td></tr>
+            <tr><td>张伟</td><td>137****9876</td><td>**5********2</td><td>取消授权</td><td>—</td><td>V1.2</td><td><span class="tag tag-success">● 成功</span></td><td>2026-10-27 09:44:10</td><td>—</td></tr>
+            <tr><td>陈静</td><td>136****5555</td><td>**1********8</td><td>首次签署</td><td>连续劳务报酬（适用累计预扣法）</td><td>V1.3</td><td><span class="tag tag-fail">● 失败</span></td><td>2026-10-26 11:30:05</td><td>—</td></tr>
+          </tbody>
+        </table>
+        <div class="pagination"><span>共 1,286 条</span><div class="pagination-btns"><span>&lt;</span><span class="active">1</span><span>2</span><span>3</span><span>...</span><span>65</span><span>&gt;</span></div></div>
+      </div>
+    </div>
+
+    <!-- ============================================================ -->
+    <!-- MODULE: 申报管理 (P7) -->
+    <!-- ============================================================ -->
+    <div id="module-declare" class="page-section">
+      <h1 style="font-size:20px;font-weight:700;margin-bottom:4px">申报管理</h1>
+      <p class="subtitle" style="font-size:13px;color:#888;margin-bottom:20px">月度申报任务管理 · 台账与对账 · 提现与打款 · 报表中心 · 增值税/附加税=代缴，个税=代扣</p>
+
+      <div class="tabs">
+        <div class="tab active" onclick="switchDeclareTab('declare-task',this)">月度申报任务</div>
+        <div class="tab" onclick="switchDeclareTab('declare-ledger',this)">台账与对账</div>
+        <div class="tab" onclick="switchDeclareTab('declare-withdraw',this)">提现与打款</div>
+        <div class="tab" onclick="switchDeclareTab('declare-report',this)">报表中心</div>
+      </div>
+
+      <!-- TAB: 月度申报任务 -->
+      <div id="page-declare-task" class="page-section active">
+        <!-- 逾期提醒 -->
+        <div class="warning-box" style="margin-bottom:16px;border-left-color:#d4380d;background:#fff1f0;color:#cf1322">2026年10月申报将于今日截止，请尽快完成提交</div>
+
+        <div class="filter-bar">
+          <label>申报状态</label>
+          <select><option>全部</option><option>待申报</option><option>申报中</option><option>已完成</option><option>已逾期</option></select>
+          <label>申报月份</label>
+          <select><option>全部</option><option>2026年10月</option><option>2026年9月</option><option>2026年8月</option></select>
+        </div>
+
+        <table>
+          <thead><tr><th style="width:120px">申报月份</th><th style="width:90px">申报状态</th><th>个税应申报总额</th><th>增值税应申报总额</th><th>附加税应申报总额</th><th style="width:80px">涉及人数</th><th style="width:110px">截止日期</th><th style="width:160px">操作</th></tr></thead>
+          <tbody>
+            <tr>
+              <td><b>2026年10月</b></td>
+              <td><span class="tag" style="background:#fff7e6;color:#ad6800">● 待申报</span></td>
+              <td class="balance-cell">¥128,650.00</td>
+              <td class="balance-cell">¥15,200.00</td>
+              <td class="balance-cell">¥912.00</td>
+              <td>114</td>
+              <td>2026-11-15</td>
+              <td><button class="btn-link" onclick="showModal('declare-detail-modal')">查看明细</button><button class="btn-link" onclick="showModal('submit-declare-modal')">提交申报</button><button class="btn-link" onclick="protoAction('下载申报表')">下载申报表</button></td>
+            </tr>
+            <tr>
+              <td><b>2026年9月</b></td>
+              <td><span class="tag tag-published">● 已完成</span></td>
+              <td class="balance-cell">¥112,380.00</td>
+              <td class="balance-cell">¥13,800.00</td>
+              <td class="balance-cell">¥828.00</td>
+              <td>109</td>
+              <td>2026-10-15</td>
+              <td><button class="btn-link" onclick="showModal('declare-detail-modal')">查看明细</button><button class="btn-link" onclick="protoAction('下载申报表')">下载申报表</button></td>
+            </tr>
+            <tr>
+              <td><b>2026年8月</b></td>
+              <td><span class="tag tag-published">● 已完成</span></td>
+              <td class="balance-cell">¥98,720.00</td>
+              <td class="balance-cell">¥12,400.00</td>
+              <td class="balance-cell">¥744.00</td>
+              <td>103</td>
+              <td>2026-09-15</td>
+              <td><button class="btn-link" onclick="showModal('declare-detail-modal')">查看明细</button><button class="btn-link" onclick="protoAction('下载申报表')">下载申报表</button></td>
+            </tr>
+            <tr style="opacity:.6">
+              <td><b>2026年7月</b></td>
+              <td><span class="tag tag-stopped">● 已逾期</span></td>
+              <td class="balance-cell">¥86,500.00</td>
+              <td class="balance-cell">¥10,200.00</td>
+              <td class="balance-cell">¥612.00</td>
+              <td>96</td>
+              <td style="color:#cf1322">2026-08-15</td>
+              <td><button class="btn-link" onclick="showModal('declare-detail-modal')">查看明细</button><button class="btn-link" onclick="protoAction('下载申报表')">下载申报表</button></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- TAB: 台账与对账 -->
+      <div id="page-declare-ledger" class="page-section">
+        <div class="filter-bar">
+          <label>月份</label>
+          <select><option>2026年10月</option><option>2026年9月</option><option>2026年8月</option></select>
+          <label>对账状态</label>
+          <select><option>全部</option><option>未对账</option><option>已对账（一致）</option><option>差异（待处理）</option></select>
+          <div style="flex:1"></div>
+          <button class="btn" onclick="protoAction('导出台账明细')">📤 导出台账明细</button>
+        </div>
+
+        <table>
+          <thead><tr><th style="width:120px">月份</th><th>个税代扣总额</th><th>增值税代缴总额</th><th>附加税代缴总额</th><th>税费合计</th><th>申报金额</th><th>入库金额</th><th style="width:100px">对账状态</th><th style="width:80px">操作</th></tr></thead>
+          <tbody>
+            <tr>
+              <td><b>2026年10月</b></td>
+              <td class="balance-cell">¥128,650.00</td>
+              <td class="balance-cell">¥15,200.00</td>
+              <td class="balance-cell">¥912.00</td>
+              <td class="balance-cell" style="font-weight:600">¥144,762.00</td>
+              <td class="balance-cell">—</td>
+              <td class="balance-cell">—</td>
+              <td><span class="tag tag-draft">未对账</span></td>
+              <td>—</td>
+            </tr>
+            <tr>
+              <td><b>2026年9月</b></td>
+              <td class="balance-cell">¥112,380.00</td>
+              <td class="balance-cell">¥13,800.00</td>
+              <td class="balance-cell">¥828.00</td>
+              <td class="balance-cell" style="font-weight:600">¥127,008.00</td>
+              <td class="balance-cell">¥127,008.00</td>
+              <td class="balance-cell">¥127,008.00</td>
+              <td><span class="tag tag-published">已对账（一致）</span></td>
+              <td><button class="btn-link" onclick="showModal('ledger-detail-modal')">查看明细</button></td>
+            </tr>
+            <tr style="background:#fff7e6">
+              <td><b>2026年8月</b></td>
+              <td class="balance-cell">¥98,720.00</td>
+              <td class="balance-cell">¥12,400.00</td>
+              <td class="balance-cell">¥744.00</td>
+              <td class="balance-cell" style="font-weight:600">¥111,864.00</td>
+              <td class="balance-cell">¥111,864.00</td>
+              <td class="balance-cell" style="color:#cf1322;font-weight:600">¥111,614.00</td>
+              <td><span class="tag" style="background:#fff1f0;color:#cf1322">差异（待处理）</span></td>
+              <td><button class="btn-link" onclick="showModal('reconcile-modal')">对账</button><button class="btn-link" onclick="showModal('ledger-detail-modal')">查看明细</button></td>
+            </tr>
+            <tr>
+              <td><b>2026年7月</b></td>
+              <td class="balance-cell">¥86,500.00</td>
+              <td class="balance-cell">¥10,200.00</td>
+              <td class="balance-cell">¥612.00</td>
+              <td class="balance-cell" style="font-weight:600">¥97,312.00</td>
+              <td class="balance-cell">¥97,312.00</td>
+              <td class="balance-cell">¥97,312.00</td>
+              <td><span class="tag tag-published">已对账（一致）</span></td>
+              <td><button class="btn-link" onclick="showModal('ledger-detail-modal')">查看明细</button></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- TAB: 提现与打款 (P7-3) -->
+      <div id="page-declare-withdraw" class="page-section">
+        <div class="filter-bar">
+          <label>打款状态</label>
+          <select><option>全部</option><option>待打款</option><option>打款中</option><option>已到账</option><option>打款失败</option></select>
+          <label>计算方式</label>
+          <select><option>全部</option><option>连续劳务报酬（适用累计预扣法）</option><option>一般劳务报酬（使用按次预扣法）</option></select>
+          <label>提现时间</label>
+          <input type="date" value="2026-10-01"> — <input type="date" value="2026-10-31">
+          <input type="text" class="search-input" placeholder="姓名 / 手机号 / 证件号">
+          <button class="btn btn-primary btn-sm" onclick="protoAction('查询')">查询</button>
+        </div>
+        <div class="toolbar">
+          <div class="toolbar-left">
+            <button class="btn btn-primary" onclick="showModal('batch-payout-modal')">📤 批量打款</button>
+          </div>
+          <div class="toolbar-right">
+            <button class="btn" onclick="protoAction('导出提现记录 Excel')">📥 导出 Excel</button>
+          </div>
+        </div>
+        <table>
+          <thead><tr>
+            <th class="checkbox-cell"><input type="checkbox" id="withdrawSelectAll" onclick="toggleWithdrawSelectAll()"></th>
+            <th>提现编号</th><th>姓名</th><th>手机号</th><th>证件号码</th><th>计算方式</th>
+            <th>提现金额</th><th>应扣个税</th><th>实际到账金额</th><th>提现时间</th>
+            <th>打款状态</th><th>打款时间</th><th>操作</th>
+          </tr></thead>
+          <tbody>
+            <tr>
+              <td class="checkbox-cell"><input type="checkbox" class="withdraw-check" data-status="pending"></td>
+              <td style="white-space:nowrap">TX20261015001</td><td>张明远</td><td>138****5621</td><td>110***********1234</td><td>连续劳务报酬（适用累计预扣法）</td>
+              <td class="balance-cell">¥50,000.00</td><td class="balance-cell" style="color:#d4380d">¥6,300.00</td><td class="balance-cell" style="font-weight:600">¥43,700.00</td>
+              <td style="white-space:nowrap">2026-10-15 09:32</td>
+              <td><span class="tag" style="background:#fff7e6;color:#ad6800">待打款</span></td><td>—</td>
+              <td><button class="btn-link" onclick="showModal('withdraw-detail-modal')">查看明细</button><button class="btn-link" onclick="protoAction('确认打款')">确认打款</button></td>
+            </tr>
+            <tr>
+              <td class="checkbox-cell"><input type="checkbox" class="withdraw-check" data-status="pending"></td>
+              <td style="white-space:nowrap">TX20261015002</td><td>陈思雨</td><td>139****8845</td><td>310***********5678</td><td>一般劳务报酬（使用按次预扣法）</td>
+              <td class="balance-cell">¥12,000.00</td><td class="balance-cell" style="color:#d4380d">¥1,760.00</td><td class="balance-cell" style="font-weight:600">¥10,240.00</td>
+              <td style="white-space:nowrap">2026-10-15 10:18</td>
+              <td><span class="tag" style="background:#fff7e6;color:#ad6800">待打款</span></td><td>—</td>
+              <td><button class="btn-link" onclick="showModal('withdraw-detail-modal')">查看明细</button><button class="btn-link" onclick="protoAction('确认打款')">确认打款</button></td>
+            </tr>
+            <tr>
+              <td class="checkbox-cell"><input type="checkbox" class="withdraw-check" data-status="processing"></td>
+              <td style="white-space:nowrap">TX20261014003</td><td>李明</td><td>136****2201</td><td>420***********9012</td><td>连续劳务报酬（适用累计预扣法）</td>
+              <td class="balance-cell">¥85,000.00</td><td class="balance-cell" style="color:#d4380d">¥12,480.00</td><td class="balance-cell" style="font-weight:600">¥72,520.00</td>
+              <td style="white-space:nowrap">2026-10-14 14:05</td>
+              <td><span class="tag" style="background:#e6f7ff;color:#1890ff">打款中</span></td><td>—</td>
+              <td><button class="btn-link" onclick="showModal('withdraw-detail-modal')">查看明细</button></td>
+            </tr>
+            <tr>
+              <td class="checkbox-cell"><input type="checkbox" class="withdraw-check" data-status="done" disabled></td>
+              <td style="white-space:nowrap">TX20261012004</td><td>王建国</td><td>152****7789</td><td>510***********3456</td><td>连续劳务报酬（适用累计预扣法）</td>
+              <td class="balance-cell">¥30,000.00</td><td class="balance-cell" style="color:#d4380d">¥3,840.00</td><td class="balance-cell" style="font-weight:600">¥26,160.00</td>
+              <td style="white-space:nowrap">2026-10-12 16:47</td>
+              <td><span class="tag tag-published">已到账</span></td><td style="white-space:nowrap">2026-10-12 18:30</td>
+              <td><button class="btn-link" onclick="showModal('withdraw-detail-modal')">查看明细</button></td>
+            </tr>
+            <tr>
+              <td class="checkbox-cell"><input type="checkbox" class="withdraw-check" data-status="done" disabled></td>
+              <td style="white-space:nowrap">TX20261010005</td><td>赵文博</td><td>188****3342</td><td>330***********7890</td><td>一般劳务报酬（使用按次预扣法）</td>
+              <td class="balance-cell">¥8,500.00</td><td class="balance-cell" style="color:#d4380d">¥1,136.00</td><td class="balance-cell" style="font-weight:600">¥7,364.00</td>
+              <td style="white-space:nowrap">2026-10-10 11:22</td>
+              <td><span class="tag tag-published">已到账</span></td><td style="white-space:nowrap">2026-10-10 14:15</td>
+              <td><button class="btn-link" onclick="showModal('withdraw-detail-modal')">查看明细</button></td>
+            </tr>
+            <tr style="background:#fff1f0">
+              <td class="checkbox-cell"><input type="checkbox" class="withdraw-check" data-status="fail"></td>
+              <td style="white-space:nowrap">TX20261008006</td><td>周小梅</td><td>177****6618</td><td>210***********2345</td><td>连续劳务报酬（适用累计预扣法）</td>
+              <td class="balance-cell">¥25,000.00</td><td class="balance-cell" style="color:#d4380d">¥2,640.00</td><td class="balance-cell" style="font-weight:600">¥22,360.00</td>
+              <td style="white-space:nowrap">2026-10-08 08:55</td>
+              <td><span class="tag tag-stopped">打款失败</span></td><td style="white-space:nowrap">2026-10-08 12:00</td>
+              <td><button class="btn-link" onclick="showModal('withdraw-detail-modal')">查看明细</button><button class="btn-link" onclick="protoAction('重新打款')">重新打款</button></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- TAB: 报表中心 (P7-4) -->
+      <div id="page-declare-report" class="page-section">
+        <!-- 报表子标签 -->
+        <div class="tabs" style="margin-bottom:16px">
+          <div class="tab active" onclick="switchReportTab('report-tax',this)">个税代扣明细表</div>
+          <div class="tab" onclick="switchReportTab('report-vat',this)">增值税计算明细表</div>
+          <div class="tab" onclick="switchReportTab('report-vat-exempt',this)">增值税免征用户汇总</div>
+          <div class="tab" onclick="switchReportTab('report-payout',this)">打款明细报表</div>
+          <div class="tab" onclick="switchReportTab('report-upstream',this)">上游客户结算表</div>
+          <div class="tab" onclick="switchReportTab('report-balance',this)">用户余额快照</div>
+        </div>
+
+        <!-- 报表: 个税代扣明细表 -->
+        <div id="report-tax" class="page-section active">
+          <div class="filter-bar">
+            <label>时间范围</label>
+            <input type="date" value="2026-10-01"> — <input type="date" value="2026-10-31">
+            <label>计算方式</label>
+            <select><option>全部</option><option>连续劳务报酬（适用累计预扣法）</option><option>一般劳务报酬（使用按次预扣法）</option></select>
+            <button class="btn btn-primary btn-sm" onclick="protoAction('查询')">查询</button>
+            <div style="flex:1"></div>
+            <button class="btn" onclick="protoAction('导出个税代扣明细表')">📥 导出 Excel</button>
+          </div>
+          <table>
+            <thead><tr><th>提现编号</th><th>姓名</th><th>证件号码</th><th>计算方式</th><th>提现金额</th><th>提现时累计收入</th><th>提现时连续月份数</th><th>适用预扣率</th><th>应扣个税</th><th>实际到账</th><th>提现时间</th><th>打款时间</th></tr></thead>
+            <tbody>
+              <tr><td style="white-space:nowrap">TX20261015001</td><td>张明远</td><td>110***********1234</td><td>连续劳务报酬（适用累计预扣法）</td><td class="balance-cell">¥50,000.00</td><td class="balance-cell">¥186,000.00</td><td>5</td><td>10%</td><td class="balance-cell" style="color:#d4380d">¥6,300.00</td><td class="balance-cell">¥43,700.00</td><td style="white-space:nowrap">2026-10-15 09:32</td><td>—</td></tr>
+              <tr><td style="white-space:nowrap">TX20261015002</td><td>陈思雨</td><td>310***********5678</td><td>一般劳务报酬（使用按次预扣法）</td><td class="balance-cell">¥12,000.00</td><td class="balance-cell">¥12,000.00</td><td>—</td><td>20%</td><td class="balance-cell" style="color:#d4380d">¥1,760.00</td><td class="balance-cell">¥10,240.00</td><td style="white-space:nowrap">2026-10-15 10:18</td><td>—</td></tr>
+              <tr><td style="white-space:nowrap">TX20261012004</td><td>王建国</td><td>510***********3456</td><td>连续劳务报酬（适用累计预扣法）</td><td class="balance-cell">¥30,000.00</td><td class="balance-cell">¥92,000.00</td><td>4</td><td>10%</td><td class="balance-cell" style="color:#d4380d">¥3,840.00</td><td class="balance-cell">¥26,160.00</td><td style="white-space:nowrap">2026-10-12 16:47</td><td style="white-space:nowrap">2026-10-12 18:30</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- 报表: 增值税计算明细表 -->
+        <div id="report-vat" class="page-section">
+          <div class="filter-bar">
+            <label>时间范围</label>
+            <input type="date" value="2026-10-01"> — <input type="date" value="2026-10-31">
+            <label>免税判定</label>
+            <select><option>全部</option><option>免征</option><option>征收</option></select>
+            <button class="btn btn-primary btn-sm" onclick="protoAction('查询')">查询</button>
+            <div style="flex:1"></div>
+            <button class="btn" onclick="protoAction('导出增值税计算明细表')">📥 导出 Excel</button>
+          </div>
+          <table>
+            <thead><tr><th>入账编号</th><th>姓名</th><th>证件号码</th><th>入账日期</th><th>含税结算收入</th><th>不含税收入</th><th>增值税率</th><th>增值税</th><th>附加税综合税率</th><th>附加税</th><th>增附税合计</th><th>月累计含税收入</th><th>免税额度阈值</th><th>免税判定</th><th>平台代缴增附税</th></tr></thead>
+            <tbody>
+              <tr><td style="white-space:nowrap">JZ20261015001</td><td>张明远</td><td>110***********1234</td><td style="white-space:nowrap">2026-10-15</td><td class="balance-cell">¥50,500.00</td><td class="balance-cell">¥50,000.00</td><td>1%</td><td class="balance-cell">¥500.00</td><td>12%</td><td class="balance-cell">¥60.00</td><td class="balance-cell">¥560.00</td><td class="balance-cell">¥187,870.00</td><td class="balance-cell">¥100,000.00</td><td><span class="tag" style="background:#fff1f0;color:#cf1322">征收</span></td><td class="balance-cell" style="color:#d4380d">¥560.00</td></tr>
+              <tr><td style="white-space:nowrap">JZ20261008002</td><td>周小梅</td><td>210***********2345</td><td style="white-space:nowrap">2026-10-08</td><td class="balance-cell">¥8,500.00</td><td class="balance-cell">¥8,415.84</td><td>1%</td><td class="balance-cell">¥84.16</td><td>12%</td><td class="balance-cell">¥10.10</td><td class="balance-cell">¥94.26</td><td class="balance-cell">¥32,500.00</td><td class="balance-cell">¥100,000.00</td><td><span class="tag tag-published">免征</span></td><td class="balance-cell">¥0.00</td></tr>
+              <tr><td style="white-space:nowrap">JZ20261005003</td><td>刘小红</td><td>440***********6789</td><td style="white-space:nowrap">2026-10-05</td><td class="balance-cell">¥6,200.00</td><td class="balance-cell">¥6,138.61</td><td>1%</td><td class="balance-cell">¥61.39</td><td>6%</td><td class="balance-cell">¥3.68</td><td class="balance-cell">¥65.07</td><td class="balance-cell">¥18,700.00</td><td class="balance-cell">¥100,000.00</td><td><span class="tag tag-published">免征</span></td><td class="balance-cell">¥0.00</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- 报表: 增值税免征用户汇总 -->
+        <div id="report-vat-exempt" class="page-section">
+          <div class="filter-bar">
+            <label>月份</label>
+            <select><option>2026年10月</option><option>2026年9月</option><option>2026年8月</option></select>
+            <button class="btn btn-primary btn-sm" onclick="protoAction('查询')">查询</button>
+            <div style="flex:1"></div>
+            <button class="btn" onclick="protoAction('导出增值税免征用户汇总')">📥 导出 Excel</button>
+          </div>
+          <table>
+            <thead><tr><th>月份</th><th>姓名</th><th>证件号码</th><th>月累计含税结算收入</th><th>免税额度阈值</th><th>增值税免征金额</th><th>附加税免征金额</th><th>免征增附税合计</th></tr></thead>
+            <tbody>
+              <tr><td><b>2026年10月</b></td><td>周小梅</td><td>210***********2345</td><td class="balance-cell">¥32,500.00</td><td class="balance-cell">¥100,000.00</td><td class="balance-cell">¥321.78</td><td class="balance-cell">¥38.61</td><td class="balance-cell">¥360.39</td></tr>
+              <tr><td><b>2026年10月</b></td><td>刘小红</td><td>440***********6789</td><td class="balance-cell">¥18,700.00</td><td class="balance-cell">¥100,000.00</td><td class="balance-cell">¥185.15</td><td class="balance-cell">¥22.22</td><td class="balance-cell">¥207.37</td></tr>
+              <tr><td><b>2026年10月</b></td><td>孙大力</td><td>620***********0123</td><td class="balance-cell">¥8,200.00</td><td class="balance-cell">¥100,000.00</td><td class="balance-cell">¥81.19</td><td class="balance-cell">¥9.74</td><td class="balance-cell">¥90.93</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- 报表: 打款明细报表 -->
+        <div id="report-payout" class="page-section">
+          <div class="filter-bar">
+            <label>时间范围</label>
+            <input type="date" value="2026-10-01"> — <input type="date" value="2026-10-31">
+            <label>统计粒度</label>
+            <select><option>按日</option><option>按周</option><option>按月</option></select>
+            <button class="btn btn-primary btn-sm" onclick="protoAction('查询')">查询</button>
+            <div style="flex:1"></div>
+            <button class="btn" onclick="protoAction('导出打款明细报表')">📥 导出 Excel</button>
+          </div>
+          <table>
+            <thead><tr><th>日期</th><th>打款总笔数</th><th>打款总金额</th><th>总代扣个税</th><th>总打款金额</th></tr></thead>
+            <tbody>
+              <tr><td><b>2026-10-15</b></td><td style="text-align:center">3</td><td class="balance-cell">¥97,000.00</td><td class="balance-cell" style="color:#d4380d">¥11,776.00</td><td class="balance-cell" style="font-weight:600">¥85,224.00</td></tr>
+              <tr><td><b>2026-10-14</b></td><td style="text-align:center">5</td><td class="balance-cell">¥126,500.00</td><td class="balance-cell" style="color:#d4380d">¥15,812.00</td><td class="balance-cell" style="font-weight:600">¥110,688.00</td></tr>
+              <tr><td><b>2026-10-12</b></td><td style="text-align:center">2</td><td class="balance-cell">¥38,500.00</td><td class="balance-cell" style="color:#d4380d">¥4,976.00</td><td class="balance-cell" style="font-weight:600">¥33,524.00</td></tr>
+              <tr><td><b>2026-10-10</b></td><td style="text-align:center">4</td><td class="balance-cell">¥52,300.00</td><td class="balance-cell" style="color:#d4380d">¥6,538.00</td><td class="balance-cell" style="font-weight:600">¥45,762.00</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- 报表: 上游客户结算表 -->
+        <div id="report-upstream" class="page-section">
+          <div class="filter-bar">
+            <label>月份</label>
+            <select><option>2026年10月</option><option>2026年9月</option><option>2026年8月</option></select>
+            <button class="btn btn-primary btn-sm" onclick="protoAction('查询')">查询</button>
+            <div style="flex:1"></div>
+            <button class="btn" onclick="protoAction('导出上游客户结算表')">📥 导出 Excel</button>
+          </div>
+          <table>
+            <thead><tr><th>月份</th><th>观严代扣用户数</th><th>含税结算收入总额</th><th>不含税收入总额</th><th>增值税代缴总额</th><th>附加税代缴总额</th><th>增附税代缴合计</th><th>增值税免征总额</th><th>附加税免征总额</th><th>免征增附税合计</th></tr></thead>
+            <tbody>
+              <tr>
+                <td><b>2026年10月</b></td><td style="text-align:center">114</td>
+                <td class="balance-cell">¥1,520,000.00</td><td class="balance-cell">¥1,504,950.50</td>
+                <td class="balance-cell" style="color:#d4380d">¥15,049.50</td><td class="balance-cell" style="color:#d4380d">¥1,805.94</td>
+                <td class="balance-cell" style="font-weight:600;color:#d4380d">¥16,855.44</td>
+                <td class="balance-cell">¥588.12</td><td class="balance-cell">¥70.57</td>
+                <td class="balance-cell">¥658.69</td>
+              </tr>
+              <tr>
+                <td><b>2026年9月</b></td><td style="text-align:center">109</td>
+                <td class="balance-cell">¥1,380,000.00</td><td class="balance-cell">¥1,366,336.63</td>
+                <td class="balance-cell" style="color:#d4380d">¥13,663.37</td><td class="balance-cell" style="color:#d4380d">¥1,639.60</td>
+                <td class="balance-cell" style="font-weight:600;color:#d4380d">¥15,302.97</td>
+                <td class="balance-cell">¥412.88</td><td class="balance-cell">¥49.55</td>
+                <td class="balance-cell">¥462.43</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- 报表: 用户余额快照 -->
+        <div id="report-balance" class="page-section">
+          <div class="filter-bar">
+            <label>快照日期</label>
+            <input type="date" value="2026-10-31">
+            <button class="btn btn-primary btn-sm" onclick="protoAction('查询')">查询</button>
+            <div style="flex:1"></div>
+            <button class="btn" onclick="protoAction('导出用户余额快照')">📥 导出 Excel</button>
+          </div>
+          <table>
+            <thead><tr><th>姓名</th><th>手机号</th><th>证件号码</th><th>计算方式</th><th>可用余额</th><th>冻结金额</th><th>预估个税总额</th></tr></thead>
+            <tbody>
+              <tr><td>张明远</td><td>138****5621</td><td>110***********1234</td><td>连续劳务报酬（适用累计预扣法）</td><td class="balance-cell" style="font-weight:600">¥186,000.00</td><td class="balance-cell">¥0.00</td><td class="balance-cell" style="color:#d4380d">¥18,600.00</td></tr>
+              <tr><td>陈思雨</td><td>139****8845</td><td>310***********5678</td><td>一般劳务报酬（使用按次预扣法）</td><td class="balance-cell" style="font-weight:600">¥45,200.00</td><td class="balance-cell">¥0.00</td><td class="balance-cell" style="color:#d4380d">¥9,040.00</td></tr>
+              <tr><td>王建国</td><td>152****7789</td><td>510***********3456</td><td>连续劳务报酬（适用累计预扣法）</td><td class="balance-cell" style="font-weight:600">¥0.00</td><td class="balance-cell" style="color:#ad6800">¥8,200.00</td><td class="balance-cell" style="color:#d4380d">¥0.00</td></tr>
+              <tr><td>赵文博</td><td>188****3342</td><td>330***********7890</td><td>一般劳务报酬（使用按次预扣法）</td><td class="balance-cell" style="font-weight:600">¥0.00</td><td class="balance-cell" style="color:#ad6800">¥15,300.00</td><td class="balance-cell" style="color:#d4380d">¥0.00</td></tr>
+              <tr><td>周小梅</td><td>177****6618</td><td>210***********2345</td><td>连续劳务报酬（适用累计预扣法）</td><td class="balance-cell" style="font-weight:600">¥67,800.00</td><td class="balance-cell">¥0.00</td><td class="balance-cell" style="color:#d4380d">¥6,780.00</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ============================================================ -->
+    <!-- MODULE: 500万预警 (P8) -->
+    <!-- ============================================================ -->
+    <div id="module-warning" class="page-section">
+      <h1 style="font-size:20px;font-weight:700;margin-bottom:4px">500万收入预警</h1>
+      <p class="subtitle" style="font-size:13px;color:#888;margin-bottom:20px">年度累计收入（不含增值税）≥ 400万用户列表 · 供管理员人工通知办理市场主体登记和自行申报</p>
+
+      <!-- 概览卡片 -->
+      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:20px">
+        <div class="config-card" style="border-left:3px solid #d4380d;padding:16px 20px">
+          <div style="font-size:12px;color:#999;margin-bottom:4px">预警用户数</div>
+          <div style="font-size:24px;font-weight:700;color:#d4380d">18</div>
+          <div style="font-size:11px;color:#bbb;margin-top:2px">年度累计 ≥ 400万</div>
+        </div>
+        <div class="config-card" style="border-left:3px solid #ad6800;padding:16px 20px">
+          <div style="font-size:12px;color:#999;margin-bottom:4px">未通知</div>
+          <div style="font-size:24px;font-weight:700;color:#ad6800">11</div>
+          <div style="font-size:11px;color:#bbb;margin-top:2px">待人工通知</div>
+        </div>
+        <div class="config-card" style="border-left:3px solid #389e0d;padding:16px 20px">
+          <div style="font-size:12px;color:#999;margin-bottom:4px">已通知</div>
+          <div style="font-size:24px;font-weight:700;color:#389e0d">7</div>
+          <div style="font-size:11px;color:#bbb;margin-top:2px">已确认通知到位</div>
+        </div>
+        <div class="config-card" style="border-left:3px solid #1a1a1a;padding:16px 20px">
+          <div style="font-size:12px;color:#999;margin-bottom:4px">累计收入最高</div>
+          <div style="font-size:20px;font-weight:700">¥486.2万</div>
+          <div style="font-size:11px;color:#bbb;margin-top:2px">赵文博 · 连续劳务报酬（适用累计预扣法）</div>
+        </div>
+      </div>
+
+      <!-- 筛选栏 -->
+      <div class="filter-bar">
+        <label>年度</label>
+        <select id="warning-year"><option>2026年</option><option>2025年</option></select>
+        <label>计算方式</label>
+        <select><option>全部</option><option>连续劳务报酬（适用累计预扣法）</option><option>一般劳务报酬（使用按次预扣法）</option></select>
+        <label>预警状态</label>
+        <select id="warning-status-filter"><option>全部</option><option>未通知</option><option>已通知</option></select>
+        <input type="text" class="search-input" id="warning-search" placeholder="姓名 / 手机号 / 证件号">
+        <button class="btn btn-primary btn-sm" onclick="filterWarningList()">查询</button>
+        <button class="btn btn-sm" onclick="document.getElementById('warning-search').value='';document.getElementById('warning-status-filter').selectedIndex=0;filterWarningList()">重置</button>
+      </div>
+
+      <!-- 工具栏 -->
+      <div class="toolbar">
+        <div class="toolbar-left">
+          <div class="batch-actions" id="warning-batch-actions">
+            <span class="batch-count" id="warning-batch-count">已选择 0 人</span>
+            <button class="batch-btn" onclick="markBatchNotified()">批量标记已通知</button>
+          </div>
+        </div>
+        <div class="toolbar-right">
+          <button class="btn" onclick="protoAction('导出预警用户列表 Excel')">📤 导出 Excel</button>
+        </div>
+      </div>
+
+      <!-- 预警用户列表 -->
+      <table id="warning-table">
+        <thead>
+          <tr>
+            <th class="checkbox-cell"><input type="checkbox" id="warningSelectAll" onchange="toggleWarningSelectAll()"></th>
+            <th>姓名</th>
+            <th>手机号</th>
+            <th>证件号码</th>
+            <th>年度累计收入（不含增值税）</th>
+            <th>计算方式</th>
+            <th>连续月份数</th>
+            <th>预警状态</th>
+            <th>通知时间</th>
+            <th>操作</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr data-notified="false">
+            <td class="checkbox-cell"><input type="checkbox" class="warning-check" onchange="updateWarningBatch()"></td>
+            <td><b>赵文博</b></td>
+            <td style="white-space:nowrap">188****3342</td>
+            <td style="white-space:nowrap">**3********1</td>
+            <td class="balance-cell" style="color:#d4380d;font-weight:700">¥4,862,000.00</td>
+            <td style="white-space:nowrap">连续劳务报酬（适用累计预扣法）</td>
+            <td>10</td>
+            <td><span class="tag" style="background:#fff7e6;color:#ad6800">● 未通知</span></td>
+            <td style="color:#ccc">—</td>
+            <td><button class="btn-link" onclick="markNotified(this)">标记已通知</button></td>
+          </tr>
+          <tr data-notified="false">
+            <td class="checkbox-cell"><input type="checkbox" class="warning-check" onchange="updateWarningBatch()"></td>
+            <td><b>张明远</b></td>
+            <td style="white-space:nowrap">138****6721</td>
+            <td style="white-space:nowrap">**4********4</td>
+            <td class="balance-cell" style="color:#d4380d;font-weight:700">¥4,536,800.00</td>
+            <td style="white-space:nowrap">连续劳务报酬（适用累计预扣法）</td>
+            <td>10</td>
+            <td><span class="tag" style="background:#fff7e6;color:#ad6800">● 未通知</span></td>
+            <td style="color:#ccc">—</td>
+            <td><button class="btn-link" onclick="markNotified(this)">标记已通知</button></td>
+          </tr>
+          <tr data-notified="false">
+            <td class="checkbox-cell"><input type="checkbox" class="warning-check" onchange="updateWarningBatch()"></td>
+            <td><b>李晓红</b></td>
+            <td style="white-space:nowrap">159****3342</td>
+            <td style="white-space:nowrap">**3********7</td>
+            <td class="balance-cell" style="color:#d4380d;font-weight:600">¥4,312,500.00</td>
+            <td style="white-space:nowrap">一般劳务报酬（使用按次预扣法）</td>
+            <td style="color:#ccc">—</td>
+            <td><span class="tag" style="background:#fff7e6;color:#ad6800">● 未通知</span></td>
+            <td style="color:#ccc">—</td>
+            <td><button class="btn-link" onclick="markNotified(this)">标记已通知</button></td>
+          </tr>
+          <tr data-notified="true">
+            <td class="checkbox-cell"><input type="checkbox" class="warning-check" onchange="updateWarningBatch()"></td>
+            <td><b>周雅琴</b></td>
+            <td style="white-space:nowrap">139****8834</td>
+            <td style="white-space:nowrap">**7********5</td>
+            <td class="balance-cell" style="font-weight:600">¥4,210,000.00</td>
+            <td style="white-space:nowrap">一般劳务报酬（使用按次预扣法）</td>
+            <td style="color:#ccc">—</td>
+            <td><span class="tag tag-published">● 已通知</span></td>
+            <td style="white-space:nowrap">2026-10-20 14:30</td>
+            <td>—</td>
+          </tr>
+          <tr data-notified="true">
+            <td class="checkbox-cell"><input type="checkbox" class="warning-check" onchange="updateWarningBatch()"></td>
+            <td><b>刘志强</b></td>
+            <td style="white-space:nowrap">136****5523</td>
+            <td style="white-space:nowrap">**8********2</td>
+            <td class="balance-cell" style="font-weight:600">¥4,156,000.00</td>
+            <td style="white-space:nowrap">连续劳务报酬（适用累计预扣法）</td>
+            <td>9</td>
+            <td><span class="tag tag-published">● 已通知</span></td>
+            <td style="white-space:nowrap">2026-10-18 10:15</td>
+            <td>—</td>
+          </tr>
+          <tr data-notified="false">
+            <td class="checkbox-cell"><input type="checkbox" class="warning-check" onchange="updateWarningBatch()"></td>
+            <td><b>陈思雨</b></td>
+            <td style="white-space:nowrap">177****4456</td>
+            <td style="white-space:nowrap">**2********9</td>
+            <td class="balance-cell" style="font-weight:600">¥4,098,300.00</td>
+            <td style="white-space:nowrap">连续劳务报酬（适用累计预扣法）</td>
+            <td>9</td>
+            <td><span class="tag" style="background:#fff7e6;color:#ad6800">● 未通知</span></td>
+            <td style="color:#ccc">—</td>
+            <td><button class="btn-link" onclick="markNotified(this)">标记已通知</button></td>
+          </tr>
+          <tr data-notified="true">
+            <td class="checkbox-cell"><input type="checkbox" class="warning-check" onchange="updateWarningBatch()"></td>
+            <td><b>孙浩然</b></td>
+            <td style="white-space:nowrap">188****5567</td>
+            <td style="white-space:nowrap">**1********6</td>
+            <td class="balance-cell" style="font-weight:600">¥4,052,000.00</td>
+            <td style="white-space:nowrap">连续劳务报酬（适用累计预扣法）</td>
+            <td>8</td>
+            <td><span class="tag tag-published">● 已通知</span></td>
+            <td style="white-space:nowrap">2026-10-15 16:40</td>
+            <td>—</td>
+          </tr>
+          <tr data-notified="false">
+            <td class="checkbox-cell"><input type="checkbox" class="warning-check" onchange="updateWarningBatch()"></td>
+            <td><b>王建国</b></td>
+            <td style="white-space:nowrap">186****9908</td>
+            <td style="white-space:nowrap">**5********2</td>
+            <td class="balance-cell" style="font-weight:600">¥4,023,600.00</td>
+            <td style="white-space:nowrap">连续劳务报酬（适用累计预扣法）</td>
+            <td>8</td>
+            <td><span class="tag" style="background:#fff7e6;color:#ad6800">● 未通知</span></td>
+            <td style="color:#ccc">—</td>
+            <td><button class="btn-link" onclick="markNotified(this)">标记已通知</button></td>
+          </tr>
+          <tr data-notified="false">
+            <td class="checkbox-cell"><input type="checkbox" class="warning-check" onchange="updateWarningBatch()"></td>
+            <td><b>杨美玲</b></td>
+            <td style="white-space:nowrap">150****7712</td>
+            <td style="white-space:nowrap">**9********3</td>
+            <td class="balance-cell" style="font-weight:600">¥4,010,200.00</td>
+            <td style="white-space:nowrap">一般劳务报酬（使用按次预扣法）</td>
+            <td style="color:#ccc">—</td>
+            <td><span class="tag" style="background:#fff7e6;color:#ad6800">● 未通知</span></td>
+            <td style="color:#ccc">—</td>
+            <td><button class="btn-link" onclick="markNotified(this)">标记已通知</button></td>
+          </tr>
+          <tr data-notified="true">
+            <td class="checkbox-cell"><input type="checkbox" class="warning-check" onchange="updateWarningBatch()"></td>
+            <td><b>郑伟</b></td>
+            <td style="white-space:nowrap">131****9901</td>
+            <td style="white-space:nowrap">**6********8</td>
+            <td class="balance-cell" style="font-weight:500">¥4,008,000.00</td>
+            <td style="white-space:nowrap">连续劳务报酬（适用累计预扣法）</td>
+            <td>7</td>
+            <td><span class="tag tag-published">● 已通知</span></td>
+            <td style="white-space:nowrap">2026-10-12 09:20</td>
+            <td>—</td>
+          </tr>
+          <tr data-notified="true">
+            <td class="checkbox-cell"><input type="checkbox" class="warning-check" onchange="updateWarningBatch()"></td>
+            <td><b>吴小芳</b></td>
+            <td style="white-space:nowrap">155****3389</td>
+            <td style="white-space:nowrap">**2********4</td>
+            <td class="balance-cell" style="font-weight:500">¥4,005,600.00</td>
+            <td style="white-space:nowrap">一般劳务报酬（使用按次预扣法）</td>
+            <td style="color:#ccc">—</td>
+            <td><span class="tag tag-published">● 已通知</span></td>
+            <td style="white-space:nowrap">2026-10-10 11:05</td>
+            <td>—</td>
+          </tr>
+          <tr data-notified="true">
+            <td class="checkbox-cell"><input type="checkbox" class="warning-check" onchange="updateWarningBatch()"></td>
+            <td><b>黄志明</b></td>
+            <td style="white-space:nowrap">132****6654</td>
+            <td style="white-space:nowrap">**5********7</td>
+            <td class="balance-cell" style="font-weight:500">¥4,002,100.00</td>
+            <td style="white-space:nowrap">连续劳务报酬（适用累计预扣法）</td>
+            <td>7</td>
+            <td><span class="tag tag-published">● 已通知</span></td>
+            <td style="white-space:nowrap">2026-10-08 15:30</td>
+            <td>—</td>
+          </tr>
+          <tr data-notified="true">
+            <td class="checkbox-cell"><input type="checkbox" class="warning-check" onchange="updateWarningBatch()"></td>
+            <td><b>马丽华</b></td>
+            <td style="white-space:nowrap">187****2210</td>
+            <td style="white-space:nowrap">**1********9</td>
+            <td class="balance-cell" style="font-weight:500">¥4,001,000.00</td>
+            <td style="white-space:nowrap">一般劳务报酬（使用按次预扣法）</td>
+            <td style="color:#ccc">—</td>
+            <td><span class="tag tag-published">● 已通知</span></td>
+            <td style="white-space:nowrap">2026-10-05 08:45</td>
+            <td>—</td>
+          </tr>
+          <tr data-notified="false">
+            <td class="checkbox-cell"><input type="checkbox" class="warning-check" onchange="updateWarningBatch()"></td>
+            <td><b>何建平</b></td>
+            <td style="white-space:nowrap">158****4478</td>
+            <td style="white-space:nowrap">**7********3</td>
+            <td class="balance-cell" style="font-weight:500">¥4,000,500.00</td>
+            <td style="white-space:nowrap">连续劳务报酬（适用累计预扣法）</td>
+            <td>7</td>
+            <td><span class="tag" style="background:#fff7e6;color:#ad6800">● 未通知</span></td>
+            <td style="color:#ccc">—</td>
+            <td><button class="btn-link" onclick="markNotified(this)">标记已通知</button></td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="pagination">
+        <span>共 18 人 · 未通知 11 人 · 已通知 7 人 · 默认按累计收入降序</span>
+        <div class="pagination-btns"><span>&lt;</span><span class="active">1</span><span>2</span><span>&gt;</span></div>
+      </div>
+
+      <!-- 说明 -->
+      <div class="warning-box" style="margin-top:16px">统计范围：观严代办开关=开 且 已签署的用户，年度累计收入（不含增值税）≥ 400万进入预警列表。收入达到 500万后，用户需办理市场主体登记并自行申报，平台不再代扣代缴。</div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- MODALS: 代扣模式配置 -->
+<!-- ============================================================ -->
+
+<!-- 总闸关闭确认 -->
+<div id="master-confirm-modal" class="modal-overlay" onclick="if(event.target===this)hideModal('master-confirm-modal')">
+  <div class="modal">
+    <div class="modal-header"><h3>确认关闭人员差异化代扣配置</h3><button class="modal-close" onclick="hideModal('master-confirm-modal')">✕</button></div>
+    <div class="modal-body">
+      <p>关闭后，全平台所有人员将统一走观严代办申报</p>
+      <p>当前有 <strong>42</strong> 人未开启观严代办，关闭后这些人将需要签署知情同意书</p>
+      <p>人员级开关将不再生效</p>
+      <div class="warning" style="background:#f5f5f5;padding:10px 14px;border-radius:4px;border-left:3px solid #1a1a1a;margin:12px 0;font-size:13px">⚠ 此操作将影响全平台代扣模式，请谨慎确认</div>
+      <div style="margin-top:16px"><label style="font-size:13px;color:#888">请输入"确认关闭"以继续</label><input class="modal-input" id="confirmInput" placeholder='请输入"确认关闭"' oninput="document.getElementById('confirmBtn').disabled=(this.value!=='确认关闭')"></div>
+    </div>
+    <div class="modal-footer"><button class="btn-modal-cancel" onclick="hideModal('master-confirm-modal')">取消</button><button class="btn-modal-danger" id="confirmBtn" disabled onclick="doMasterConfirm()">确认关闭</button></div>
+  </div>
+</div>
+
+<!-- 开启观严代办 -->
+<div id="open-guanyan-modal" class="modal-overlay" onclick="if(event.target===this)hideModal('open-guanyan-modal')">
+  <div class="modal">
+    <div class="modal-header"><h3>开启观严代办</h3><button class="modal-close" onclick="hideModal('open-guanyan-modal')">✕</button></div>
+    <div class="modal-body">
+      <p>确认开启 <strong id="openName">—</strong> 的观严代办申报？</p>
+      <p>开启后，该人员需签署《个人所得税、增值税等代办申报知情同意书》，由观严主体进行个税及增值税、附加税的代扣代缴与申报</p>
+    </div>
+    <div class="modal-footer"><button class="btn-modal-cancel" onclick="hideModal('open-guanyan-modal')">取消</button><button class="btn-modal-primary" onclick="doOpenGuanyan()">确认开启</button></div>
+  </div>
+</div>
+
+<!-- 关闭观严代办 -->
+<div id="close-guanyan-modal" class="modal-overlay" onclick="if(event.target===this)hideModal('close-guanyan-modal')">
+  <div class="modal">
+    <div class="modal-header"><h3>关闭观严代办</h3><button class="modal-close" onclick="hideModal('close-guanyan-modal')">✕</button></div>
+    <div class="modal-body">
+      <p>确认关闭 <strong id="closeName">—</strong> 的观严代办申报？</p>
+      <p>关闭后，该人员将回到云账户代办模式，无需签署知情同意书</p>
+    </div>
+    <div class="modal-footer"><button class="btn-modal-cancel" onclick="hideModal('close-guanyan-modal')">取消</button><button class="btn-modal-primary" onclick="doCloseGuanyan()">确认关闭</button></div>
+  </div>
+</div>
+
+<!-- 批量开启 -->
+<div id="batch-modal" class="modal-overlay" onclick="if(event.target===this)hideModal('batch-modal')">
+  <div class="modal">
+    <div class="modal-header"><h3>批量开启观严代办</h3><button class="modal-close" onclick="hideModal('batch-modal')">✕</button></div>
+    <div class="modal-body">
+      <p>已选择 <strong>3</strong> 人</p>
+      <p>开启后，这些人员需签署知情同意书，由观严主体进行代扣代缴与申报</p>
+      <div class="skip-info" style="background:#f9f9f9;padding:10px 14px;border-radius:4px;margin:12px 0;font-size:13px;color:#666">以下 <strong>2</strong> 人已开启观严代办，将自动跳过：张明远、赵文博</div>
+    </div>
+    <div class="modal-footer"><button class="btn-modal-cancel" onclick="hideModal('batch-modal')">取消</button><button class="btn-modal-primary" onclick="hideModal('batch-modal')">确认开启</button></div>
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- MODALS: 增附税税点配置 -->
+<!-- ============================================================ -->
+
+<!-- 新建/编辑配置 -->
+<div id="tax-config-modal" class="modal-overlay" onclick="if(event.target===this)hideModal('tax-config-modal')">
+  <div class="modal" style="width:600px">
+    <div class="modal-header"><h3 id="tax-config-modal-title">新建增附税配置</h3><button class="modal-close" onclick="hideModal('tax-config-modal')">✕</button></div>
+    <div class="modal-body">
+      <!-- 增值税率 + 附加税综合税率 -->
+      <div class="tax-form-row">
+        <div class="form-group">
+          <label>增值税率（%） <span class="required">*</span></label>
+          <div class="form-suffix data-unit-pct"><input class="form-input" id="tax-vat-rate" type="number" step="0.01" min="0.01" max="6" placeholder="0.01 ~ 6" oninput="updateTaxEffect()"></div>
+          <div class="form-hint">征收率，支持小数点后两位</div>
+        </div>
+        <div class="form-group">
+          <label>附加税综合税率（%） <span class="required">*</span></label>
+          <div class="form-suffix data-unit-pct"><input class="form-input" id="tax-surcharge-rate" type="number" step="0.01" min="0.01" max="50" placeholder="如 12 或 6" oninput="onSurchargeInput()"></div>
+          <div class="form-hint">直接填写综合税率，无需逐项填写城建/教育/地方教育附加</div>
+        </div>
+      </div>
+
+      <!-- 减半优惠 -->
+      <div class="tax-form-toggle-row" style="margin-bottom:16px">
+        <button class="toggle" id="tax-halved-toggle" onclick="toggleTaxHalved()"></button>
+        <label>减半优惠</label>
+        <span class="toggle-desc" id="tax-halved-desc">关闭 — 按原税率征收</span>
+      </div>
+      <div id="tax-halved-calc" style="display:none;background:#f5f5f5;padding:8px 12px;border-radius:4px;margin-bottom:16px;font-size:12px;color:#666">
+        减半优惠已开启：综合税率 <b id="tax-halved-original">12%</b> ÷ 2 = <b id="tax-halved-result">6%</b>（系统自动计算）
+      </div>
+
+      <!-- 免税额度阈值 + 生效时间 -->
+      <div class="tax-form-row">
+        <div class="form-group">
+          <label>免税额度阈值（含税收入） <span class="required">*</span></label>
+          <div class="form-suffix data-unit-yuan"><input class="form-input" id="tax-threshold" type="number" step="1" min="0" value="100000" oninput="updateTaxEffect()"></div>
+          <div class="form-hint">月累计含税收入不超过此值时增值税免征</div>
+        </div>
+        <div class="form-group">
+          <label>生效时间 <span class="required">*</span></label>
+          <input class="form-input" id="tax-effective-date" type="datetime-local" min="" oninput="updateTaxEffect()">
+          <div class="form-hint">至少为次日 00:00，系统在生效时间自动切换</div>
+        </div>
+      </div>
+
+      <!-- 备注 -->
+      <div class="form-group">
+        <label>备注</label>
+        <textarea class="form-input" id="tax-remark" rows="3" maxlength="200" placeholder="记录变更原因，如"依据财税〔202X〕X号"" style="resize:vertical;min-height:60px"></textarea>
+        <div class="form-hint">最多 200 字</div>
+      </div>
+
+      <!-- 影响提示 -->
+      <div class="tax-form-effect" id="tax-effect-hint">
+        新配置将于 <b id="tax-effect-date">—</b> 起对所有观严代扣用户生效
+      </div>
+      <div class="warning-box" style="margin-top:12px">生效日之前的历史入账按旧配置计算，不受新配置影响</div>
+    </div>
+    <div class="modal-footer"><button class="btn-modal-cancel" onclick="hideModal('tax-config-modal')">取消</button><button class="btn-modal-primary" id="tax-config-save-btn" onclick="saveTaxConfig()">确认保存</button></div>
+  </div>
+</div>
+
+<!-- 撤销待生效配置 -->
+<div id="cancel-pending-modal" class="modal-overlay" onclick="if(event.target===this)hideModal('cancel-pending-modal')">
+  <div class="modal" style="width:440px">
+    <div class="modal-header"><h3>撤销待生效配置</h3><button class="modal-close" onclick="hideModal('cancel-pending-modal')">✕</button></div>
+    <div class="modal-body">
+      <p>确认撤销 2026-12-01 待生效的增附税配置？</p>
+      <p style="font-size:13px;color:#666;margin-top:8px">撤销后，当前生效配置将继续使用，直到新建配置并生效。</p>
+      <div class="warning-box">此操作不可恢复</div>
+    </div>
+    <div class="modal-footer"><button class="btn-modal-cancel" onclick="hideModal('cancel-pending-modal')">取消</button><button class="btn-modal-danger" onclick="doCancelPending()">确认撤销</button></div>
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- MODALS: 申报管理 -->
+<!-- ============================================================ -->
+
+<!-- 申报明细（用户扣税汇总） -->
+<div id="declare-detail-modal" class="modal-overlay" onclick="if(event.target===this)hideModal('declare-detail-modal')">
+  <div class="modal modal-wide">
+    <div class="modal-header"><h3>申报明细 — 2026年10月</h3><button class="modal-close" onclick="hideModal('declare-detail-modal')">✕</button></div>
+    <div class="modal-body" style="padding:16px">
+      <div style="display:flex;gap:24px;margin-bottom:16px;font-size:13px">
+        <span>个税代扣合计：<b>¥128,650.00</b></span>
+        <span>增值税代缴合计：<b>¥15,200.00</b></span>
+        <span>附加税代缴合计：<b>¥912.00</b></span>
+        <span>涉及人数：<b>114</b></span>
+      </div>
+      <div class="filter-bar" style="margin-bottom:12px">
+        <label>计算方式</label>
+        <select><option>全部</option><option>连续劳务报酬（适用累计预扣法）</option><option>一般劳务报酬（使用按次预扣法）</option></select>
+        <input type="text" class="search-input" placeholder="搜索姓名 / 证件号" style="width:200px">
+        <div style="flex:1"></div>
+        <button class="btn btn-sm" onclick="protoAction('导出 Excel')">📤 导出 Excel</button>
+      </div>
+      <table>
+        <thead><tr><th>姓名</th><th>证件号码</th><th>计算方式</th><th>入账笔数</th><th>含税结算收入合计</th><th>当月扣个税</th><th>当月扣增值税</th><th>当月扣附加税</th><th>税费合计</th><th>操作</th></tr></thead>
+        <tbody>
+          <tr>
+            <td>张明远</td><td>**4********4</td><td>连续劳务报酬（适用累计预扣法）</td><td>5</td>
+            <td class="balance-cell">¥25,000.00</td><td class="balance-cell">¥2,100.00</td><td class="balance-cell">¥247.52</td><td class="balance-cell">¥14.85</td><td class="balance-cell">¥2,362.37</td>
+            <td><button class="btn-link" onclick="showModal('declare-user-detail-modal')">逐笔明细</button></td>
+          </tr>
+          <tr>
+            <td>李晓红</td><td>**3********7</td><td>一般劳务报酬（使用按次预扣法）</td><td>3</td>
+            <td class="balance-cell">¥18,000.00</td><td class="balance-cell">¥2,880.00</td><td class="balance-cell">¥178.22</td><td class="balance-cell">¥10.69</td><td class="balance-cell">¥3,068.91</td>
+            <td><button class="btn-link" onclick="showModal('declare-user-detail-modal')">逐笔明细</button></td>
+          </tr>
+          <tr>
+            <td>王建国</td><td>**5********2</td><td>连续劳务报酬（适用累计预扣法）</td><td>2</td>
+            <td class="balance-cell">¥12,000.00</td><td class="balance-cell">¥840.00</td><td class="balance-cell">¥118.81</td><td class="balance-cell">¥7.13</td><td class="balance-cell">¥965.94</td>
+            <td><button class="btn-link" onclick="showModal('declare-user-detail-modal')">逐笔明细</button></td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="pagination"><span>共 114 人</span><div class="pagination-btns"><span>&lt;</span><span class="active">1</span><span>2</span><span>3</span><span>...</span><span>6</span><span>&gt;</span></div></div>
+    </div>
+    <div class="modal-footer"><button class="btn" onclick="hideModal('declare-detail-modal')">关闭</button></div>
+  </div>
+</div>
+
+<!-- 用户逐笔明细 -->
+<div id="declare-user-detail-modal" class="modal-overlay" onclick="if(event.target===this)hideModal('declare-user-detail-modal')">
+  <div class="modal modal-wide">
+    <div class="modal-header"><h3>逐笔明细 — 张明远 · 2026年10月</h3><button class="modal-close" onclick="hideModal('declare-user-detail-modal')">✕</button></div>
+    <div class="modal-body" style="padding:16px;font-size:12px">
+      <div style="display:flex;gap:20px;margin-bottom:16px;font-size:13px">
+        <span>计算方式：<b>连续劳务报酬（适用累计预扣法）</b></span>
+        <span>入账笔数：<b>5</b></span>
+        <span>连续月份数：<b>7</b></span>
+      </div>
+      <!-- 笔1 -->
+      <div style="border:1px solid #e5e5e5;border-radius:4px;margin-bottom:12px;overflow:hidden">
+        <div style="background:#fafafa;padding:8px 12px;border-bottom:1px solid #e5e5e5;font-weight:600">入账 2026-10-03 14:20 · 含税结算收入 ¥6,000.00</div>
+        <div style="padding:10px 12px;display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px">
+          <div><span style="color:#999">不含税收入</span><br>¥5,940.59</div>
+          <div><span style="color:#999">增值税</span><br>¥59.41</div>
+          <div><span style="color:#999">附加税</span><br>¥3.56</div>
+          <div><span style="color:#999">免税判定</span><br><span style="color:#389e0d">免征</span>（月累计 ≤ 10万）</div>
+          <div><span style="color:#999">平台代缴增附税</span><br>¥0.00</div>
+          <div><span style="color:#999">增附税合计</span><br>¥62.97</div>
+        </div>
+        <div style="padding:8px 12px;border-top:1px solid #f0f0f0;background:#fcfcfc;display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px">
+          <div><span style="color:#999">累计收入</span><br>¥86,540.59</div>
+          <div><span style="color:#999">累计费用(20%)</span><br>¥17,308.12</div>
+          <div><span style="color:#999">累计减除费用</span><br>¥35,000.00</div>
+          <div><span style="color:#999">累计应纳税所得额</span><br>¥34,232.47</div>
+          <div><span style="color:#999">适用预扣率/速算扣除</span><br>10% / 2,520</div>
+          <div><span style="color:#999">累计应预扣税额</span><br>¥3,223.25</div>
+          <div><span style="color:#999">累计已预扣</span><br>¥2,100.00</div>
+          <div><span style="color:#389e0d;font-weight:600">本期应预扣个税</span><br><b>¥1,123.25</b></div>
+          <div><span style="color:#999">预估扣个税</span><br>¥1,123.25</div>
+        </div>
+      </div>
+      <!-- 笔2 -->
+      <div style="border:1px solid #e5e5e5;border-radius:4px;margin-bottom:12px;overflow:hidden">
+        <div style="background:#fafafa;padding:8px 12px;border-bottom:1px solid #e5e5e5;font-weight:600">入账 2026-10-10 09:15 · 含税结算收入 ¥8,000.00</div>
+        <div style="padding:10px 12px;display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px">
+          <div><span style="color:#999">不含税收入</span><br>¥7,920.79</div>
+          <div><span style="color:#999">增值税</span><br>¥79.21</div>
+          <div><span style="color:#999">附加税</span><br>¥4.75</div>
+          <div><span style="color:#999">免税判定</span><br><span style="color:#389e0d">免征</span>（月累计 ≤ 10万）</div>
+          <div><span style="color:#999">平台代缴增附税</span><br>¥0.00</div>
+          <div><span style="color:#999">增附税合计</span><br>¥83.96</div>
+        </div>
+        <div style="padding:8px 12px;border-top:1px solid #f0f0f0;background:#fcfcfc;display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px">
+          <div><span style="color:#999">累计收入</span><br>¥94,461.38</div>
+          <div><span style="color:#999">累计费用(20%)</span><br>¥18,892.28</div>
+          <div><span style="color:#999">累计减除费用</span><br>¥35,000.00</div>
+          <div><span style="color:#999">累计应纳税所得额</span><br>¥40,569.10</div>
+          <div><span style="color:#999">适用预扣率/速算扣除</span><br>10% / 2,520</div>
+          <div><span style="color:#999">累计应预扣税额</span><br>¥3,836.91</div>
+          <div><span style="color:#999">累计已预扣</span><br>¥3,223.25</div>
+          <div><span style="color:#389e0d;font-weight:600">本期应预扣个税</span><br><b>¥613.66</b></div>
+          <div><span style="color:#999">预估扣个税</span><br>¥613.66</div>
+        </div>
+      </div>
+      <div style="font-size:11px;color:#999;text-align:center;padding:8px">… 共 5 笔，导出 Excel 查看完整计算过程</div>
+    </div>
+    <div class="modal-footer"><button class="btn" onclick="hideModal('declare-user-detail-modal')">关闭</button><button class="btn btn-primary" onclick="protoAction('导出 Excel')">📥 导出 Excel</button></div>
+  </div>
+</div>
+
+<!-- 提交申报确认 -->
+<div id="submit-declare-modal" class="modal-overlay" onclick="if(event.target===this)hideModal('submit-declare-modal')">
+  <div class="modal" style="width:480px">
+    <div class="modal-header"><h3>确认提交 2026年10月 申报</h3><button class="modal-close" onclick="hideModal('submit-declare-modal')">✕</button></div>
+    <div class="modal-body">
+      <p>提交后系统将向税务局报送以下申报表：</p>
+      <div style="background:#f5f5f5;padding:12px;border-radius:4px;margin:12px 0;font-size:13px;line-height:2">
+        <div>• 个人所得税代扣代缴报告表 · <b>¥128,650.00</b></div>
+        <div>• 增值税纳税申报表（小规模） · <b>¥15,200.00</b></div>
+        <div>• 附加税申报表 · <b>¥912.00</b></div>
+      </div>
+      <p style="font-size:13px;color:#666">涉及 <b>114</b> 名观严代扣用户，请确认数据无误后提交。</p>
+      <div class="warning-box">提交后申报状态将变为"申报中"，请确保申报数据已核对</div>
+    </div>
+    <div class="modal-footer"><button class="btn" onclick="hideModal('submit-declare-modal')">取消</button><button class="btn btn-primary" onclick="hideModal('submit-declare-modal')">确认提交</button></div>
+  </div>
+</div>
+
+<!-- 对账弹窗 -->
+<div id="reconcile-modal" class="modal-overlay" onclick="if(event.target===this)hideModal('reconcile-modal')">
+  <div class="modal" style="width:560px">
+    <div class="modal-header"><h3>对账 — 2026年8月</h3><button class="modal-close" onclick="hideModal('reconcile-modal')">✕</button></div>
+    <div class="modal-body">
+      <p style="margin-bottom:12px">输入税务局实际入库金额，系统将自动与申报金额比对：</p>
+      <div class="form-group">
+        <label>个税入库金额（元） <span class="required">*</span></label>
+        <input class="form-input" type="number" step="0.01" value="98720.00">
+      </div>
+      <div class="form-group">
+        <label>增值税入库金额（元） <span class="required">*</span></label>
+        <input class="form-input" type="number" step="0.01" value="12400.00">
+      </div>
+      <div class="form-group">
+        <label>附加税入库金额（元） <span class="required">*</span></label>
+        <input class="form-input" type="number" step="0.01" value="494.00">
+      </div>
+      <div style="background:#fff1f0;border:1px solid #ffa39e;border-radius:4px;padding:10px 14px;margin-top:12px;font-size:12px;color:#cf1322">
+        ⚠ 差异检测：附加税入库 ¥494.00 vs 申报 ¥744.00，差异 <b>¥250.00（少缴）</b>
+      </div>
+    </div>
+    <div class="modal-footer"><button class="btn" onclick="hideModal('reconcile-modal')">取消</button><button class="btn btn-primary" onclick="hideModal('reconcile-modal')">确认对账</button></div>
+  </div>
+</div>
+
+<!-- 台账明细（每日汇总） -->
+<div id="ledger-detail-modal" class="modal-overlay" onclick="if(event.target===this)hideModal('ledger-detail-modal')">
+  <div class="modal modal-wide">
+    <div class="modal-header"><h3>台账明细 — 2026年9月</h3><button class="modal-close" onclick="hideModal('ledger-detail-modal')">✕</button></div>
+    <div class="modal-body" style="padding:16px">
+      <table>
+        <thead><tr><th>日期</th><th>入账笔数</th><th>个税代扣</th><th>增值税代缴</th><th>附加税代缴</th><th>税费小计</th></tr></thead>
+        <tbody>
+          <tr><td>2026-09-01</td><td>12</td><td class="balance-cell">¥4,280.00</td><td class="balance-cell">¥520.00</td><td class="balance-cell">¥31.20</td><td class="balance-cell">¥4,831.20</td></tr>
+          <tr><td>2026-09-02</td><td>8</td><td class="balance-cell">¥3,150.00</td><td class="balance-cell">¥380.00</td><td class="balance-cell">¥22.80</td><td class="balance-cell">¥3,552.80</td></tr>
+          <tr><td>2026-09-03</td><td>15</td><td class="balance-cell">¥5,620.00</td><td class="balance-cell">¥680.00</td><td class="balance-cell">¥40.80</td><td class="balance-cell">¥6,340.80</td></tr>
+          <tr style="color:#ccc"><td>2026-09-04</td><td>0</td><td class="balance-cell">¥0.00</td><td class="balance-cell">¥0.00</td><td class="balance-cell">¥0.00</td><td class="balance-cell">¥0.00</td></tr>
+          <tr><td>2026-09-05</td><td>9</td><td class="balance-cell">¥3,890.00</td><td class="balance-cell">¥460.00</td><td class="balance-cell">¥27.60</td><td class="balance-cell">¥4,377.60</td></tr>
+          <tr><td colspan="6" style="text-align:center;color:#999;font-size:11px;padding:8px">… 共 30 天，导出 Excel 查看完整明细</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="modal-footer"><button class="btn" onclick="hideModal('ledger-detail-modal')">关闭</button><button class="btn btn-primary" onclick="protoAction('导出台账明细')">📥 导出台账明细</button></div>
+  </div>
+</div>
+
+<!-- 提现明细（个税+增值税+打款快照） -->
+<div id="withdraw-detail-modal" class="modal-overlay" onclick="if(event.target===this)hideModal('withdraw-detail-modal')">
+  <div class="modal modal-wide">
+    <div class="modal-header"><h3>提现明细 — TX20261015001 · 张明远</h3><button class="modal-close" onclick="hideModal('withdraw-detail-modal')">✕</button></div>
+    <div class="modal-body" style="padding:20px;font-size:13px">
+      <!-- 个税计算（提现时点锁定） -->
+      <div style="background:#fafafa;border:1px solid #e5e5e5;border-radius:4px;padding:16px;margin-bottom:16px">
+        <div style="font-weight:600;font-size:14px;margin-bottom:10px">📋 个税计算（提现时点锁定）</div>
+        <table>
+          <thead><tr><th style="width:200px">信息项</th><th>数值</th></tr></thead>
+          <tbody>
+            <tr><td style="color:#666">提现时累计收入（不含增值税）</td><td class="balance-cell" style="font-weight:500">¥186,000.00</td></tr>
+            <tr><td style="color:#666">提现时连续月份数</td><td>5</td></tr>
+            <tr><td style="color:#666">提现时适用预扣率</td><td>10%</td></tr>
+            <tr><td style="color:#666">提现时速算扣除数</td><td>2,520</td></tr>
+            <tr><td style="color:#666;font-weight:600">应扣个税（锁定）</td><td class="balance-cell" style="color:#d4380d;font-weight:700">¥6,300.00</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <!-- 增值税计算（提现时点） -->
+      <div style="background:#fafafa;border:1px solid #e5e5e5;border-radius:4px;padding:16px;margin-bottom:16px">
+        <div style="font-weight:600;font-size:14px;margin-bottom:10px">📋 增值税计算（提现时点）</div>
+        <table>
+          <thead><tr><th style="width:200px">信息项</th><th>数值</th></tr></thead>
+          <tbody>
+            <tr><td style="color:#666">提现月含税结算收入合计</td><td class="balance-cell">¥50,500.00</td></tr>
+            <tr><td style="color:#666">不含税收入合计</td><td class="balance-cell">¥50,000.00</td></tr>
+            <tr><td style="color:#666">增值税（= 不含税收入 × 1%）</td><td class="balance-cell">¥500.00</td></tr>
+            <tr><td style="color:#666">附加税（= 增值税 × 12%，含减半）</td><td class="balance-cell">¥60.00</td></tr>
+            <tr><td style="color:#666">免税判定</td><td><span class="tag" style="background:#fff1f0;color:#cf1322">征收（月累计 ¥187,870 &gt; 免税额度 ¥100,000）</span></td></tr>
+            <tr><td style="color:#666;font-weight:600">平台代缴增附税（从用户余额扣收）</td><td class="balance-cell" style="color:#d4380d;font-weight:700">¥560.00</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <!-- 打款执行 -->
+      <div style="background:#f0f5ff;border:1px solid #d6e4ff;border-radius:4px;padding:16px">
+        <div style="font-weight:600;font-size:14px;margin-bottom:10px">💳 打款执行</div>
+        <table>
+          <thead><tr><th style="width:200px">信息项</th><th>数值</th></tr></thead>
+          <tbody>
+            <tr><td style="color:#666">提现金额</td><td class="balance-cell">¥50,000.00</td></tr>
+            <tr><td style="color:#666">打款扣个税（= 提现时锁定）</td><td class="balance-cell" style="color:#d4380d">¥6,300.00</td></tr>
+            <tr><td style="color:#666;font-weight:600">实际打款金额</td><td class="balance-cell" style="font-weight:700;font-size:15px">¥43,700.00</td></tr>
+            <tr><td style="color:#666">打款状态</td><td><span class="tag" style="background:#fff7e6;color:#ad6800">待打款</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div class="modal-footer"><button class="btn" onclick="hideModal('withdraw-detail-modal')">关闭</button><button class="btn btn-primary" onclick="protoAction('导出提现明细')">📥 导出明细</button></div>
+  </div>
+</div>
+
+<!-- 批量打款确认 -->
+<div id="batch-payout-modal" class="modal-overlay" onclick="if(event.target===this)hideModal('batch-payout-modal')">
+  <div class="modal">
+    <div class="modal-header"><h3>确认批量打款</h3><button class="modal-close" onclick="hideModal('batch-payout-modal')">✕</button></div>
+    <div class="modal-body">
+      <p>当前选中 <strong id="batchPayoutCount">2</strong> 条待打款记录，汇总如下：</p>
+      <table style="margin-top:12px">
+        <thead><tr><th>汇总项</th><th>金额</th></tr></thead>
+        <tbody>
+          <tr><td>总人数</td><td style="text-align:center">2 人</td></tr>
+          <tr><td>总提现金额</td><td class="balance-cell">¥62,000.00</td></tr>
+          <tr><td>总代扣个税</td><td class="balance-cell" style="color:#d4380d">¥8,060.00</td></tr>
+          <tr><td style="font-weight:600">总打款金额</td><td class="balance-cell" style="font-weight:700;font-size:15px">¥53,940.00</td></tr>
+        </tbody>
+      </table>
+      <div class="warning" style="background:#fff7e6;border-left-color:#ad6800;margin-top:12px;font-size:12px">⚠ 打款执行后，系统将按提现时锁定的个税金额从用户余额代扣，剩余金额打款至用户银行账户</div>
+      <div class="skip-info" style="margin-top:8px;font-size:12px">💡 跨月说明：提现M月、打款M+1月时，个税以提现时计算为准，打款时按锁定税额执行</div>
+    </div>
+    <div class="modal-footer"><button class="btn" onclick="hideModal('batch-payout-modal')">取消</button><button class="btn btn-primary" onclick="doBatchPayout()">确认批量打款</button></div>
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- MODALS: 协议管理 -->
+<!-- ============================================================ -->
+
+<!-- 新建/编辑版本 -->
+<div id="create-modal" class="modal-overlay" onclick="if(event.target===this)hideModal('create-modal')">
+  <div class="modal">
+    <div class="modal-header"><h3 id="create-modal-title">新建协议版本</h3><button class="modal-close" onclick="hideModal('create-modal')">✕</button></div>
+    <div class="modal-body">
+      <div class="form-group"><label>协议版本号</label><input class="form-input" id="create-version-input" value="V1.5" disabled style="background:#fafafa"><div class="form-hint" id="create-version-hint">自动递增，上一版本 V1.4 +0.1</div></div>
+      <div class="form-group"><label>协议名称 <span class="required">*</span></label><input class="form-input" id="create-name-input" placeholder="请输入协议名称" value="个人所得税、增值税等代办申报知情同意书"></div>
+      <div class="form-group"><label>协议文件（PDF）<span class="required">*</span></label>
+        <div class="pdf-upload" id="pdf-upload-area" onclick="this.style.display='none';document.getElementById('pdf-uploaded-area').style.display='flex'"><div class="pdf-upload-icon">📄</div><div class="pdf-upload-title">点击上传协议 PDF 文件</div><div class="pdf-upload-sub">仅支持 PDF 格式，文件大小不超过 20MB</div></div>
+        <div class="pdf-uploaded" id="pdf-uploaded-area" style="display:none"><div class="pdf-uploaded-icon">PDF</div><div class="pdf-uploaded-info"><div class="pdf-uploaded-name" id="pdf-uploaded-name">观严代办申报知情同意书_V1.5.pdf</div><div class="pdf-uploaded-meta" id="pdf-uploaded-meta">1.2 MB · 上传于 2026-11-05 14:30</div></div><button class="btn btn-sm btn-danger" onclick="document.getElementById('pdf-uploaded-area').style.display='none';document.getElementById('pdf-upload-area').style.display='block'">删除</button></div>
+      </div>
+      <!-- 签署位置配置 -->
+      <div class="form-group">
+        <label>签署位置配置 <span class="required">*</span></label>
+        <div id="position-unconfigured" style="border:1px solid #ffe58f;background:#fffbe6;border-radius:4px;padding:10px 14px;display:flex;align-items:center;justify-content:space-between">
+          <div style="display:flex;align-items:center;gap:8px;font-size:12px;color:#ad6800"><span>⚠ 尚未配置签署位置</span><span style="color:#999">发布前需至少配置 1 个签名位 + 1 个盖章位</span></div>
+          <button class="btn btn-sm" onclick="showModal('position-editor');markPositionConfigured()">去配置</button>
+        </div>
+        <div id="position-configured" style="display:none;border:1px solid #b7eb8f;background:#f6ffed;border-radius:4px;padding:10px 14px;display:flex;align-items:center;justify-content:space-between">
+          <div style="display:flex;align-items:center;gap:10px;font-size:12px"><span style="color:#389e0d">✓ 已配置</span><span class="sign-pos-info"><span class="pos-icon sign-icon">👤 1</span><span class="pos-icon seal-icon">🏛 1</span></span></div>
+          <button class="btn btn-sm" onclick="showModal('position-editor')">修改</button>
+        </div>
+      </div>
+      <div class="form-group"><label>备注</label><input class="form-input" id="create-remark-input" placeholder="记录本次变更原因" value=""></div>
+    </div>
+    <div class="modal-footer"><button class="btn" onclick="hideModal('create-modal')">取消</button><button class="btn" onclick="saveDraft()">保存草稿</button><button class="btn btn-primary" onclick="tryPublish()">发布</button></div>
+  </div>
+</div>
+
+<!-- 发布确认 -->
+<div id="publish-modal" class="modal-overlay" onclick="if(event.target===this)hideModal('publish-modal')">
+  <div class="modal">
+    <div class="modal-header"><h3>确认发布协议版本 V1.4？</h3><button class="modal-close" onclick="hideModal('publish-modal')">✕</button></div>
+    <div class="modal-body">
+      <p style="font-size:13px;line-height:1.8">发布后，所有已签署旧版本的用户将需要重新签署。<br>当前有 <b style="color:#d4380d">1,286</b> 人需重签。</p>
+      <div class="warning-box">此操作将影响全平台已签署用户，请谨慎确认</div>
+      <div class="form-group" style="margin-top:16px"><label>请输入"确认发布" <span class="required">*</span></label><input class="confirm-input" id="publish-input" placeholder="请输入" oninput="document.getElementById('btn-confirm-publish').disabled=this.value!=='确认发布'"></div>
+    </div>
+    <div class="modal-footer"><button class="btn" onclick="hideModal('publish-modal')">取消</button><button class="btn btn-danger" id="btn-confirm-publish" disabled onclick="doPublish()">确认发布</button></div>
+  </div>
+</div>
+
+<!-- 公司电子章 -->
+<div id="seal-modal" class="modal-overlay" onclick="if(event.target===this)hideModal('seal-modal')">
+  <div class="modal" style="width:480px">
+    <div class="modal-header"><h3>公司电子章管理</h3><button class="modal-close" onclick="hideModal('seal-modal')">✕</button></div>
+    <div class="modal-body">
+      <div class="form-group"><label>当前电子章</label><div id="seal-current-area" style="display:flex;align-items:flex-start;gap:20px;margin-top:8px"><div class="seal-preview"><div class="seal-preview-circle">观严（北京）<br>科技有限公司</div></div><div style="font-size:12px;color:#999;line-height:1.8"><div id="seal-upload-time">上传时间：2026-04-20</div><div>格式：PNG 透明底</div><div>全局共用：所有协议版本共用此印章</div></div></div></div>
+      <div class="form-group"><label>更换电子章</label><div class="seal-upload" id="seal-upload-area" onclick="mockSealUpload()"><div class="seal-upload-icon">📤</div><div class="seal-upload-text">点击或拖拽上传 PNG 图片（透明底）</div><div style="font-size:10px;color:#ccc;margin-top:4px">建议 200×200px，仅支持 PNG</div></div>
+      <div id="seal-uploaded-area" style="display:none;border:1px solid #e5e5e5;border-radius:8px;padding:12px;margin-top:8px;display:none;align-items:center;gap:12px;background:#fafafa">
+        <div class="seal-preview" style="width:60px;height:60px"><div class="seal-preview-circle" style="width:44px;height:44px;font-size:6px">观严（北京）<br>科技有限公司</div></div>
+        <div style="flex:1;font-size:12px"><div style="font-weight:500">新印章预览</div><div style="color:#999;margin-top:2px">guanyan_seal_new.png · 18 KB</div></div>
+        <button class="btn btn-sm btn-danger" onclick="cancelSealUpload()">删除</button>
+      </div>
+      <div class="warning-box" style="margin-top:12px">更换印章后仅影响新签署的协议，已签署的协议保持原印章不变</div></div>
+    </div>
+    <div class="modal-footer"><button class="btn" onclick="hideModal('seal-modal')">关闭</button><button class="btn btn-primary" id="seal-save-btn" onclick="saveSeal()">上传新印章</button></div>
+  </div>
+</div>
+
+<!-- 签署位置编辑 -->
+<div id="position-editor" class="modal-overlay" onclick="if(event.target===this)hideModal('position-editor')">
+  <div class="modal modal-wide">
+    <div class="modal-header"><h3>签署位置配置 — V1.3</h3><button class="modal-close" onclick="hideModal('position-editor')">✕</button></div>
+    <div class="modal-body" style="padding:16px">
+      <div class="position-toolbar"><button class="btn btn-sm" onclick="addMark('sign')">➕ 添加用户签名位</button><button class="btn btn-sm" onclick="addMark('seal')">➕ 添加公司盖章位</button><span class="mode-hint">拖拽标记可调整位置 ｜ 点击 ✕ 删除 ｜ 至少 1 个签名位 + 1 个盖章位</span></div>
+      <div class="position-config">
+        <div class="position-config-header"><span>协议 PDF 预览</span><div style="display:flex;align-items:center;gap:12px;font-size:11px;color:#999"><span><span style="display:inline-block;width:10px;height:10px;border:2px dashed #1890ff;border-radius:2px;vertical-align:middle;margin-right:2px"></span> 用户签名位</span><span><span style="display:inline-block;width:10px;height:10px;border:2px dashed #d4380d;border-radius:2px;vertical-align:middle;margin-right:2px"></span> 公司盖章位</span></div></div>
+        <div class="position-config-body" id="position-body">
+          <div class="position-page" id="position-page">
+            <div class="position-page-label">第 1 页 / 共 2 页</div>
+            <div style="text-align:center;font-size:15px;font-weight:600;margin-bottom:20px;color:#333">个人所得税、增值税等代办申报知情同意书</div>
+            <div class="content-line"></div>
+            <div style="font-size:11px;color:#666;margin:6px 0">甲方：观严（北京）科技有限公司</div>
+            <div class="content-line"></div><div style="font-size:11px;color:#666;margin:6px 0">乙方：签署人</div>
+            <div class="content-line"></div><div class="content-line"></div><div class="content-line"></div>
+            <div style="font-size:11px;font-weight:600;color:#333;margin:12px 0 4px">第一条 代扣代缴范围</div><div class="content-line"></div><div class="content-line"></div>
+            <div style="font-size:11px;font-weight:600;color:#333;margin:12px 0 4px">第二条 申报方式选择</div><div class="content-line"></div><div class="content-line"></div>
+            <div style="font-size:11px;font-weight:600;color:#333;margin:12px 0 4px">第三条 税费计算与代扣</div><div class="content-line"></div><div class="content-line"></div>
+            <div style="font-size:11px;font-weight:600;color:#333;margin:12px 0 4px">第四条 乙方的权利与义务</div><div class="content-line"></div><div class="content-line"></div>
+            <div style="font-size:11px;font-weight:600;color:#333;margin:12px 0 4px">第五条 甲方的权利与义务</div><div class="content-line"></div><div class="content-line"></div>
+            <div class="position-mark sign" style="bottom:80px;left:20px;width:140px;height:50px"><span class="position-mark-del" onclick="this.parentElement.remove()">✕</span><span class="position-mark-label">👤 用户签名位</span></div>
+            <div class="position-mark seal" style="bottom:60px;right:20px;width:80px;height:80px"><span class="position-mark-del" onclick="this.parentElement.remove()">✕</span><span class="position-mark-label">🏛 公司盖章位</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer"><button class="btn" onclick="hideModal('position-editor')">取消</button><button class="btn btn-primary" onclick="savePositionConfig()">保存配置</button></div>
+  </div>
+</div>
+
+<!-- 查看协议 -->
+<div id="view-protocol" class="modal-overlay" onclick="if(event.target===this)hideModal('view-protocol')">
+  <div class="modal modal-wide">
+    <div class="modal-header"><h3>查看协议内容 — V1.3</h3><button class="modal-close" onclick="hideModal('view-protocol')">✕</button></div>
+    <div class="modal-body" style="background:#f5f5f5;padding:24px">
+      <div class="protocol-preview"><h4>个人所得税、增值税等代办申报知情同意书</h4><p>甲方：观严（北京）科技有限公司（以下简称"甲方"）</p><p>乙方：签署人（以下简称"乙方"）</p><p>鉴于乙方通过甲方平台取得劳务报酬等收入……</p><p><b>第一条 代扣代缴范围</b></p><p>甲方按照乙方选择的个税申报方式……</p><p><b>第二条 申报方式选择</b></p><p>（一）连续劳务报酬（适用累计预扣法）……（二）一般劳务报酬（使用按次预扣法）……</p><div class="sign-area"><div class="sign-box"><div class="sign-label">乙方（签名）：</div><div class="sign-line"></div><div style="font-size:11px;color:#1890ff;margin-top:4px">👤 用户签名位</div></div><div class="sign-box" style="text-align:right"><div class="sign-label">甲方（盖章）：</div><div class="sign-line" style="display:flex;align-items:center;justify-content:center"><div class="seal-preview-circle" style="width:48px;height:48px;font-size:6px">观严（北京）<br>科技有限公司</div></div><div style="font-size:11px;color:#d4380d;margin-top:4px">🏛 公司盖章位</div></div></div></div>
+    </div>
+    <div class="modal-footer"><button class="btn" onclick="hideModal('view-protocol')">关闭</button><button class="btn" onclick="protoAction('下载 PDF')">📥 下载 PDF</button></div>
+  </div>
+</div>
+
+<!-- 停用确认 -->
+<div id="stop-confirm" class="modal-overlay" onclick="if(event.target===this)hideModal('stop-confirm')">
+  <div class="modal" style="width:400px">
+    <div class="modal-header"><h3>确认停用 V1.3？</h3><button class="modal-close" onclick="hideModal('stop-confirm')">✕</button></div>
+    <div class="modal-body">
+      <div class="warning-box">停用后该版本不再接受新签署，已停用版本不可恢复。当前无其他已发布版本，停用后用户将无法签署任何协议。</div>
+      <p style="font-size:12px;color:#999;margin-top:8px">建议先发布新版本再停用当前版本。</p>
+    </div>
+    <div class="modal-footer"><button class="btn" onclick="hideModal('stop-confirm')">取消</button><button class="btn btn-danger" onclick="doStopVersion()">确认停用</button></div>
+  </div>
+</div>
+
+<!-- 签署协议PDF预览 -->
+<div id="protocol-pdf-panel" class="modal-overlay" onclick="if(event.target===this)hideModal('protocol-pdf-panel')">
+  <div class="modal" style="width:560px">
+    <div class="modal-header"><h3>已签署协议 — 李明</h3><button class="modal-close" onclick="hideModal('protocol-pdf-panel')">✕</button></div>
+    <div class="modal-body">
+      <div class="info-row"><span class="info-row-label">姓名</span><span class="info-row-value">李明</span></div>
+      <div class="info-row"><span class="info-row-label">手机号</span><span class="info-row-value">138****5678</span></div>
+      <div class="info-row"><span class="info-row-label">证件号码</span><span class="info-row-value">**4********4</span></div>
+      <div class="info-row"><span class="info-row-label">协议版本</span><span class="info-row-value">V1.3</span></div>
+      <div class="info-row"><span class="info-row-label">申报方式</span><span class="info-row-value">连续劳务报酬（适用累计预扣法）</span></div>
+      <div class="info-row"><span class="info-row-label">签署时间</span><span class="info-row-value">2026-10-28 15:23:41</span></div>
+      <div style="margin-top:20px;font-size:12px;font-weight:600;margin-bottom:8px">协议内容预览</div>
+      <div style="background:#f5f5f5;padding:16px;border-radius:4px;border:1px solid #e5e5e5"><div style="background:#fff;padding:32px;border:1px solid #e5e5e5"><div style="text-align:center;font-size:14px;font-weight:600;margin-bottom:16px">个人所得税、增值税等代办申报知情同意书</div><div style="height:8px;border-bottom:1px solid #f0f0f0;margin-bottom:4px"></div><div style="height:8px;border-bottom:1px solid #f0f0f0;margin-bottom:4px"></div><div style="height:8px;border-bottom:1px solid #f0f0f0;margin-bottom:4px"></div><div style="height:8px;border-bottom:1px solid #f0f0f0;margin-bottom:4px"></div><div style="display:flex;justify-content:space-between;margin-top:32px"><div><div style="font-size:11px;color:#999;margin-bottom:4px">乙方（签名）：</div><div style="font-style:italic;color:#1890ff;font-size:11px;border-bottom:1px solid #333;padding-bottom:4px;width:100px">李明（手写）</div></div><div style="text-align:right"><div style="font-size:11px;color:#999;margin-bottom:4px">甲方（盖章）：</div><div style="display:flex;align-items:center;justify-content:center"><div style="width:48px;height:48px;border:2px solid #d4380d;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:5px;color:#d4380d;text-align:center;line-height:1.3">观严（北京）<br>科技有限公司</div></div></div></div></div></div>
+    </div>
+    <div class="modal-footer"><button class="btn" onclick="hideModal('protocol-pdf-panel')">关闭</button><button class="btn btn-primary" onclick="protoAction('下载协议 PDF')">📥 下载协议 PDF</button></div>
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- P2: 人员详情侧滑 -->
+<!-- ============================================================ -->
+<div id="slide-overlay" class="slide-overlay" onclick="closeDetail()"></div>
+<div id="slide-panel" class="slide-panel">
+  <div class="slide-header"><h2>人员代扣详情</h2><button class="slide-close" onclick="closeDetail()">✕</button></div>
+  <div class="slide-body">
+    <div class="info-section">
+      <div class="info-section-title">基本信息</div>
+      <div class="info-grid">
+        <div class="info-item"><span class="info-label">姓名</span><span class="info-value">张明远</span></div>
+        <div class="info-item"><span class="info-label">手机号</span><span class="info-value">138****6721</span></div>
+        <div class="info-item"><span class="info-label">证件号码</span><span class="info-value">**4********4</span></div>
+        <div class="info-item"><span class="info-label">观严代办</span><span class="info-value" style="font-weight:600">已开启</span></div>
+        <div class="info-item"><span class="info-label">实名状态</span><span class="info-value status-verified">已实名（2026-03-15）</span></div>
+        <div class="info-item"><span class="info-label">签署状态</span><span class="info-value status-signed">已签署 · 连续劳务报酬（适用累计预扣法）</span></div>
+        <div class="info-item"><span class="info-label">签署时间</span><span class="info-value">2026-04-02 14:30:22</span></div>
+        <div class="info-item"><span class="info-label">协议版本</span><span class="info-value">V1.3</span></div>
+        <div class="info-item"><span class="info-label">可用余额</span><span class="info-value">¥12,580.00</span></div>
+        <div class="info-item"><span class="info-label">冻结金额</span><span class="info-value">¥0.00</span></div>
+      </div>
+    </div>
+    <div class="info-section">
+      <div class="info-section-title">签署记录</div>
+      <div class="timeline">
+        <div class="timeline-item">
+          <div class="timeline-dot"></div>
+          <div class="timeline-time">2026-10-28 09:15:03</div>
+          <div class="timeline-type">协议更新重签</div>
+          <div class="timeline-meta">申报方式：连续劳务报酬（适用累计预扣法） · 协议版本：V1.3</div>
+          <div class="timeline-result success">操作成功</div>
+        </div>
+        <div class="timeline-item">
+          <div class="timeline-dot"></div>
+          <div class="timeline-time">2026-04-02 14:30:22</div>
+          <div class="timeline-type">首次签署</div>
+          <div class="timeline-meta">申报方式：连续劳务报酬（适用累计预扣法） · 协议版本：V1.0</div>
+          <div class="timeline-result success">操作成功</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== 底部Demo导航 ===== -->
+<div class="state-nav">
+  <span style="color:#999;margin-right:4px">模块：</span>
+  <button class="state-btn" onclick="switchModule('guankou',null)" id="nav-guankou">代扣配置</button>
+  <button class="state-btn" onclick="switchModule('tax-config',null)" id="nav-tax-config">增附税配置</button>
+  <button class="state-btn" onclick="switchModule('agreement',null)" id="nav-agreement">协议管理</button>
+  <button class="state-btn" onclick="switchModule('declare',null)" id="nav-declare">申报管理</button>
+  <button class="state-btn" onclick="switchModule('warning',null)" id="nav-warning">500万预警</button>
+  <span style="color:#666;margin:0 4px">|</span>
+  <button class="state-btn" onclick="toggleMaster()">切换总闸</button>
+  <button class="state-btn" onclick="showDetail()">人员详情</button>
+</div>
+
+<script>
+// ===== Module Switch =====
+var moduleMap = { guankou:'代扣模式配置', 'tax-config':'增附税税点配置', agreement:'协议管理', declare:'申报管理', warning:'500万预警' };
+function switchModule(id, navEl) {
+  document.querySelectorAll('.content > .page-section').forEach(function(s) { s.classList.remove('active'); });
+  document.querySelectorAll('.nav-item').forEach(function(n) { n.classList.remove('active'); });
+  var mod = document.getElementById('module-' + id);
+  if (mod) mod.classList.add('active');
+  if (navEl) navEl.classList.add('active');
+  else { var items = document.querySelectorAll('.nav-item'); items.forEach(function(n) { if (n.textContent.trim().indexOf(moduleMap[id]||'') > -1) n.classList.add('active'); }); }
+  document.getElementById('header-title').textContent = moduleMap[id] || id;
+  // 关闭所有弹窗
+  document.querySelectorAll('.modal-overlay.show').forEach(function(m) { m.classList.remove('show'); });
+  document.querySelectorAll('.slide-overlay.show, .slide-panel.show').forEach(function(s) { s.classList.remove('show'); });
+}
+
+// ===== Tab Switch (协议管理) =====
+function switchTab(tabId, el) {
+  document.querySelectorAll('.tab').forEach(function(t) { t.classList.remove('active'); });
+  document.querySelectorAll('#module-agreement .page-section').forEach(function(p) { p.classList.remove('active'); });
+  if (el) el.classList.add('active');
+  var map = { 'version-list':'page-version-list', 'sign-records':'page-sign-records' };
+  document.getElementById(map[tabId]).classList.add('active');
+}
+
+// ===== Tab Switch (申报管理) =====
+function switchDeclareTab(tabId, el) {
+  document.querySelectorAll('#module-declare > .tabs > .tab').forEach(function(t) { t.classList.remove('active'); });
+  document.querySelectorAll('#module-declare > .page-section').forEach(function(p) { p.classList.remove('active'); });
+  if (el) el.classList.add('active');
+  var map = { 'declare-task':'page-declare-task', 'declare-ledger':'page-declare-ledger', 'declare-withdraw':'page-declare-withdraw', 'declare-report':'page-declare-report' };
+  document.getElementById(map[tabId]).classList.add('active');
+}
+
+// ===== Report Tab Switch (报表中心子标签) =====
+function switchReportTab(tabId, el) {
+  var container = document.getElementById('page-declare-report');
+  container.querySelectorAll(':scope > .tabs > .tab').forEach(function(t) { t.classList.remove('active'); });
+  container.querySelectorAll(':scope > .page-section').forEach(function(p) { p.classList.remove('active'); });
+  if (el) el.classList.add('active');
+  document.getElementById(tabId).classList.add('active');
+}
+
+// ===== Withdraw: Select All & Batch =====
+function toggleWithdrawSelectAll() {
+  var c = document.getElementById('withdrawSelectAll').checked;
+  document.querySelectorAll('.withdraw-check').forEach(function(cb) { if (!cb.disabled) cb.checked = c; });
+}
+function doBatchPayout() {
+  hideModal('batch-payout-modal');
+  protoAction('批量打款已提交，等待银行回调');
+}
+
+// ===== Modal Helpers =====
+function showModal(id) { document.getElementById(id).classList.add('show'); }
+function hideModal(id) { document.getElementById(id).classList.remove('show'); }
+
+// ===== Prototype Action (toast for download/export/query) =====
+function protoAction(msg) {
+  var t = document.createElement('div');
+  t.textContent = msg;
+  t.style.cssText = 'position:fixed;top:20px;left:50%;transform:translateX(-50%);background:#1a1a1a;color:#fff;padding:8px 20px;border-radius:20px;font-size:13px;z-index:9999;transition:opacity .3s';
+  document.body.appendChild(t);
+  setTimeout(function() { t.style.opacity = '0'; setTimeout(function() { t.remove(); }, 300); }, 1500);
+}
+
+// ===== Agreement: Create/Edit Mode =====
+var positionConfigured = false;
+function openCreateModal(editVersion) {
+  currentEditVersion = editVersion;
+  if (editVersion) {
+    document.getElementById('create-modal-title').textContent = '编辑协议版本 ' + editVersion;
+    document.getElementById('create-version-input').value = editVersion;
+    document.getElementById('create-version-hint').textContent = '草稿编辑，版本号不可修改';
+    document.getElementById('create-name-input').value = '个人所得税、增值税等代办申报知情同意书';
+    document.getElementById('create-remark-input').value = '更新第五条条款';
+    document.getElementById('pdf-upload-area').style.display = 'none';
+    document.getElementById('pdf-uploaded-area').style.display = 'flex';
+    document.getElementById('pdf-uploaded-name').textContent = '观严代办申报知情同意书_' + editVersion + '.pdf';
+    // V1.4草稿签署位置未配置
+    setPositionStatus(false);
+  } else {
+    document.getElementById('create-modal-title').textContent = '新建协议版本';
+    document.getElementById('create-version-input').value = 'V1.5';
+    document.getElementById('create-version-hint').textContent = '自动递增，上一版本 V1.4 +0.1';
+    document.getElementById('create-name-input').value = '个人所得税、增值税等代办申报知情同意书';
+    document.getElementById('create-remark-input').value = '';
+    document.getElementById('pdf-upload-area').style.display = 'block';
+    document.getElementById('pdf-uploaded-area').style.display = 'none';
+    setPositionStatus(false);
+  }
+  showModal('create-modal');
+}
+
+function setPositionStatus(configured) {
+  positionConfigured = configured;
+  document.getElementById('position-unconfigured').style.display = configured ? 'none' : 'flex';
+  document.getElementById('position-configured').style.display = configured ? 'flex' : 'none';
+}
+
+function markPositionConfigured() {
+  setPositionStatus(true);
+}
+
+function tryPublish() {
+  if (!positionConfigured) {
+    protoAction('请先配置签署位置');
+    return;
+  }
+  hideModal('create-modal');
+  showModal('publish-modal');
+}
+
+function deleteDraft(btn) {
+  var row = btn.closest('tr');
+  if (row) row.style.display = 'none';
+  protoAction('草稿已删除');
+}
+
+function doStopVersion() {
+  hideModal('stop-confirm');
+  protoAction('协议已停用');
+}
+
+function saveDraft() {
+  hideModal('create-modal');
+}
+
+function doPublish() {
+  hideModal('publish-modal');
+  document.getElementById('publish-input').value = '';
+  document.getElementById('btn-confirm-publish').disabled = true;
+}
+
+// ===== Agreement: Seal Upload =====
+var sealUploaded = false;
+function mockSealUpload() {
+  document.getElementById('seal-upload-area').style.display = 'none';
+  document.getElementById('seal-uploaded-area').style.display = 'flex';
+  document.getElementById('seal-save-btn').textContent = '确认更换';
+  sealUploaded = true;
+}
+function cancelSealUpload() {
+  document.getElementById('seal-upload-area').style.display = 'block';
+  document.getElementById('seal-uploaded-area').style.display = 'none';
+  document.getElementById('seal-save-btn').textContent = '上传新印章';
+  sealUploaded = false;
+}
+function saveSeal() {
+  if (!sealUploaded) { mockSealUpload(); return; }
+  document.getElementById('seal-upload-time').textContent = '上传时间：2026-11-05';
+  cancelSealUpload();
+  hideModal('seal-modal');
+}
+
+// ===== Master Toggle =====
+var masterOn = true;
+function toggleMaster() {
+  if (masterOn) { showModal('master-confirm-modal'); }
+  else { masterOn = true; document.getElementById('masterToggle').classList.add('on'); document.getElementById('switchDesc').textContent = '人员差异化代扣配置已开启，可按人员开启观严代办申报；未开启的人员继续由云账户代办'; document.body.classList.remove('readonly'); }
+}
+function doMasterConfirm() {
+  masterOn = false; document.getElementById('masterToggle').classList.remove('on');
+  document.getElementById('switchDesc').textContent = '全员统一走观严代办申报，人员级开关已失效';
+  hideModal('master-confirm-modal'); document.body.classList.add('readonly');
+  document.querySelectorAll('.row-check').forEach(function(cb) { cb.checked = false; });
+  document.getElementById('selectAll').checked = false;
+  document.getElementById('batchActions').classList.remove('visible');
+}
+
+// ===== Row Toggle =====
+function openGuanyan(toggleEl, name) {
+  if (!masterOn) return;
+  document.getElementById('openName').textContent = name;
+  showModal('open-guanyan-modal'); window._pendingToggle = toggleEl;
+}
+function doOpenGuanyan() {
+  if (window._pendingToggle) { window._pendingToggle.classList.add('on'); var t = window._pendingToggle.parentElement.querySelector('.row-toggle-text'); t.classList.add('on'); t.textContent = '已开启'; window._pendingToggle = null; }
+  hideModal('open-guanyan-modal');
+}
+function tryCloseGuanyan(toggleEl, name, balance) {
+  if (!masterOn || balance > 0) return;
+  document.getElementById('closeName').textContent = name;
+  showModal('close-guanyan-modal'); window._pendingToggle = toggleEl;
+}
+function doCloseGuanyan() {
+  if (window._pendingToggle) { window._pendingToggle.classList.remove('on'); var t = window._pendingToggle.parentElement.querySelector('.row-toggle-text'); t.classList.remove('on'); t.textContent = '未开启'; window._pendingToggle = null; }
+  hideModal('close-guanyan-modal');
+}
+
+// ===== Batch =====
+function toggleSelectAll() { var c = document.getElementById('selectAll').checked; document.querySelectorAll('.row-check').forEach(function(cb) { cb.checked = c; }); updateBatch(); }
+function updateBatch() { var n = document.querySelectorAll('.row-check:checked').length; var ba = document.getElementById('batchActions'); if (n > 0) { ba.classList.add('visible'); document.getElementById('batchCount').textContent = '已选择 ' + n + ' 人'; } else { ba.classList.remove('visible'); } }
+
+// ===== Detail Sidebar =====
+function showDetail() { document.getElementById('slide-overlay').classList.add('show'); document.getElementById('slide-panel').classList.add('show'); }
+function closeDetail() { document.getElementById('slide-overlay').classList.remove('show'); document.getElementById('slide-panel').classList.remove('show'); }
+
+// ===== Position Editor =====
+function addMark(type) {
+  var page = document.getElementById('position-page');
+  var mark = document.createElement('div');
+  mark.className = 'position-mark ' + (type === 'sign' ? 'sign' : 'seal');
+  mark.style.top = '50%'; mark.style.left = type === 'sign' ? '30%' : '60%';
+  mark.style.width = type === 'sign' ? '140px' : '80px';
+  mark.style.height = type === 'sign' ? '50px' : '80px';
+  mark.innerHTML = '<span class="position-mark-del" onclick="this.parentElement.remove()">✕</span><span class="position-mark-label">' + (type === 'sign' ? '👤 用户签名位' : '🏛 公司盖章位') + '</span>';
+  page.appendChild(mark); makeDraggable(mark);
+}
+function makeDraggable(el) {
+  el.onmousedown = function(e) {
+    if (e.target.classList.contains('position-mark-label')) return;
+    e.preventDefault();
+    var startX = e.clientX, startY = e.clientY, origLeft = el.offsetLeft, origTop = el.offsetTop;
+    document.onmousemove = function(e2) { el.style.left = (origLeft + e2.clientX - startX) + 'px'; el.style.top = (origTop + e2.clientY - startY) + 'px'; el.style.right = 'auto'; el.style.bottom = 'auto'; };
+    document.onmouseup = function() { document.onmousemove = null; document.onmouseup = null; };
+  };
+}
+document.querySelectorAll('.position-mark').forEach(makeDraggable);
+
+// ===== Position Save =====
+function savePositionConfig() {
+  hideModal('position-editor');
+  // 原型中仅关闭弹窗，实际产品应保存签署位置数据
+}
+
+// ===== Tax Config (P5) =====
+var taxHalvedOn = false;
+
+// 设置生效时间最小值为次日00:00
+(function() {
+  var tomorrow = new Date();
+  tomorrow.setDate(tomorrow.getDate() + 1);
+  tomorrow.setHours(0, 0, 0, 0);
+  var minDate = tomorrow.toISOString().slice(0, 16);
+  document.getElementById('tax-effective-date').setAttribute('min', minDate);
+})();
+
+function toggleTaxHalved() {
+  taxHalvedOn = !taxHalvedOn;
+  var toggle = document.getElementById('tax-halved-toggle');
+  var desc = document.getElementById('tax-halved-desc');
+  var calc = document.getElementById('tax-halved-calc');
+  var rateInput = document.getElementById('tax-surcharge-rate');
+  
+  if (taxHalvedOn) {
+    toggle.classList.add('on');
+    desc.textContent = '开启 — 综合税率自动 ÷ 2';
+    calc.style.display = 'block';
+    onSurchargeInput(); // recalc display
+  } else {
+    toggle.classList.remove('on');
+    desc.textContent = '关闭 — 按原税率征收';
+    calc.style.display = 'none';
+  }
+  updateTaxEffect();
+}
+
+function onSurchargeInput() {
+  var rate = parseFloat(document.getElementById('tax-surcharge-rate').value) || 0;
+  var origEl = document.getElementById('tax-halved-original');
+  var resultEl = document.getElementById('tax-halved-result');
+  origEl.textContent = rate + '%';
+  resultEl.textContent = (rate / 2).toFixed(2).replace(/\.?0+$/, '') + '%';
+  updateTaxEffect();
+}
+
+function updateTaxEffect() {
+  var dateVal = document.getElementById('tax-effective-date').value;
+  var effectDateEl = document.getElementById('tax-effect-date');
+  effectDateEl.textContent = dateVal || '—';
+}
+
+function prefillPending() {
+  document.getElementById('tax-config-modal-title').textContent = '编辑增附税配置';
+  document.getElementById('tax-vat-rate').value = '1';
+  document.getElementById('tax-surcharge-rate').value = '12';
+  document.getElementById('tax-effective-date').value = '2026-12-01T00:00';
+  document.getElementById('tax-threshold').value = '100000';
+  document.getElementById('tax-remark').value = '减半优惠到期恢复原税率';
+  // halved off for this pending config
+  taxHalvedOn = false;
+  document.getElementById('tax-halved-toggle').classList.remove('on');
+  document.getElementById('tax-halved-desc').textContent = '关闭 — 按原税率征收';
+  document.getElementById('tax-halved-calc').style.display = 'none';
+  updateTaxEffect();
+}
+
+function saveTaxConfig() {
+  // In prototype, just close modal
+  hideModal('tax-config-modal');
+}
+
+function doCancelPending() {
+  var row = document.getElementById('pending-row');
+  if (row) row.style.display = 'none';
+  hideModal('cancel-pending-modal');
+}
+
+// ===== 500万预警 (P8) =====
+function toggleWarningSelectAll() {
+  var c = document.getElementById('warningSelectAll').checked;
+  document.querySelectorAll('.warning-check').forEach(function(cb) { cb.checked = c; });
+  updateWarningBatch();
+}
+
+function updateWarningBatch() {
+  var n = document.querySelectorAll('.warning-check:checked').length;
+  var ba = document.getElementById('warning-batch-actions');
+  if (n > 0) {
+    ba.classList.add('visible');
+    document.getElementById('warning-batch-count').textContent = '已选择 ' + n + ' 人';
+  } else {
+    ba.classList.remove('visible');
+  }
+}
+
+function markNotified(btn) {
+  var row = btn.closest('tr');
+  if (!row) return;
+  row.setAttribute('data-notified', 'true');
+  var tagTd = row.querySelectorAll('td');
+  // 更新预警状态标签
+  tagTd[7].innerHTML = '<span class="tag tag-published">● 已通知</span>';
+  // 更新通知时间为当前时间
+  var now = new Date();
+  var timeStr = now.getFullYear() + '-' + String(now.getMonth()+1).padStart(2,'0') + '-' + String(now.getDate()).padStart(2,'0') + ' ' + String(now.getHours()).padStart(2,'0') + ':' + String(now.getMinutes()).padStart(2,'0');
+  tagTd[8].innerHTML = '<span style="white-space:nowrap">' + timeStr + '</span>';
+  // 隐藏操作按钮
+  tagTd[9].innerHTML = '—';
+  // 取消勾选
+  var cb = row.querySelector('.warning-check');
+  if (cb) cb.checked = false;
+  updateWarningBatch();
+  protoAction('已标记为已通知');
+}
+
+function markBatchNotified() {
+  var checks = document.querySelectorAll('.warning-check:checked');
+  if (checks.length === 0) return;
+  var count = 0;
+  checks.forEach(function(cb) {
+    var row = cb.closest('tr');
+    if (row && row.getAttribute('data-notified') === 'false') {
+      row.setAttribute('data-notified', 'true');
+      var tds = row.querySelectorAll('td');
+      tds[7].innerHTML = '<span class="tag tag-published">● 已通知</span>';
+      var now = new Date();
+      var timeStr = now.getFullYear() + '-' + String(now.getMonth()+1).padStart(2,'0') + '-' + String(now.getDate()).padStart(2,'0') + ' ' + String(now.getHours()).padStart(2,'0') + ':' + String(now.getMinutes()).padStart(2,'0');
+      tds[8].innerHTML = '<span style="white-space:nowrap">' + timeStr + '</span>';
+      tds[9].innerHTML = '—';
+      cb.checked = false;
+      count++;
+    }
+  });
+  document.getElementById('warningSelectAll').checked = false;
+  updateWarningBatch();
+  protoAction('已批量标记 ' + count + ' 人为已通知');
+}
+
+function filterWarningList() {
+  protoAction('查询完成');
+}
+</script>
+
+</body>
+</html>

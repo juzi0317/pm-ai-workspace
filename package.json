@@ -1,0 +1,6 @@
+{
+  "dependencies": {
+    "docx": "^9.15.3",
+    "puppeteer-core": "^25.16.0"
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "name": "remix-prototype",
+  "version": "1.0.0",
+  "private": true,
+  "type": "commonjs",
+  "scripts": {
+    "start": "node dist/server.cjs"
+  },
+  "dependencies": {
+    "dotenv": "^17.2.3",
+    "express": "^4.21.2",
+    "openai": "^6.49.0"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}

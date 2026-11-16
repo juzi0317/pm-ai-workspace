@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AIDraft 组件测试</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body>
+    <div id="root"></div>
+    <script type="module">
+        // 测试 localStorage 数据
+        console.log('=== 开始测试 AIDraft 组件 ===');
+        
+        // 检查 localStorage 中是否有旧数据
+        try {
+            const saved = localStorage.getItem('totrial_draft_sessions_v2');
+            if (saved) {
+                console.log('发现本地存储数据:', saved.substring(0, 200) + '...');
+                const parsed = JSON.parse(saved);
+                console.log('解析后的数据:', parsed);
+                
+                // 检查 timestamp 字段
+                if (parsed[0] && parsed[0].messages) {
+                    parsed[0].messages.forEach((msg, idx) => {
+                        console.log(`消息 ${idx} timestamp:`, msg.timestamp, '类型:', typeof msg.timestamp);
+                        if (typeof msg.timestamp !== 'string') {
+                            console.error('❌ timestamp 不是字符串类型!', msg);
+                        }
+                    });
+                }
+            } else {
+                console.log('✓ 本地存储为空，将使用预设数据');
+            }
+        } catch (e) {
+            console.error('❌ localStorage 错误:', e);
+        }
+        
+        // 测试 Date 对象
+        console.log('\n=== 测试 Date 对象 ===');
+        const testDate = new Date();
+        console.log('当前 Date:', testDate);
+        console.log('ISO 字符串:', testDate.toISOString());
+        console.log('toLocaleTimeString:', testDate.toLocaleTimeString('zh-CN', { hour: '2-digit', minute: '2-digit' }));
+        
+        // 测试中文引号
+        console.log('\n=== 测试中文引号 ===');
+        const testStr1 = "「阿帕替尼II期试验」";
+        const testStr2 = '「气虚血瘀证」';
+        console.log('测试字符串1:', testStr1);
+        console.log('测试字符串2:', testStr2);
+        
+        console.log('\n=== 测试完成 ===');
+        
+        document.getElementById('root').innerHTML = `
+            <div style="padding: 20px; font-family: sans-serif;">
+                <h1>AIDraft 组件测试页面</h1>
+                <p>请打开浏览器控制台 (F12) 查看详细测试结果</p>
+                <div style="margin-top: 20px; padding: 10px; background: #f0f0f0; border-radius: 4px;">
+                    <h3>检查项目：</h3>
+                    <ul>
+                        <li>✓ TypeScript 编译状态</li>
+                        <li>✓ localStorage 数据格式</li>
+                        <li>✓ Date 对象处理</li>
+                        <li>✓ 中文引号处理</li>
+                    </ul>
+                </div>
+                <button onclick="window.location.href='/'" style="margin-top: 20px; padding: 10px 20px; background: #083190; color: white; border: none; border-radius: 4px; cursor: pointer;">
+                    返回首页
+                </button>
+            </div>
+        `;
+    </script>
+</body>
+</html>

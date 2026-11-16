@@ -1,0 +1,1006 @@
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{font-size:16px;-webkit-text-size-adjust:100%}
+body{font-family:-apple-system,"PingFang SC","Helvetica Neue","Microsoft YaHei",sans-serif;font-size:14px;line-height:1.5;color:#1a1a1a;background:#f0f2f5;-webkit-font-smoothing:antialiased;display:flex;flex-wrap:wrap;gap:32px;justify-content:center;padding:80px 16px 40px}
+:root{--blue:#5BA0E8;--blue-dark:#4A8FE0;--blue-darker:#3A7FD6;--blue-light:#E8F4FD;--blue-grad:linear-gradient(135deg,#5BA0E8,#4A8FE0);--green:#52C41A;--green-bg:#F6FFED;--red:#FF4D4F;--red-bg:#FFF1F0;--orange:#FA8C16;--orange-bg:#FFF7E6;--gray:#999;--gray-light:#F5F5F5;--border:#F0F0F0}
+.phone{width:375px;background:#f5f5f5;border-radius:36px;box-shadow:0 8px 40px rgba(0,0,0,.12),0 0 0 1px rgba(0,0,0,.05);overflow:hidden;position:relative}
+.phone-notch{height:44px;background:#fff;display:flex;align-items:center;justify-content:center}
+.phone-notch-time{font-size:14px;font-weight:600;color:#1a1a1a}
+.phone-screen{min-height:780px;padding-bottom:0;overflow-y:auto;position:relative;display:flex;flex-direction:column}
+.phone-screen::-webkit-scrollbar{display:none}
+.nav-bar{height:44px;display:flex;align-items:center;justify-content:center;position:sticky;top:0;background:#fff;border-bottom:1px solid var(--border);z-index:10;flex-shrink:0}
+.nav-bar .back{position:absolute;left:12px;font-size:22px;cursor:pointer;color:#1a1a1a;line-height:44px;width:32px;text-align:center}
+.nav-bar .title{font-size:16px;font-weight:600}
+.nav-bar .right{position:absolute;right:14px;font-size:13px;cursor:pointer;color:var(--blue);line-height:44px}
+.profile-header{background:#fff;padding:20px 20px 16px;display:flex;align-items:center;gap:14px}
+.avatar{width:56px;height:56px;border-radius:50%;overflow:hidden;flex-shrink:0;background:linear-gradient(135deg,#E8F4FD,#C5E3F6);display:flex;align-items:center;justify-content:center}
+.avatar svg{width:36px;height:36px}
+.profile-info{flex:1;min-width:0}
+.profile-name{font-size:17px;font-weight:600;color:#1a1a1a;line-height:1.3}
+.profile-meta{font-size:12px;color:var(--gray);margin-top:4px;display:flex;gap:12px;align-items:center}
+.profile-edit{width:28px;height:28px;border-radius:50%;background:#F5F5F5;display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0}
+.profile-edit svg{width:16px;height:16px;color:#999}
+.balance-card{margin:0 16px;border-radius:12px;padding:20px;display:flex;align-items:center;cursor:pointer;position:relative;transition:transform .1s}
+.balance-card:active{transform:scale(.98)}
+.balance-card.normal{background:linear-gradient(135deg,#5BA0E8 0%,#4A8FE0 50%,#3A7FD6 100%);color:#fff}
+.balance-card.frozen{background:linear-gradient(135deg,#7BB5ED 0%,#6AA6E6 50%,#5A97DF 100%);color:#fff}
+.balance-col{flex:1;text-align:center}
+.balance-col+.balance-col{border-left:1px solid rgba(255,255,255,.2)}
+.balance-label{font-size:11px;opacity:.75;margin-bottom:4px}
+.balance-num{font-size:24px;font-weight:700;letter-spacing:-.5px}
+.balance-sub{font-size:11px;margin-top:4px;opacity:.85;display:flex;align-items:center;justify-content:center;gap:2px}
+.balance-sub.sign-link{opacity:1;font-weight:500}
+.balance-sub svg{width:12px;height:12px}
+.notice-bar{background:#fff;margin:10px 16px;border-radius:10px;padding:10px 14px;display:flex;align-items:center;gap:8px}
+.notice-icon{width:32px;height:32px;border-radius:8px;background:linear-gradient(135deg,#FFF7E6,#FFE7BA);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.notice-icon svg{width:18px;height:18px;color:#FA8C16}
+.notice-text{flex:1;font-size:12px;color:var(--gray);line-height:1.4;display:-webkit-box;-webkit-line-clamp:1;-webkit-box-orient:vertical;overflow:hidden}
+.notice-text strong{color:#1a1a1a;font-weight:500}
+.notice-btn{padding:4px 12px;border-radius:14px;font-size:12px;font-weight:500;cursor:pointer;flex-shrink:0;border:none}
+.notice-btn.orange{background:#FA8C16;color:#fff}
+.section-card{background:#fff;margin:10px 16px;border-radius:10px;overflow:hidden;box-shadow:0 1px 4px rgba(0,0,0,.04)}
+.section-header{display:flex;justify-content:space-between;align-items:center;padding:14px 16px 10px}
+.section-title{font-size:15px;font-weight:600;color:#1a1a1a}
+.section-more{font-size:12px;color:var(--gray);display:flex;align-items:center;gap:2px;cursor:pointer}
+.order-row{display:flex;padding:6px 8px 14px}
+.order-item{flex:1;text-align:center;cursor:pointer;position:relative}
+.order-icon{width:40px;height:40px;border-radius:12px;margin:0 auto 4px;display:flex;align-items:center;justify-content:center}
+.order-icon svg{width:22px;height:22px}
+.order-icon.blue{background:#E8F4FD;color:#5BA0E8}
+.order-icon.green{background:#F0FFE8;color:#52C41A}
+.order-icon.orange{background:#FFF7E6;color:#FA8C16}
+.order-icon.gray{background:#F5F5F5;color:#999}
+.order-icon.red{background:#FFF1F0;color:#FF4D4F}
+.order-text{font-size:11px;color:#666}
+.menu-item{display:flex;align-items:center;justify-content:space-between;padding:14px 16px;border-bottom:1px solid #F5F5F5;cursor:pointer;transition:background .1s}
+.menu-item:last-child{border-bottom:none}
+.menu-item:active{background:#FAFAFA}
+.menu-left{display:flex;align-items:center;gap:12px}
+.menu-icon{width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.menu-icon svg{width:18px;height:18px;color:#fff}
+.menu-icon.tax{background:linear-gradient(135deg,#5BA0E8,#4A8FE0)}
+.menu-icon.calc{background:linear-gradient(135deg,#36CFC9,#2BAEAD)}
+.menu-icon.survey{background:linear-gradient(135deg,#73D13D,#52C41A)}
+.menu-icon.research{background:linear-gradient(135deg,#40A9FF,#2F86DE)}
+.menu-icon.volunteer{background:linear-gradient(135deg,#597EF7,#4054C4)}
+.menu-icon.enroll{background:linear-gradient(135deg,#13C2C2,#08979C)}
+.menu-icon.medicine{background:linear-gradient(135deg,#FF7A45,#FA541C)}
+.menu-icon.address{background:linear-gradient(135deg,#597EF7,#4054C4)}
+.menu-text{font-size:14px;color:#1a1a1a}
+.menu-right{display:flex;align-items:center;gap:6px}
+.menu-sub{font-size:12px;color:var(--gray)}
+.menu-sub.alert{color:var(--red);font-weight:500}
+.menu-sub.warning{color:#FA8C16;font-weight:500}
+.menu-sub.info{color:#5BA0E8;font-weight:500}
+.menu-arrow{color:#D9D9D9}
+.menu-arrow svg{width:16px;height:16px}
+.red-dot{width:6px;height:6px;background:var(--red);border-radius:50%;flex-shrink:0}
+.tab-bar{position:sticky;bottom:0;background:#fff;border-top:1px solid #F0F0F0;display:flex;height:56px;flex-shrink:0;z-index:5}
+.tab-item{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;cursor:pointer}
+.tab-item svg{width:22px;height:22px}
+.tab-item span{font-size:10px}
+.tab-item .tab-icon-normal{color:#BFBFBF}
+.tab-item .tab-text-normal{color:#BFBFBF}
+.tab-item.active .tab-icon-active{color:#5BA0E8}
+.tab-item.active .tab-text-active{color:#5BA0E8}
+.tab-center{flex:1;display:flex;align-items:center;justify-content:center;cursor:pointer}
+.tab-center-btn{width:44px;height:44px;border-radius:50%;background:linear-gradient(135deg,#5BA0E8,#4A8FE0);color:#fff;font-size:22px;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 12px rgba(91,160,232,.35)}
+.page-content{flex:1;padding:0 20px 24px;display:flex;flex-direction:column}
+/* Option Cards */
+.option-card{border:2px solid #E5E5E5;border-radius:12px;padding:16px;margin-bottom:12px;cursor:pointer;transition:all .2s;position:relative}
+.option-card:active{transform:scale(.98)}
+.option-card.selected{border-color:var(--blue);background:var(--blue-light)}
+.option-card-radio{position:absolute;top:16px;right:14px;width:20px;height:20px;border-radius:50%;border:2px solid #D9D9D9;transition:all .2s}
+.option-card.selected .option-card-radio{border-color:var(--blue);background:var(--blue)}
+.option-card.selected .option-card-radio::after{content:'✓';position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);color:#fff;font-size:12px;font-weight:700}
+.option-card-title{font-size:15px;font-weight:600;margin-bottom:6px;padding-right:28px}
+.option-card-desc{font-size:12px;color:#999;line-height:1.6}
+.option-card.selected .option-card-title{color:var(--blue-dark)}
+/* Agreement */
+.agreement-check{display:flex;align-items:flex-start;gap:10px;padding:16px 0;margin-top:16px;border-top:1px solid #F0F0F0}
+.agreement-check input[type=checkbox]{width:20px;height:20px;border-radius:4px;border:2px solid #D9D9D9;appearance:none;-webkit-appearance:none;flex-shrink:0;margin-top:1px;cursor:pointer;transition:all .15s;position:relative;background:#fff}
+.agreement-check input[type=checkbox]:checked{background:var(--blue);border-color:var(--blue)}
+.agreement-check input[type=checkbox]:checked::after{content:'✓';position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);color:#fff;font-size:13px;font-weight:700}
+.agreement-check label{font-size:13px;line-height:1.5;cursor:pointer}
+.agreement-check label a{color:var(--blue);text-decoration:none;font-weight:500}
+/* Resign method */
+.resign-method-card{background:#fff;border:1.5px solid #E5E5E5;border-radius:12px;padding:16px;position:relative}
+.resign-method-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px}
+.resign-method-name{font-size:15px;font-weight:600;color:#8C8C8C}
+.resign-method-lock{font-size:11px;color:#BFBFBF;background:#F5F5F5;border:1px solid #E5E5E5;border-radius:4px;padding:2px 8px}
+.resign-method-desc{font-size:12px;color:#BFBFBF;line-height:1.6}
+/* PDF */
+.pdf-overlay{position:absolute;top:0;left:0;right:0;bottom:0;background:#fff;z-index:200;display:none;flex-direction:column}
+.pdf-overlay.show{display:flex}
+.pdf-nav{height:44px;display:flex;align-items:center;justify-content:center;position:relative;background:#fff;border-bottom:1px solid var(--border);flex-shrink:0}
+.pdf-nav .back{position:absolute;left:12px;font-size:22px;cursor:pointer;color:#1a1a1a;line-height:44px;width:32px;text-align:center}
+.pdf-nav .title{font-size:15px;font-weight:600}
+.pdf-body{flex:1;overflow-y:auto;padding:20px;background:#F5F5F5}
+.pdf-page{background:#fff;border-radius:4px;padding:32px 24px;margin-bottom:12px;box-shadow:0 1px 4px rgba(0,0,0,.08);font-size:12px;line-height:2;color:#333}
+.pdf-page h2{font-size:14px;text-align:center;margin-bottom:16px;line-height:1.4}
+.pdf-page p{margin-bottom:10px}
+.pdf-page .clause{font-weight:600;margin-top:16px;margin-bottom:6px}
+.pdf-sign-area{display:flex;justify-content:space-between;margin-top:32px;padding-top:16px;border-top:1px solid #E5E5E5}
+.pdf-sign-box{text-align:center}
+.pdf-sign-label{font-size:11px;color:#999;margin-bottom:8px}
+.pdf-sign-line{width:100px;border-bottom:1px solid #1a1a1a;margin:0 auto}
+/* Signature */
+.sign-page{padding:20px;display:flex;flex-direction:column;flex:1}
+.sign-tip{font-size:13px;color:var(--gray);margin-bottom:16px;line-height:1.5}
+.sign-canvas-wrap{border:1px solid #E5E5E5;border-radius:12px;height:240px;background:#fff;position:relative;overflow:hidden;flex-shrink:0}
+.sign-canvas-placeholder{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);text-align:center;color:#D9D9D9}
+.sign-canvas-placeholder svg{width:48px;height:48px;margin-bottom:8px;color:#E5E5E5}
+.sign-canvas-placeholder p{font-size:13px}
+.sign-clear{position:absolute;top:12px;right:12px;font-size:12px;color:var(--gray);cursor:pointer;background:rgba(0,0,0,.04);border:none;padding:4px 10px;border-radius:4px}
+.sign-example{margin-top:12px;font-size:11px;color:#CCC;text-align:center}
+/* Sheets */
+.sheet-mask{position:absolute;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.45);z-index:100;display:none;align-items:flex-end;justify-content:center}
+.sheet-mask.show{display:flex}
+.sheet-body{background:#fff;border-radius:16px 16px 0 0;padding:24px 20px 32px;width:100%;max-height:80%;animation:slideUp .25s ease}
+@keyframes slideUp{from{transform:translateY(100%)}to{transform:translateY(0)}}
+.sheet-handle{width:36px;height:4px;background:#E5E5E5;border-radius:2px;margin:0 auto 20px}
+.sheet-title{font-size:16px;font-weight:600;margin-bottom:4px}
+.sheet-subtitle{font-size:12px;color:var(--gray);margin-bottom:20px}
+.sheet-info{background:#FAFAFA;border-radius:10px;padding:16px;margin-bottom:20px}
+.sheet-row{display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid var(--border)}
+.sheet-row:last-child{border-bottom:none}
+.sheet-key{font-size:13px;color:var(--gray)}
+.sheet-val{font-size:14px;font-weight:500}
+/* Buttons */
+.btn-row{display:flex;gap:12px;flex-shrink:0}
+.btn{height:48px;border:none;border-radius:12px;font-size:15px;font-weight:600;cursor:pointer;text-align:center;flex:1;transition:all .1s}
+.btn:active{transform:scale(.98)}
+.btn-primary{background:var(--blue-grad);color:#fff}
+.btn-primary:disabled{background:#D9D9D9;color:#fff;cursor:not-allowed;transform:none}
+.btn-secondary{background:#F5F5F5;color:#1a1a1a}
+.btn-text{background:none;border:none;color:var(--blue);font-size:14px;cursor:pointer;padding:8px 0;font-weight:500}
+/* Success */
+.success-page{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:40px 20px;flex:1;text-align:center}
+.success-icon{width:64px;height:64px;border-radius:50%;background:var(--green);color:#fff;font-size:30px;display:flex;align-items:center;justify-content:center;margin-bottom:20px;box-shadow:0 4px 16px rgba(82,196,26,.25)}
+.success-title{font-size:20px;font-weight:600;margin-bottom:8px}
+.success-desc{font-size:13px;color:var(--gray);line-height:1.6;margin-bottom:28px}
+.success-info{background:#FAFAFA;border-radius:12px;padding:16px 20px;width:100%;margin-bottom:24px}
+.success-row{display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--border);font-size:13px}
+.success-row:last-child{border-bottom:none}
+.success-key{color:var(--gray)}
+.success-val{font-weight:500}
+/* Warning */
+.warning-card{background:linear-gradient(135deg,#FFFBE6,#FFF7CC);border:1px solid #FFE58F;border-radius:10px;margin:8px 16px;padding:10px 12px;display:flex;align-items:flex-start;gap:8px;cursor:pointer}
+.warning-card-icon svg{width:20px;height:20px;color:#FAAD14}
+.warning-card-body{flex:1}
+.warning-card-title{font-size:13px;font-weight:600;color:#AD6800;line-height:1.4}
+.warning-card-detail{font-size:12px;color:#D48806;line-height:1.5;margin-top:6px;display:none}
+.warning-card.expanded .warning-card-detail{display:block}
+.warning-card-arrow svg{width:16px;height:16px;color:#D48806;transition:transform .2s}
+.warning-card.expanded .warning-card-arrow svg{transform:rotate(180deg)}
+/* Expense */
+.expense-page{flex:1;display:flex;flex-direction:column;padding:0 16px 24px}
+.expense-field{display:flex;justify-content:space-between;align-items:center;padding:14px 0;border-bottom:1px solid #F5F5F5;cursor:pointer}
+.expense-field:last-child{border-bottom:none}
+.expense-label{font-size:14px;color:#1a1a1a;flex-shrink:0}
+.expense-label .required{color:var(--red);margin-right:2px}
+.expense-value{font-size:14px;color:#999;text-align:right;flex:1;margin-left:12px;display:flex;align-items:center;gap:4px;justify-content:flex-end}
+.expense-value.filled{color:#1a1a1a}
+.expense-arrow{color:#D9D9D9;flex-shrink:0}
+.expense-arrow svg{width:14px;height:14px}
+.expense-card{background:#FAFAFA;border-radius:10px;padding:14px;margin-top:12px;display:flex;gap:12px;align-items:flex-start}
+.expense-card-icon{width:36px;height:36px;border-radius:8px;background:#E8F4FD;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.expense-card-icon svg{width:18px;height:18px;color:var(--blue)}
+.expense-card-body{flex:1;min-width:0}
+.expense-card-title{font-size:13px;font-weight:500;color:#1a1a1a;line-height:1.4}
+.expense-card-sub{font-size:12px;color:var(--gray);margin-top:4px}
+.expense-bottom{padding:16px 0 0;border-top:1px solid var(--border);margin-top:auto}
+.expense-total{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px}
+.expense-total-label{font-size:14px;color:#1a1a1a}
+.expense-total-num{font-size:20px;font-weight:700;color:#52C41A}
+.expense-btns{display:flex;gap:10px}
+.expense-btns .btn-add{height:44px;border-radius:10px;border:2px solid #52C41A;background:#fff;color:#52C41A;font-size:14px;font-weight:600;cursor:pointer;flex:1;transition:all .1s}
+.expense-btns .btn-add:active{transform:scale(.98);background:#F6FFED}
+.expense-btns .btn-submit{height:44px;border-radius:10px;border:none;background:var(--blue-grad);color:#fff;font-size:14px;font-weight:600;cursor:pointer;flex:1;position:relative;transition:all .1s}
+.expense-btns .btn-submit:active{transform:scale(.98)}
+.expense-badge{position:absolute;top:-6px;right:-6px;min-width:16px;height:16px;border-radius:8px;background:var(--red);color:#fff;font-size:10px;font-weight:600;display:flex;align-items:center;justify-content:center;padding:0 4px}
+.expense-help{text-align:center;margin-top:12px}
+.expense-help a{font-size:12px;color:var(--blue);text-decoration:none;cursor:pointer}
+/* Intercept */
+.intercept-sheet .sheet-body{padding:28px 20px 32px}
+.intercept-title{font-size:15px;font-weight:600;color:#1a1a1a;line-height:1.5;margin-bottom:12px;text-align:left}
+.intercept-body{font-size:13px;color:#666;line-height:1.8;text-align:left;margin-bottom:24px}
+.intercept-icon{width:48px;height:48px;border-radius:50%;margin:0 auto 16px;display:flex;align-items:center;justify-content:center}
+.intercept-icon.orange{background:#FFF7E6;color:#FA8C16}
+.intercept-icon.red{background:#FFF1F0;color:#FF4D4F}
+.intercept-icon svg{width:24px;height:24px}
+/* Center modal (login prompt / resign strong) */
+.modal-mask{position:absolute;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.5);z-index:150;display:none;align-items:center;justify-content:center;padding:40px 32px}
+.modal-mask.show{display:flex}
+.modal-box{background:#fff;border-radius:16px;padding:28px 24px;width:100%;max-width:280px;text-align:center}
+.modal-icon{width:56px;height:56px;border-radius:50%;margin:0 auto 16px;display:flex;align-items:center;justify-content:center}
+.modal-icon.red{background:#FFF1F0;color:#FF4D4F}
+.modal-icon.orange{background:#FFF7E6;color:#FA8C16}
+.modal-icon svg{width:28px;height:28px}
+.modal-title{font-size:16px;font-weight:600;color:#1a1a1a;line-height:1.5;margin-bottom:8px}
+.modal-body{font-size:13px;color:#666;line-height:1.7;margin-bottom:20px}
+.modal-body b{color:#1a1a1a;font-weight:600}
+.modal-btn-row{display:flex;gap:10px}
+.modal-btn-row .btn{height:40px;font-size:14px;border-radius:20px;flex:1}
+.modal-btn-row .btn-secondary{background:#F5F5F5;color:#1a1a1a;border:1px solid #E5E5E5}
+.modal-btn-row .btn-primary{border:none}
+/* Real-name auth */
+.rn-upload-group{margin-bottom:16px}
+.rn-upload-label{font-size:13px;color:#1a1a1a;font-weight:500;margin-bottom:10px}
+.rn-upload-row{display:flex;gap:12px}
+.rn-upload-item{flex:1;text-align:center}
+.rn-upload-box{width:100%;aspect-ratio:1.5;border:1.5px dashed #D9D9D9;border-radius:10px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;cursor:pointer;transition:all .2s;background:#FAFAFA}
+.rn-upload-box:active{transform:scale(.98)}
+.rn-upload-box.uploaded{border-style:solid;border-color:var(--green);background:var(--green-bg)}
+.rn-upload-box svg{width:28px;height:28px;color:#D9D9D9}
+.rn-upload-box.uploaded svg{color:var(--green)}
+.rn-upload-text{font-size:12px;color:#999}
+.rn-upload-box.uploaded .rn-upload-text{color:var(--green)}
+.rn-upload-hint{font-size:11px;color:#BBB;margin-top:4px}
+.rn-form-group{margin-bottom:14px}
+.rn-form-label{font-size:13px;color:#1a1a1a;margin-bottom:4px;font-weight:500}
+.rn-form-input{width:100%;height:40px;border:1px solid #E5E5E5;border-radius:8px;padding:0 12px;font-size:14px;outline:none;transition:border .2s;background:#fff}
+.rn-form-input:focus{border-color:var(--blue)}
+.rn-form-input.readonly{background:#F5F5F5;color:#999}
+.rn-intro{background:#FAFAFA;border-radius:10px;padding:14px;margin-bottom:18px;font-size:13px;color:#888;line-height:1.7}
+.rn-note{font-size:11px;color:#BBB;text-align:center;margin-top:12px}
+.rn-result-card{background:#FAFAFA;border-radius:12px;padding:16px 20px;margin-bottom:24px;width:100%}
+.rn-result-row{display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--border);font-size:13px}
+.rn-result-row:last-child{border-bottom:none}
+.rn-result-key{color:var(--gray)}
+.rn-result-val{font-weight:500;color:#1a1a1a}
+.rn-guide-card{background:var(--blue-light);border:1px solid #D6E8F7;border-radius:12px;padding:16px;margin-bottom:20px}
+.rn-guide-title{font-size:14px;font-weight:600;color:#1a1a1a;margin-bottom:8px}
+.rn-guide-body{font-size:13px;color:#666;line-height:1.8}
+/* Empty state */
+.empty-state{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:80px 20px 40px;text-align:center}
+.empty-state svg{width:100px;height:100px;margin-bottom:20px;color:#E5E5E5}
+.empty-state-text{font-size:14px;color:#BBB;line-height:1.6;margin-bottom:4px}
+.empty-state-hint{font-size:12px;color:#D9D9D9;line-height:1.5}
+/* Account page */
+.acct-balance-card{margin:12px 16px;border-radius:12px;padding:20px;background:#fff;box-shadow:0 1px 4px rgba(0,0,0,.04)}
+.acct-label{font-size:12px;color:var(--gray);margin-bottom:4px}
+.acct-amount{font-size:28px;font-weight:700;color:#1a1a1a;letter-spacing:-.5px}
+.acct-amount.red{color:var(--red)}
+.acct-row{display:flex;justify-content:space-between;align-items:flex-end;margin-top:12px}
+.acct-btn-sm{height:32px;padding:0 20px;border-radius:8px;border:none;font-size:13px;font-weight:600;cursor:pointer}
+.acct-btn-sm.primary{background:var(--blue-grad);color:#fff}
+.acct-btn-sm:active{transform:scale(.98)}
+.acct-divider{margin-top:12px;padding-top:12px;border-top:1px solid #F0F0F0}
+.acct-tax-hint{font-size:10px;color:#BBB;margin-left:4px}
+.acct-sign-link{margin-top:12px;font-size:13px;color:#1a1a1a;font-weight:500;cursor:pointer}
+/* Withdraw records */
+.wd-section-title{padding:0 16px 8px;display:flex;justify-content:space-between;align-items:center}
+.wd-section-title span:first-child{font-size:14px;font-weight:600}
+.wd-section-title span:last-child{font-size:12px;color:var(--gray);cursor:pointer}
+.wd-record{display:flex;justify-content:space-between;align-items:center;padding:12px 16px;border-bottom:1px solid #F5F5F5;background:#fff;cursor:pointer}
+.wd-record:last-child{border-bottom:none}
+.wd-record-left{flex:1}
+.wd-record-title{font-size:14px;color:#1a1a1a;font-weight:500}
+.wd-record-meta{font-size:12px;color:var(--gray);margin-top:2px}
+.wd-record-right{text-align:right}
+.wd-record-amount{font-size:15px;font-weight:600;color:#1a1a1a}
+.wd-record-status{display:inline-block;font-size:11px;padding:2px 8px;border-radius:4px;margin-top:2px}
+.wd-record-status.pending{background:#FFF7E6;color:#FA8C16}
+.wd-record-status.done{background:var(--green-bg);color:#52C41A}
+.wd-record-status.rejected{background:var(--red-bg);color:#FF4D4F}
+/* Income detail */
+.income-filter{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;padding:0 16px}
+.income-filter-tag{font-size:12px;color:var(--gray);border:1px solid #E5E5E5;border-radius:4px;padding:3px 8px;cursor:pointer}
+.income-item{background:#fff;margin:0 16px 8px;border-radius:10px;padding:14px;box-shadow:0 1px 4px rgba(0,0,0,.04)}
+.income-item-top{display:flex;justify-content:space-between;align-items:center}
+.income-project{font-size:13px;font-weight:500;color:#1a1a1a}
+.income-amount{font-size:15px;font-weight:600;color:#1a1a1a}
+.income-meta{font-size:12px;color:var(--gray);margin-top:2px}
+.income-bottom{display:flex;justify-content:space-between;margin-top:6px;padding-top:6px;border-top:1px dashed #F0F0F0;font-size:12px}
+.income-time{color:var(--gray)}
+.income-tax{color:var(--red)}
+.income-hint{font-size:11px;color:#BBB;padding:4px 16px 8px;line-height:1.6}
+/* Withdraw page */
+.wd-page{flex:1;padding:0 0 24px;display:flex;flex-direction:column}
+.wd-balance{background:#fff;border-radius:12px;padding:20px;margin:12px 16px;text-align:center}
+.wd-input-group{background:#fff;border-radius:12px;padding:16px 20px;margin:0 16px 12px}
+.wd-input-label{font-size:13px;color:var(--gray);margin-bottom:8px}
+.wd-input-row{display:flex;align-items:center;border-bottom:1px solid var(--border);padding-bottom:8px}
+.wd-input-currency{font-size:28px;font-weight:700;color:#1a1a1a;margin-right:8px}
+.wd-input{border:none;outline:none;font-size:28px;font-weight:700;width:100%;color:#1a1a1a;background:transparent}
+.wd-input::placeholder{color:#D9D9D9;font-size:16px;font-weight:400}
+.wd-tax-info{background:#fff;border-radius:12px;padding:14px 16px;margin:0 16px 10px}
+.wd-tax-row{display:flex;justify-content:space-between;align-items:center;padding:8px 0}
+.wd-tax-label{font-size:13px;color:var(--gray)}
+.wd-tax-val{font-size:14px;font-weight:500}
+.wd-tax-tag{display:inline-block;font-size:10px;background:var(--blue-light);color:var(--blue-dark);padding:1px 6px;border-radius:3px;margin-left:4px}
+.wd-result-row{border-top:1px solid var(--border);padding-top:12px;margin-top:4px}
+.wd-actual{font-size:18px;font-weight:700;color:#52C41A}
+.wd-hint{font-size:11px;color:#BBB;text-align:center;margin-top:8px}
+/* Tax detail */
+.td-card{background:#fff;border-radius:12px;padding:16px;margin:8px 16px 12px;box-shadow:0 1px 4px rgba(0,0,0,.04)}
+.td-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
+.td-header-title{font-size:14px;font-weight:600;color:#1a1a1a}
+.td-tag{font-size:10px;padding:2px 8px;border-radius:4px;font-weight:500}
+.td-tag.cumulative{background:var(--blue-light);color:var(--blue-dark)}
+.td-tag.per{background:#FFF7E6;color:#FA8C16}
+.td-row{display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #F5F5F5;font-size:13px}
+.td-row:last-of-type{border-bottom:none}
+.td-key{color:var(--gray)}
+.td-val{font-weight:500;text-align:right}
+.td-val.pending{color:var(--orange)}
+.td-expand{display:flex;justify-content:space-between;padding:10px 0 0;cursor:pointer;font-size:12px;color:var(--blue)}
+.td-expand-content{display:none;padding-top:8px;border-top:1px dashed #E5E5E5}
+.td-expand-content.open{display:block}
+.td-chain-row{display:flex;justify-content:space-between;padding:4px 0;font-size:12px}
+.td-chain-key{color:var(--gray)}
+.td-chain-val{font-weight:500}
+/* Tax calc */
+.calc-tabs{display:flex;background:#fff;border-bottom:1px solid var(--border)}
+.calc-tab{flex:1;text-align:center;padding:12px;font-size:14px;color:var(--gray);cursor:pointer;border-bottom:2px solid transparent;font-weight:500}
+.calc-tab.active{color:var(--blue);border-bottom-color:var(--blue)}
+.calc-panel{display:none;flex:1;padding:12px 16px 24px;overflow-y:auto}
+.calc-panel.active{display:flex;flex-direction:column}
+.calc-desc{font-size:12px;color:#999;line-height:1.5;margin-bottom:12px;padding:0 2px}
+.calc-section{background:#fff;border-radius:10px;padding:14px 16px;margin-bottom:10px;box-shadow:0 1px 4px rgba(0,0,0,.04)}
+.calc-section-title{font-size:12px;font-weight:600;color:#1a1a1a;margin-bottom:10px;display:flex;align-items:center;gap:6px}
+.calc-section-title::before{content:'';width:3px;height:12px;background:var(--blue);border-radius:2px;flex-shrink:0}
+.calc-form-group{margin-bottom:12px}
+.calc-form-label{font-size:13px;color:#1a1a1a;margin-bottom:4px;font-weight:500}
+.calc-form-input{width:100%;height:40px;border:1px solid #E5E5E5;border-radius:8px;padding:0 12px;font-size:14px;outline:none;transition:border .2s}
+.calc-form-input:focus{border-color:var(--blue)}
+.calc-result{background:#FFF7E6;border-radius:12px;padding:12px 14px;margin-top:10px;border:1px solid #FFE58F}
+.calc-result-top{text-align:center;margin-bottom:6px;padding-bottom:6px;border-bottom:1px solid #FFE58F}
+.calc-result-label{font-size:12px;color:#AD6800;margin-bottom:2px}
+.calc-result-amount{font-size:24px;font-weight:700}
+.calc-result-row{display:flex;justify-content:space-between;padding:4px 0;font-size:13px}
+.calc-result-key{color:#AD6800}
+.calc-result-val{font-weight:500;color:#AD6800}
+.calc-result-val.red{color:var(--red)}
+.calc-detail{margin-top:10px;background:#fff;border-radius:12px;padding:12px 14px;border:1px solid var(--border)}
+.calc-detail-title{font-size:13px;font-weight:600;color:#1a1a1a;margin-bottom:8px;padding-bottom:6px;border-bottom:1px solid #F0F0F0}
+.calc-detail-body{display:block}
+.calc-detail-body.open{display:block}
+.calc-detail-row{display:flex;justify-content:space-between;padding:4px 0;font-size:12px}
+.calc-detail-key{color:var(--gray)}
+.calc-detail-val{font-weight:500}
+.calc-detail-sep{text-align:center;color:#D9D9D9;font-size:11px;padding:6px 0}
+.calc-footnote{font-size:11px;color:#BBB;line-height:1.5;margin-top:10px;padding:6px 10px;background:#FAFAFA;border-radius:6px}
+/* Auth records */
+.auth-records{flex:1;padding:16px}
+.auth-record-item{background:#fff;border-radius:12px;padding:16px;margin-bottom:10px;position:relative;border-left:4px solid #BFBFBF;box-shadow:0 1px 4px rgba(0,0,0,.04)}
+.auth-record-item.active-sign{border-left-color:var(--blue)}
+.auth-record-item.cancel{border-left-color:#BFBFBF}
+.auth-record-item.history{border-left-color:#E5E5E5}
+.auth-record-tag{display:inline-block;font-size:10px;padding:2px 8px;border-radius:4px;font-weight:500}
+.auth-record-tag.sign{background:#F0F7FF;color:var(--blue)}
+.auth-record-tag.cancel{background:#F5F5F5;color:#8C8C8C}
+.auth-record-type{font-size:14px;font-weight:600;margin:6px 0 2px;color:#1a1a1a}
+.auth-record-status{font-size:12px;color:#8C8C8C;font-weight:500}
+.auth-record-meta{font-size:12px;color:var(--gray);margin-top:2px}
+.auth-record-cancel{position:absolute;top:16px;right:16px;font-size:12px;color:#8C8C8C;cursor:pointer;font-weight:500}
+.auth-record-view{font-size:12px;color:var(--blue);cursor:pointer;margin-top:6px;font-weight:500}
+/* Cancel auth */
+.cancel-page{flex:1;padding:16px;display:flex;flex-direction:column;background:#f5f5f5}
+.cancel-title{font-size:16px;font-weight:600;margin-bottom:4px}
+.cancel-subtitle{font-size:12px;color:var(--gray);margin-bottom:12px;line-height:1.5}
+.cancel-reason-item{display:flex;align-items:center;gap:8px;padding:10px 12px;border:1px solid #E5E5E5;border-radius:10px;margin-bottom:8px;cursor:pointer;transition:all .15s}
+.cancel-reason-item.selected{border-color:var(--blue);background:var(--blue-light)}
+.cancel-radio{width:16px;height:16px;border-radius:50%;border:2px solid #D9D9D9;flex-shrink:0;position:relative;transition:all .15s}
+.cancel-reason-item.selected .cancel-radio{border-color:var(--blue);background:var(--blue)}
+.cancel-reason-item.selected .cancel-radio::after{content:'✓';position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);color:#fff;font-size:10px;font-weight:700}
+.cancel-reason-text{font-size:13px;color:#1a1a1a;flex:1}
+.cancel-reason-input{border:1px solid #E5E5E5;border-radius:6px;outline:none;font-size:13px;width:100%;margin-top:6px;padding:8px 10px;color:#1a1a1a;background:#fff}
+.cancel-reason-input::placeholder{color:#D9D9D9}
+/* Withdraw page v2 */
+.wd-amount-section{background:#fff;border-radius:12px;padding:16px;margin:12px 16px 10px}
+.wd-amount-row{display:flex;align-items:baseline;border-bottom:1px solid var(--border);padding-bottom:12px}
+.wd-amount-currency{font-size:32px;font-weight:700;color:#1a1a1a;margin-right:8px}
+.wd-amount-label{font-size:13px;color:#999;margin-bottom:6px}
+.wd-amount-display{font-size:32px;font-weight:700;color:#1a1a1a}
+.wd-amount-balance{font-size:12px;color:#999}
+.wd-amount-sub{display:flex;justify-content:space-between;align-items:center;margin-top:10px}
+.wd-amount-balance{font-size:12px;color:var(--gray)}
+.wd-section-v2{background:#fff;border-radius:12px;padding:14px 16px;margin:0 16px 10px}
+.wd-section-v2-title{font-size:14px;font-weight:600;color:#1a1a1a;margin-bottom:10px}
+.wd-real-row{display:flex;align-items:center;padding:10px 0;border-bottom:1px solid #F5F5F5}
+.wd-real-row:last-child{border-bottom:none}
+.wd-real-icon{width:20px;height:20px;color:var(--gray);margin-right:10px;flex-shrink:0}
+.wd-real-label{font-size:13px;color:var(--gray);margin-right:12px;flex-shrink:0;min-width:48px}
+.wd-real-value{font-size:14px;color:#1a1a1a}
+.wd-bank-item{display:flex;align-items:center;padding:10px 12px;border:2px solid #E5E5E5;border-radius:10px;margin-bottom:8px;cursor:pointer;transition:all .15s}
+.wd-bank-item.selected{border-color:var(--blue);background:var(--blue-light)}
+.wd-bank-item:last-of-type{margin-bottom:0}
+.wd-bank-logo{width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;margin-right:12px;flex-shrink:0;font-size:14px;font-weight:700}
+.wd-bank-logo.icbc{background:#E8192C;color:#fff}
+.wd-bank-logo.psbc{background:#00A650;color:#fff}
+.wd-bank-info{flex:1}
+.wd-bank-name{font-size:14px;color:#1a1a1a;font-weight:500}
+.wd-bank-card{font-size:12px;color:var(--gray);margin-top:2px}
+.wd-bank-radio{width:18px;height:18px;border-radius:50%;border:2px solid #D9D9D9;flex-shrink:0;position:relative;transition:all .15s}
+.wd-bank-item.selected .wd-bank-radio{border-color:var(--blue);background:var(--blue)}
+.wd-bank-item.selected .wd-bank-radio::after{content:'✓';position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);color:#fff;font-size:11px;font-weight:700}
+.wd-add-bank{display:flex;align-items:center;justify-content:center;gap:6px;padding:12px;border:1px dashed #D9D9D9;border-radius:10px;cursor:pointer;font-size:13px;color:var(--blue);margin-top:10px;transition:all .15s}
+.wd-add-bank:active{background:var(--blue-light);border-color:var(--blue)}
+/* Calc button */
+.btn-calc{height:44px;font-size:14px;border-radius:10px;margin-top:12px;width:100%;flex:none}
+.calc-form-hint{font-size:11px;color:#BBB;margin-top:3px}
+/* Proto switcher */
+.proto-switcher{position:fixed;top:16px;left:50%;transform:translateX(-50%);background:#1a1a1a;border-radius:12px;padding:8px;display:flex;gap:4px;z-index:9999;box-shadow:0 4px 20px rgba(0,0,0,.2)}
+.proto-switcher button{padding:5px 10px;border-radius:8px;border:1px solid #444;background:transparent;color:#999;font-size:11px;cursor:pointer;font-weight:500;white-space:nowrap}
+.proto-switcher button:hover{border-color:#888;color:#ccc}
+.proto-switcher button.active{background:var(--blue);border-color:var(--blue);color:#fff}
+.proto-switcher .divider{width:1px;background:#444;margin:0 4px}
+.proto-switcher button.toggle-empty{border-style:dashed}
+</style>
+
+<!-- Switcher -->
+<div class="proto-switcher">
+  <button class="active" onclick="switchState('unsigned')">未签署</button>
+  <button onclick="switchState('signed')">已签署</button>
+  <button onclick="switchState('resign')">需重签</button>
+  <button onclick="switchState('unverified')">未实名</button>
+  <span class="divider"></span>
+  <button class="toggle-empty" onclick="toggleEmpty()">空状态</button>
+</div>
+
+<!-- PHONE -->
+<div class="phone" id="the-phone">
+
+<!-- ===== 个人中心 ===== -->
+<div class="phone-screen" id="page-center">
+  <div class="phone-notch"><span class="phone-notch-time">9:41</span></div>
+  <div class="profile-header">
+    <div class="avatar"><svg viewBox="0 0 36 36" fill="none"><circle cx="18" cy="14" r="8" fill="#B8D4F0"/><path d="M18 22c-7 0-12 3.5-12 7v3h24v-3c0-3.5-5-7-12-7z" fill="#8BB8E8"/></svg></div>
+    <div class="profile-info"><div class="profile-name">周会菊</div><div class="profile-meta"><span>♀ 35岁</span><span>155****3186</span></div></div>
+    <div class="profile-edit"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M11 2l3 3-8.5 8.5H2.5v-3L11 2z"/></svg></div>
+  </div>
+  <div class="balance-card frozen" id="balance-frozen" onclick="openSignFlow()">
+    <div class="balance-col"><div class="balance-label">银行卡</div><div class="balance-num">2</div></div>
+    <div class="balance-col"><div class="balance-label">可用余额(元)</div><div class="balance-num">0.00</div><div class="balance-sub sign-link">冻结 ¥3,500.00 · 去签署<svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 2l4 4-4 4"/></svg></div></div>
+  </div>
+  <div class="balance-card normal" id="balance-normal" style="display:none" onclick="goPage('page-balance')">
+    <div class="balance-col"><div class="balance-label">银行卡</div><div class="balance-num">2</div></div>
+    <div class="balance-col"><div class="balance-label">可用余额(元)</div><div class="balance-num">4,000.00</div></div>
+  </div>
+  <div class="notice-bar">
+    <div class="notice-icon"><svg viewBox="0 0 18 18" fill="none"><path d="M9 1.5L16 5.5v4c0 4-3 7.5-7 8.5-4-1-7-4.5-7-8.5V5.5l7-4z" fill="#FA8C16" opacity=".15"/><path d="M9 1.5L16 5.5v4c0 4-3 7.5-7 8.5-4-1-7-4.5-7-8.5V5.5l7-4z" stroke="#FA8C16" stroke-width="1.2"/><path d="M9 6v4M9 12.5v.5" stroke="#FA8C16" stroke-width="1.5" stroke-linecap="round"/></svg></div>
+    <span class="notice-text"><strong>人脸核验</strong> 保障您的账户资金安全…</span>
+    <button class="notice-btn orange" onclick="protoAction('去查看')">去查看</button>
+  </div>
+  <div class="warning-card" id="warning-5m" style="display:none" onclick="this.classList.toggle('expanded')">
+    <div class="warning-card-icon"><svg viewBox="0 0 20 20" fill="none"><path d="M10 2L1 18h18L10 2z" fill="#FAAD14" opacity=".15"/><path d="M10 2L1 18h18L10 2z" stroke="#FAAD14" stroke-width="1.5" stroke-linejoin="round"/><path d="M10 8v4M10 14v1" stroke="#FAAD14" stroke-width="2" stroke-linecap="round"/></svg></div>
+    <div class="warning-card-body"><div class="warning-card-title">本年度累计收入已达 ¥4,200,000，请注意税务安排</div><div class="warning-card-detail">连续 12 个月服务收入达到 500 万元时，需办理市场主体登记并自行申报。</div></div>
+    <div class="warning-card-arrow"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 6l4 4 4-4"/></svg></div>
+  </div>
+  <div class="section-card">
+    <div class="section-header"><span class="section-title">问诊订单</span><span class="section-more">全部 <svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M5 3l4 4-4 4"/></svg></span></div>
+    <div class="order-row">
+      <div class="order-item"><div class="order-icon orange"><svg viewBox="0 0 22 22" fill="none"><rect x="3" y="5" width="16" height="12" rx="2" stroke="currentColor" stroke-width="1.5"/></svg></div><div class="order-text">待支付</div></div>
+      <div class="order-item"><div class="order-icon blue"><svg viewBox="0 0 22 22" fill="none"><circle cx="11" cy="11" r="8" stroke="currentColor" stroke-width="1.5"/></svg></div><div class="order-text">进行中</div></div>
+      <div class="order-item"><div class="order-icon green"><svg viewBox="0 0 22 22" fill="none"><circle cx="11" cy="11" r="8" stroke="currentColor" stroke-width="1.5"/></svg></div><div class="order-text">已完成</div></div>
+      <div class="order-item"><div class="order-icon gray"><svg viewBox="0 0 22 22" fill="none"><circle cx="11" cy="11" r="8" stroke="currentColor" stroke-width="1.5"/></svg></div><div class="order-text">已取消</div></div>
+      <div class="order-item"><div class="order-icon red"><svg viewBox="0 0 22 22" fill="none"><circle cx="11" cy="11" r="8" stroke="currentColor" stroke-width="1.5"/></svg></div><div class="order-text">已退款</div></div>
+    </div>
+  </div>
+  <div class="section-card" style="margin-top:10px">
+    <div class="menu-item" id="menu-unverified" style="display:none" onclick="goPage('page-realname')"><div class="menu-left"><div class="menu-icon tax"><svg viewBox="0 0 18 18" fill="none"><path d="M3 5h12M3 9h12M3 13h8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><path d="M14 11v4M12 13h4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></div><div class="menu-text">代办申报<span class="red-dot" style="margin-left:6px"></span></div></div><div class="menu-right"><span class="menu-sub alert">请先完成实名认证</span><span class="menu-arrow"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 4l4 4-4 4"/></svg></span></div></div>
+    <div class="menu-item" id="menu-unsigned" onclick="openSignFlow()"><div class="menu-left"><div class="menu-icon tax"><svg viewBox="0 0 18 18" fill="none"><path d="M3 5h12M3 9h12M3 13h8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><path d="M14 11v4M12 13h4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></div><div class="menu-text">代办申报<span class="red-dot" style="margin-left:6px"></span></div></div><div class="menu-right"><span class="menu-sub alert">请完成代办申报授权</span><span class="menu-arrow"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 4l4 4-4 4"/></svg></span></div></div>
+    <div class="menu-item" id="menu-signed" style="display:none" onclick="goPage('page-auth-records')"><div class="menu-left"><div class="menu-icon tax"><svg viewBox="0 0 18 18" fill="none"><path d="M3 5h12M3 9h12M3 13h8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><path d="M14 11v4M12 13h4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></div><div class="menu-text">代办申报</div></div><div class="menu-right"><span class="menu-sub info">连续劳务报酬（适用累计预扣法）</span><span class="menu-arrow"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 4l4 4-4 4"/></svg></span></div></div>
+    <div class="menu-item" id="menu-resign" style="display:none" onclick="openResignFlow()"><div class="menu-left"><div class="menu-icon tax"><svg viewBox="0 0 18 18" fill="none"><path d="M3 5h12M3 9h12M3 13h8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><path d="M14 11v4M12 13h4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></div><div class="menu-text">代办申报<span class="red-dot" style="margin-left:6px"></span></div></div><div class="menu-right"><span class="menu-sub warning">协议已更新，请重新签署</span><span class="menu-arrow"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 4l4 4-4 4"/></svg></span></div></div>
+    <div class="menu-item" id="menu-calc" style="display:none" onclick="goPage('page-tax-calc')"><div class="menu-left"><div class="menu-icon calc"><svg viewBox="0 0 18 18" fill="none"><rect x="3" y="3" width="12" height="12" rx="2" stroke="currentColor" stroke-width="1.5"/><path d="M6 7h6M6 10h3" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg></div><div class="menu-text">税费测算</div></div><div class="menu-right"><span class="menu-sub">预估个税</span><span class="menu-arrow"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 4l4 4-4 4"/></svg></span></div></div>
+    <div class="menu-item" onclick="goPage('page-realname')"><div class="menu-left"><div class="menu-icon" style="background:linear-gradient(135deg,#13C2C2,#08979C)"><svg viewBox="0 0 18 18" fill="none"><rect x="4" y="2" width="10" height="14" rx="2" stroke="currentColor" stroke-width="1.5"/><circle cx="9" cy="7" r="2" stroke="currentColor" stroke-width="1.2"/><path d="M6 13c0-1.7 1.3-3 3-3s3 1.3 3 3" stroke="currentColor" stroke-width="1.2"/></svg></div><div class="menu-text">实名认证</div></div><div class="menu-right"><span class="menu-arrow"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 4l4 4-4 4"/></svg></span></div></div>
+    <div class="menu-item" onclick="protoAction('我的问卷')"><div class="menu-left"><div class="menu-icon survey"><svg viewBox="0 0 18 18" fill="none"><rect x="3" y="2" width="12" height="14" rx="2" stroke="currentColor" stroke-width="1.5"/><path d="M6 7h6M6 10h4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></div><div class="menu-text">我的问卷</div></div><div class="menu-right"><span class="menu-arrow"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 4l4 4-4 4"/></svg></span></div></div>
+    <div class="menu-item" onclick="protoAction('我的研究')"><div class="menu-left"><div class="menu-icon research"><svg viewBox="0 0 18 18" fill="none"><path d="M3 4h8v10H3zM11 7h4v7h-4z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg></div><div class="menu-text">我的研究</div></div><div class="menu-right"><span class="menu-arrow"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 4l4 4-4 4"/></svg></span></div></div>
+    <div class="menu-item" onclick="protoAction('志愿者记录')"><div class="menu-left"><div class="menu-icon volunteer"><svg viewBox="0 0 18 18" fill="none"><circle cx="9" cy="6" r="3" stroke="currentColor" stroke-width="1.5"/><path d="M3 16c0-3.3 2.7-6 6-6s6 2.7 6 6" stroke="currentColor" stroke-width="1.5"/></svg></div><div class="menu-text">志愿者记录</div></div><div class="menu-right"><span class="menu-arrow"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 4l4 4-4 4"/></svg></span></div></div>
+    <div class="menu-item" onclick="protoAction('入组记录')"><div class="menu-left"><div class="menu-icon enroll"><svg viewBox="0 0 18 18" fill="none"><rect x="3" y="3" width="12" height="12" rx="2" stroke="currentColor" stroke-width="1.5"/></svg></div><div class="menu-text">入组记录</div></div><div class="menu-right"><span class="menu-arrow"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 4l4 4-4 4"/></svg></span></div></div>
+    <div class="menu-item" onclick="protoAction('医药订单')"><div class="menu-left"><div class="menu-icon medicine"><svg viewBox="0 0 18 18" fill="none"><rect x="5" y="2" width="8" height="14" rx="3" stroke="currentColor" stroke-width="1.5"/></svg></div><div class="menu-text">医药订单</div></div><div class="menu-right"><span class="menu-arrow"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 4l4 4-4 4"/></svg></span></div></div>
+    <div class="menu-item" onclick="protoAction('收货地址')"><div class="menu-left"><div class="menu-icon address"><svg viewBox="0 0 18 18" fill="none"><path d="M9 2C6.2 2 4 4.2 4 7c0 4 5 9 5 9s5-5 5-9c0-2.8-2.2-5-5-5z" stroke="currentColor" stroke-width="1.5"/><circle cx="9" cy="7" r="2" stroke="currentColor" stroke-width="1.2"/></svg></div><div class="menu-text">收货地址</div></div><div class="menu-right"><span class="menu-arrow"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 4l4 4-4 4"/></svg></span></div></div>
+  </div>
+  <!-- 费用申请入口 -->
+  <div class="section-card" style="margin-top:10px">
+    <div class="menu-item" onclick="tryOpenExpense()"><div class="menu-left"><div class="menu-icon" style="background:linear-gradient(135deg,#FF7A45,#FA541C)"><svg viewBox="0 0 18 18" fill="none"><rect x="3" y="2" width="12" height="14" rx="2" stroke="currentColor" stroke-width="1.5"/><path d="M6 6h6M6 9h4M6 12h2" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg></div><div class="menu-text">费用申请</div></div><div class="menu-right"><span class="menu-sub">在线申请</span><span class="menu-arrow"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 4l4 4-4 4"/></svg></span></div></div>
+  </div>
+  <!-- 拦截弹窗 -->
+  <div class="sheet-mask intercept-sheet" id="intercept-unverified" onclick="if(event.target===this)hideSheet('intercept-unverified')"><div class="sheet-body"><div class="sheet-handle"></div><div class="intercept-icon orange"><svg viewBox="0 0 24 24" fill="none"><path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10 10-4.5 10-10S17.5 2 12 2z" fill="currentColor" opacity=".15"/><path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10 10-4.5 10-10S17.5 2 12 2z" stroke="currentColor" stroke-width="1.5"/><path d="M12 8v4M12 16v.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></div><div class="intercept-title">请先完成实名认证</div><div class="intercept-body">使用费用申请等服务需先完成实名认证，认证通过后方可继续操作。</div><div class="btn-row"><button class="btn btn-secondary" onclick="hideSheet('intercept-unverified')">稍后再说</button><button class="btn btn-primary" onclick="hideSheet('intercept-unverified');goPage('page-realname')">去认证</button></div></div></div>
+  <div class="sheet-mask intercept-sheet" id="intercept-unsigned" onclick="if(event.target===this)hideSheet('intercept-unsigned')"><div class="sheet-body"><div class="sheet-handle"></div><div class="intercept-icon red"><svg viewBox="0 0 24 24" fill="none"><path d="M12 2L3 20h18L12 2z" fill="currentColor" opacity=".15"/><path d="M12 2L3 20h18L12 2z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/><path d="M12 9v5M12 17v.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></div><div class="intercept-title">您还未完成观严代办申报授权签署</div><div class="intercept-body">依据《国家税务总局关于互联网平台企业为平台内从业人员办理扣缴申报、代办申报若干事项的公告》（国家税务总局公告2025年第16号），与观严合作取得相关收入时，涉及的个人所得税、增值税及附加税（如有）应由您本人依法缴纳。为依法为您办理上述税费的代扣代缴与代办申报，在费用计入您的账户余额前，请您选择个税申报方式并签署《个人所得税、增值税等代办申报知情同意书》。</div><div class="btn-row"><button class="btn btn-secondary" onclick="hideSheet('intercept-unsigned')">再想想</button><button class="btn btn-primary" onclick="hideSheet('intercept-unsigned');openSignFlow()">去签署</button></div></div></div>
+  <div class="sheet-mask intercept-sheet" id="intercept-resign" onclick="if(event.target===this)hideSheet('intercept-resign')"><div class="sheet-body"><div class="sheet-handle"></div><div class="intercept-icon orange"><svg viewBox="0 0 24 24" fill="none"><path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10 10-4.5 10-10S17.5 2 12 2z" fill="currentColor" opacity=".15"/><path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10 10-4.5 10-10S17.5 2 12 2z" stroke="currentColor" stroke-width="1.5"/><path d="M12 8v4M12 16v.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></div><div class="intercept-title">协议已更新，请重新签署</div><div class="intercept-body">知情同意书已发布新版本（V1.1），重新签署后方可继续使用此功能。</div><div class="btn-row"><button class="btn btn-secondary" onclick="hideSheet('intercept-resign')">暂不签署</button><button class="btn btn-primary" onclick="hideSheet('intercept-resign');openResignFlow()">去重签</button></div></div></div>
+  <!-- 登录引导弹窗（未签署状态进入个人中心时触发） -->
+  <div class="modal-mask" id="modal-login-unsigned"><div class="modal-box"><div class="modal-icon red"><svg viewBox="0 0 24 24" fill="none"><path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10 10-4.5 10-10S17.5 2 12 2z" fill="currentColor" opacity=".15"/><path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10 10-4.5 10-10S17.5 2 12 2z" stroke="currentColor" stroke-width="1.5"/><path d="M12 8v5M12 17v.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></div><div class="modal-title">您有待领取的金额</div><div class="modal-body">您有 <b>¥1,200</b> 元因未完成代办申报授权而被冻结，请完成签署后领取</div><div class="modal-btn-row"><button class="btn btn-secondary" onclick="hideModal('modal-login-unsigned')">稍后再说</button><button class="btn btn-primary" onclick="hideModal('modal-login-unsigned');openSignFlow()">去签署</button></div></div></div>
+  <!-- 协议更新重签强弹窗（需重签状态进入个人中心时触发） -->
+  <div class="modal-mask" id="modal-login-resign"><div class="modal-box"><div class="modal-icon orange"><svg viewBox="0 0 24 24" fill="none"><path d="M12 2L3 20h18L12 2z" fill="currentColor" opacity=".15"/><path d="M12 2L3 20h18L12 2z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/><path d="M12 9v5M12 17v.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></div><div class="modal-title">协议已更新，请重新签署</div><div class="modal-body">知情同意书已发布新版本（<b>V1.1</b>），重新签署后方可继续使用此功能。</div><div class="modal-btn-row"><button class="btn btn-secondary" onclick="hideModal('modal-login-resign')">暂不签署</button><button class="btn btn-primary" onclick="hideModal('modal-login-resign');openResignFlow()">去重签</button></div></div></div>
+  <div style="flex:1"></div>
+  <div class="tab-bar">
+    <div class="tab-item"><svg class="tab-icon-normal" viewBox="0 0 22 22" fill="none"><path d="M3 10l8-7 8 7v8a1 1 0 01-1 1H4a1 1 0 01-1-1v-8z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg><span class="tab-text-normal">首页</span></div>
+    <div class="tab-item"><svg class="tab-icon-normal" viewBox="0 0 22 22" fill="none"><path d="M4 6h14M4 11h10M4 16h12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg><span class="tab-text-normal">消息</span></div>
+    <div class="tab-center"><div class="tab-center-btn">+</div></div>
+    <div class="tab-item"><svg class="tab-icon-normal" viewBox="0 0 22 22" fill="none"><circle cx="11" cy="11" r="9" stroke="currentColor" stroke-width="1.5"/></svg><span class="tab-text-normal">发现</span></div>
+    <div class="tab-item active"><svg class="tab-icon-active" viewBox="0 0 22 22" fill="currentColor"><circle cx="11" cy="7" r="4"/><path d="M4 19c0-3.9 3.1-7 7-7s7 3.1 7 7"/></svg><span class="tab-text-active">我的</span></div>
+  </div>
+</div>
+
+<!-- ===== 首次签署 Step1 ===== -->
+<div class="phone-screen" id="page-sign-step1" style="display:none">
+  <div class="phone-notch"><span class="phone-notch-time">9:41</span></div>
+  <div class="nav-bar"><span class="back" onclick="goPage('page-center')">‹</span><span class="title">代办申报授权</span></div>
+  <div class="page-content">
+    <div style="font-size:14px;font-weight:600;margin:16px 0 10px">选择申报方式</div>
+    <div class="method-options">
+      <div class="option-card selected" onclick="selectMethod(this)"><div class="option-card-radio"></div><div class="option-card-title">连续劳务报酬（适用累计预扣法）</div><div class="option-card-desc">适用于在本平台持续获得收入的用户。按全年累计收入计算预扣税额，月收入较低时税负较轻，连续月份中断后累计数据清零重新计算。</div></div>
+      <div class="option-card" onclick="selectMethod(this)"><div class="option-card-radio"></div><div class="option-card-title">一般劳务报酬（使用按次预扣法）</div><div class="option-card-desc">适用于偶尔获得收入的用户。每笔收入独立计算税额，不参与跨笔累计，计算简单明确。</div></div>
+    </div>
+    <div class="agreement-check"><input type="checkbox" id="sign-agree" onchange="updateBtn('sign-agree','sign-next')"><label for="sign-agree">我已阅读并同意<a onclick="openPdf('pdf-sign')" style="cursor:pointer">《个人所得税、增值税等代办申报知情同意书》</a></label></div>
+    <div class="btn-row" style="margin-top:auto;padding-top:12px"><button class="btn btn-primary" id="sign-next" onclick="showSheet('sign-sheet')" disabled>下一步</button></div>
+  </div>
+  <div class="pdf-overlay" id="pdf-sign"><div class="pdf-nav"><span class="back" onclick="closePdf('pdf-sign')">‹</span><span class="title">知情同意书</span></div><div class="pdf-body"><div class="pdf-page"><h2>个人所得税、增值税等代办申报<br>知情同意书</h2><p><b>甲方：</b>观严（北京）科技有限公司</p><p><b>乙方：</b>签署人</p><p class="clause">第一条 代扣代缴范围</p><p>甲方按照乙方选择的个税申报方式，依法代扣代缴个人所得税。</p><p class="clause">第二条 申报方式选择</p><p>（一）连续劳务报酬（适用累计预扣法）（二）一般劳务报酬（使用按次预扣法）</p><p class="clause">第三条 扣税时点</p><p>入账全额进余额→提现时计算个税→打款时执行代扣代缴。</p><p class="clause">第四条 乙方权利与义务</p><p>乙方有权选择申报方式，取消授权后可重新选择。</p><p class="clause">第五条 协议变更</p><p>甲方有权根据法律法规变化更新本协议。</p><div class="pdf-sign-area"><div class="pdf-sign-box"><div class="pdf-sign-label">乙方（签名）</div><div class="pdf-sign-line"></div></div><div class="pdf-sign-box"><div class="pdf-sign-label">甲方（盖章）</div><div class="pdf-sign-line"></div></div></div></div></div></div>
+  <div class="sheet-mask" id="sign-sheet" onclick="if(event.target===this)hideSheet('sign-sheet')"><div class="sheet-body"><div class="sheet-handle"></div><div class="sheet-title">确认实名信息</div><div class="sheet-subtitle">请核对以下信息是否正确</div><div class="sheet-info"><div class="sheet-row"><span class="sheet-key">姓名</span><span class="sheet-val">周会菊</span></div><div class="sheet-row"><span class="sheet-key">证件号码</span><span class="sheet-val">110***********3186</span></div><div class="sheet-row"><span class="sheet-key">申报方式</span><span class="sheet-val" style="color:var(--blue-dark)" id="sign-sheet-method">连续劳务报酬（适用累计预扣法）</span></div></div><div class="btn-row"><button class="btn btn-secondary" onclick="hideSheet('sign-sheet')">返回修改</button><button class="btn btn-primary" onclick="hideSheet('sign-sheet');goPage('page-sign-step2')">确认无误</button></div></div></div>
+</div>
+
+<!-- ===== 首次签署 Step2 签名 ===== -->
+<div class="phone-screen" id="page-sign-step2" style="display:none">
+  <div class="phone-notch"><span class="phone-notch-time">9:41</span></div>
+  <div class="nav-bar"><span class="back" onclick="goPage('page-sign-step1')">‹</span><span class="title">代办申报授权</span></div>
+  <div class="sign-page">
+    <div class="sign-tip">请在下方签名区域手写签名，完成后点击"确认授权"</div>
+    <div class="sign-canvas-wrap"><button class="sign-clear" onclick="protoAction('清除签名')">清除</button><div class="sign-canvas-placeholder"><svg viewBox="0 0 48 48" fill="none"><path d="M8 36c4-8 10-20 16-20s6 12 10 12 6-8 6-8" stroke="currentColor" stroke-width="2" stroke-linecap="round" opacity=".4"/></svg><p>请在此处手写签名</p></div></div>
+    <div class="sign-example">签名将合成至协议PDF作为签署凭证</div>
+    <div class="btn-row" style="margin-top:auto;padding-top:16px"><button class="btn btn-secondary" onclick="goPage('page-sign-step1')">上一步</button><button class="btn btn-primary" onclick="completeSign()">确认授权</button></div>
+  </div>
+</div>
+
+<!-- ===== 重签 Step1 ===== -->
+<div class="phone-screen" id="page-resign-step1" style="display:none">
+  <div class="phone-notch"><span class="phone-notch-time">9:41</span></div>
+  <div class="nav-bar"><span class="back" onclick="goPage('page-center')">‹</span><span class="title">重新签署授权</span></div>
+  <div class="page-content">
+    <div style="font-size:14px;font-weight:600;margin:16px 0 10px">当前申报方式</div>
+    <div class="resign-method-card">
+      <div class="resign-method-header"><span class="resign-method-name">连续劳务报酬（适用累计预扣法）</span><span class="resign-method-lock">不可变更</span></div>
+      <div class="resign-method-desc">适用于在本平台持续获得收入的用户。按全年累计收入计算预扣税额，月收入较低时税负较轻，连续月份中断后累计数据清零重新计算。</div>
+    </div>
+    <div class="agreement-check"><input type="checkbox" id="resign-agree" onchange="updateBtn('resign-agree','resign-next')"><label for="resign-agree">我已阅读并同意<a onclick="openPdf('pdf-resign')" style="cursor:pointer">《个人所得税、增值税等代办申报知情同意书》</a></label></div>
+    <div class="btn-row" style="margin-top:auto;padding-top:12px"><button class="btn btn-primary" id="resign-next" onclick="showSheet('resign-sheet')" disabled>下一步</button></div>
+  </div>
+  <div class="pdf-overlay" id="pdf-resign"><div class="pdf-nav"><span class="back" onclick="closePdf('pdf-resign')">‹</span><span class="title">知情同意书（V1.1）</span></div><div class="pdf-body"><div class="pdf-page"><h2>个人所得税、增值税等代办申报<br>知情同意书</h2><p><b>版本：V1.1</b></p><p><b>甲方：</b>观严（北京）科技有限公司</p><p class="clause">第一条 代扣代缴范围</p><p>甲方按照乙方选择的个税申报方式，依法代扣代缴个人所得税。</p><p class="clause" style="color:#FA8C16">第三条 扣税时点（已更新）</p><p style="color:#D48806">提现与打款跨月时，税额以提现时计算为准。</p><div class="pdf-sign-area"><div class="pdf-sign-box"><div class="pdf-sign-label">乙方（签名）</div><div class="pdf-sign-line"></div></div><div class="pdf-sign-box"><div class="pdf-sign-label">甲方（盖章）</div><div class="pdf-sign-line"></div></div></div></div></div></div>
+  <div class="sheet-mask" id="resign-sheet" onclick="if(event.target===this)hideSheet('resign-sheet')"><div class="sheet-body"><div class="sheet-handle"></div><div class="sheet-title">确认实名信息</div><div class="sheet-subtitle">请核对以下信息是否正确</div><div class="sheet-info"><div class="sheet-row"><span class="sheet-key">姓名</span><span class="sheet-val">周会菊</span></div><div class="sheet-row"><span class="sheet-key">证件号码</span><span class="sheet-val">110***********3186</span></div><div class="sheet-row"><span class="sheet-key">申报方式</span><span class="sheet-val" style="color:var(--blue-dark)">连续劳务报酬（适用累计预扣法）</span></div></div><div class="btn-row"><button class="btn btn-secondary" onclick="hideSheet('resign-sheet')">返回修改</button><button class="btn btn-primary" onclick="hideSheet('resign-sheet');goPage('page-resign-step2')">确认无误</button></div></div></div>
+</div>
+
+<!-- ===== 重签 Step2 签名 ===== -->
+<div class="phone-screen" id="page-resign-step2" style="display:none">
+  <div class="phone-notch"><span class="phone-notch-time">9:41</span></div>
+  <div class="nav-bar"><span class="back" onclick="goPage('page-resign-step1')">‹</span><span class="title">重新签署授权</span></div>
+  <div class="sign-page">
+    <div class="sign-tip">请在下方签名区域手写签名，完成后点击"确认授权"</div>
+    <div class="sign-canvas-wrap"><button class="sign-clear" onclick="protoAction('清除签名')">清除</button><div class="sign-canvas-placeholder"><svg viewBox="0 0 48 48" fill="none"><path d="M8 36c4-8 10-20 16-20s6 12 10 12 6-8 6-8" stroke="currentColor" stroke-width="2" stroke-linecap="round" opacity=".4"/></svg><p>请在此处手写签名</p></div></div>
+    <div class="sign-example">签名将合成至协议PDF作为签署凭证</div>
+    <div class="btn-row" style="margin-top:auto;padding-top:16px"><button class="btn btn-secondary" onclick="goPage('page-resign-step1')">上一步</button><button class="btn btn-primary" onclick="completeResign()">确认授权</button></div>
+  </div>
+</div>
+
+<!-- ===== 签署成功 ===== -->
+<div class="phone-screen" id="page-success" style="display:none">
+  <div class="phone-notch"><span class="phone-notch-time">9:41</span></div>
+  <div class="nav-bar"><span class="back" style="visibility:hidden">‹</span><span class="title">授权结果</span></div>
+  <div class="success-page">
+    <div class="success-icon">✓</div>
+    <div class="success-title" id="success-heading">授权成功</div>
+    <div class="success-desc" id="success-desc">您已成功签署代办申报知情同意书，<br>系统将为您代扣代缴个人所得税</div>
+    <div class="success-info">
+      <div class="success-row"><span class="success-key">申报方式</span><span class="success-val" id="success-method">连续劳务报酬（适用累计预扣法）</span></div>
+      <div class="success-row"><span class="success-key">签署协议</span><span class="success-val" id="success-version">V1.0</span></div>
+      <div class="success-row"><span class="success-key">签署时间</span><span class="success-val" id="success-time">2026-11-09 14:30</span></div>
+    </div>
+    <button class="btn-text" onclick="backToCenter()">完成</button>
+    <button class="btn-text" onclick="protoAction('查看签署协议PDF')" style="font-weight:400;color:var(--gray)">查看签署协议</button>
+  </div>
+</div>
+
+<!-- ===== 费用申请 ===== -->
+<div class="phone-screen" id="page-expense" style="display:none">
+  <div class="phone-notch"><span class="phone-notch-time">9:41</span></div>
+  <div class="nav-bar"><span class="back" onclick="goPage('page-center')">‹</span><span class="title">费用申请</span><span class="right" onclick="protoAction('申请记录')">申请记录</span></div>
+  <div class="expense-page">
+    <div style="background:#fff;border-radius:10px;padding:0 16px;margin-top:12px">
+      <div class="expense-field"><span class="expense-label"><span class="required">*</span>费用类型</span><span class="expense-value filled">问卷调研<span class="expense-arrow"><svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M5 3l4 4-4 4"/></svg></span></span></div>
+      <div class="expense-field"><span class="expense-label"><span class="required">*</span>选择项目</span><span class="expense-value filled">表单费用申请测试项目<span class="expense-arrow"><svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M5 3l4 4-4 4"/></svg></span></span></div>
+      <div class="expense-field"><span class="expense-label"><span class="required">*</span>选择中心</span><span class="expense-value filled">安徽省立医院<span class="expense-arrow"><svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M5 3l4 4-4 4"/></svg></span></span></div>
+      <div class="expense-field"><span class="expense-label"><span class="required">*</span>申请费用(元)</span><span class="expense-value filled" style="color:#1a1a1a;font-weight:600;font-size:16px">50</span></div>
+      <div class="expense-field"><span class="expense-label"><span class="required">*</span>选择银行卡</span><span class="expense-value filled" style="font-size:13px">(中国民生银行)-6217****0465<span class="expense-arrow"><svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M5 3l4 4-4 4"/></svg></span></span></div>
+    </div>
+    <div class="expense-card"><div class="expense-card-icon"><svg viewBox="0 0 18 18" fill="none"><circle cx="9" cy="9" r="7" stroke="currentColor" stroke-width="1.5"/><path d="M9 6v4M9 12.5v.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></div><div class="expense-card-body"><div class="expense-card-title">临床试验招募官用户画像及平台满意度调研</div><div class="expense-card-sub">参与时间：2026-09-07 15:36:14</div></div></div>
+    <div class="expense-bottom">
+      <div class="expense-total"><span class="expense-total-label">申请总费用(元)</span><span class="expense-total-num">50</span></div>
+      <div class="expense-btns"><button class="btn-add" onclick="protoAction('继续添加')">继续添加</button><button class="btn-submit" onclick="protoAction('提交成功')">提交申请<span class="expense-badge">1</span></button></div>
+      <div class="expense-help"><a onclick="protoAction('我有问题')">我有问题?</a></div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== 账户页 C4 ===== -->
+<div class="phone-screen" id="page-balance" style="display:none">
+  <div class="phone-notch"><span class="phone-notch-time">9:41</span></div>
+  <div class="nav-bar"><span class="back" onclick="goPage('page-center')">‹</span><span class="title">账户</span><span class="right" onclick="goPage('page-tax-calc')">🧮 测算</span></div>
+  <!-- 有冻结 -->
+  <div id="c4-frozen">
+    <div class="acct-balance-card"><div class="acct-label">可用余额(元)</div><div class="acct-amount">¥0.00</div></div>
+    <div class="acct-balance-card"><div class="acct-label">研究余额<span style="font-size:11px;color:#999;font-weight:400">（参与临床研究过程中获得费用）</span></div>
+      <div class="acct-row"><div class="acct-amount">¥4,000.00</div><button class="acct-btn-sm primary" onclick="tryGoWithdraw()">提现</button></div>
+      <div class="acct-divider"><div style="display:flex;justify-content:space-between;align-items:center"><div><span style="font-size:12px;color:#666">预估个税总额</span><span class="acct-tax-hint">动态估算值，仅作参考</span></div><span style="font-size:15px;font-weight:600;color:var(--red)">¥87.62</span></div></div>
+      <div class="acct-sign-link" onclick="openSignFlow()">待签署知情同意书，去签署 ›</div>
+    </div>
+  </div>
+  <!-- 无冻结 -->
+  <div id="c4-nofrozen" style="display:none">
+    <div class="acct-balance-card"><div class="acct-label">可用余额(元)</div><div class="acct-amount">¥4,000.00</div></div>
+    <div class="acct-balance-card"><div class="acct-label">研究余额<span style="font-size:11px;color:#999;font-weight:400">（参与临床研究过程中获得费用）</span></div>
+      <div class="acct-row"><div class="acct-amount">¥4,000.00</div><button class="acct-btn-sm primary" onclick="tryGoWithdraw()">提现</button></div>
+      <div class="acct-divider"><div style="display:flex;justify-content:space-between;align-items:center"><div><span style="font-size:12px;color:#666">预估个税总额</span><span class="acct-tax-hint">动态估算值，仅作参考</span></div><span style="font-size:15px;font-weight:600;color:var(--red)">¥87.62</span></div></div>
+    </div>
+  </div>
+  <!-- 提现记录 -->
+  <div style="padding:12px 0 0"><div class="wd-section-title"><span>提现记录</span><span>全部 ▾</span></div>
+    <div id="data-wd-records" style="background:#fff;margin:0 16px;border-radius:10px;overflow:hidden">
+      <div class="wd-record" onclick="protoAction('提现详情')"><div class="wd-record-left"><div class="wd-record-title">提现</div><div class="wd-record-meta">工商银行 尾号3186 · 2026-11-03</div></div><div class="wd-record-right"><div class="wd-record-amount">¥2,000.00</div><div class="wd-record-status pending">待打款</div></div></div>
+      <div class="wd-record" onclick="protoAction('提现详情')"><div class="wd-record-left"><div class="wd-record-title">提现</div><div class="wd-record-meta">工商银行 尾号3186 · 2026-10-28</div></div><div class="wd-record-right"><div class="wd-record-amount">¥1,500.00</div><div class="wd-record-status done">已到账</div></div></div>
+      <div class="wd-record"><div class="wd-record-left"><div class="wd-record-title">提现驳回</div><div class="wd-record-meta" style="color:var(--red)">信息不完整，请重新提交 · 2026-10-20</div></div><div class="wd-record-right"><div class="wd-record-amount" style="color:var(--gray);text-decoration:line-through">¥800.00</div><div class="wd-record-status rejected">已驳回</div></div></div>
+    </div>
+    <div id="empty-wd-records" style="display:none;background:#fff;margin:0 16px;border-radius:10px"><div class="empty-state" style="padding:48px 20px 32px"><svg viewBox="0 0 100 100" fill="none"><rect x="20" y="25" width="60" height="45" rx="6" stroke="currentColor" stroke-width="2"/><path d="M20 37h60" stroke="currentColor" stroke-width="2"/><circle cx="32" cy="31" r="2" fill="currentColor"/><circle cx="40" cy="31" r="2" fill="currentColor"/><circle cx="48" cy="31" r="2" fill="currentColor"/><path d="M38 52h24M38 58h16" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg><div class="empty-state-text">暂无提现记录</div><div class="empty-state-hint">提现成功后，记录将展示在此处</div></div></div>
+    <div style="text-align:center;font-size:12px;color:#CCC;padding:8px 0">— 没有更多了 —</div>
+  </div>
+  <!-- 提现拦截(重签)复用center的intercept-resign,在此页也加一个 -->
+  <div class="sheet-mask intercept-sheet" id="intercept-resign-wd" onclick="if(event.target===this)hideSheet('intercept-resign-wd')"><div class="sheet-body"><div class="sheet-handle"></div><div class="intercept-icon orange"><svg viewBox="0 0 24 24" fill="none"><path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10 10-4.5 10-10S17.5 2 12 2z" fill="currentColor" opacity=".15"/><path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10 10-4.5 10-10S17.5 2 12 2z" stroke="currentColor" stroke-width="1.5"/><path d="M12 8v4M12 16v.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></div><div class="intercept-title">协议已更新，请重新签署</div><div class="intercept-body">知情同意书已发布新版本（V1.1），重新签署后方可继续使用此功能。</div><div class="btn-row"><button class="btn btn-secondary" onclick="hideSheet('intercept-resign-wd')">暂不签署</button><button class="btn btn-primary" onclick="hideSheet('intercept-resign-wd');openResignFlow()">去重签</button></div></div></div>
+</div>
+
+<!-- ===== 收益明细 C4-1 ===== -->
+<div class="phone-screen" id="page-income-detail" style="display:none">
+  <div class="phone-notch"><span class="phone-notch-time">9:41</span></div>
+  <div class="nav-bar"><span class="back" onclick="goPage('page-balance')">‹</span><span class="title">收益明细</span></div>
+  <div style="padding:12px 0 0;flex:1">
+    <div class="income-filter"><span class="income-filter-tag">全部项目 ▾</span><span></span></div>
+    <div id="data-income-list">
+    <div class="income-item"><div class="income-item-top"><span class="income-project">测试正大01</span><span class="income-amount">¥2,000.00</span></div><div class="income-meta">郑州大学第一附属医院</div><div class="income-meta">病例征集费</div><div class="income-bottom"><span class="income-time">2026-01-14 16:54</span><span class="income-tax">预估个税 ¥87.62</span></div></div>
+    <div class="income-item"><div class="income-item-top"><span class="income-project">测试正大01</span><span class="income-amount">¥2,000.00</span></div><div class="income-meta">郑州大学第一附属医院</div><div class="income-meta">病例征集费</div><div class="income-bottom"><span class="income-time">2026-01-14 16:54</span><span class="income-tax">预估个税 ¥87.62</span></div></div>
+    <div class="income-item"><div class="income-item-top"><span class="income-project">测试正大02</span><span class="income-amount">¥1,500.00</span></div><div class="income-meta">北京协和医院</div><div class="income-meta">入组费</div><div class="income-bottom"><span class="income-time">2026-01-10 09:30</span><span class="income-tax">预估个税 ¥43.81</span></div></div>
+    <div class="income-hint">预估个税：仅根据当前条件估算，<b>非最终扣税金额</b></div>
+    </div>
+  </div>
+  <div style="position:sticky;bottom:0;background:#fff;padding:12px 16px;border-top:1px solid var(--border);display:flex;gap:10px;flex-shrink:0">
+    <button class="btn btn-primary" onclick="goPage('page-withdraw')" style="flex:1">全部提现</button>
+    <button class="btn btn-secondary" onclick="goPage('page-withdraw')" style="flex:1">部分提现</button>
+  </div>
+</div>
+
+<!-- ===== 提现确认 C5 ===== -->
+<div class="phone-screen" id="page-withdraw" style="display:none">
+  <div class="phone-notch"><span class="phone-notch-time">9:41</span></div>
+  <div class="nav-bar"><span class="back" onclick="goPage('page-income-detail')">‹</span><span class="title">提现</span></div>
+  <div class="wd-page">
+    <div class="wd-amount-section">
+      <div class="wd-amount-label">提现金额</div>
+      <div class="wd-amount-row"><span class="wd-amount-currency">¥</span><span class="wd-amount-display" id="wd-amount">4,000.00</span></div>
+      <div class="wd-amount-sub"><span class="wd-amount-balance">研究余额: ¥4,000.00</span></div>
+    </div>
+    <div class="wd-tax-info">
+      <div class="wd-tax-row"><span class="wd-tax-label">预估个税 <span class="wd-tax-tag">连续劳务报酬（适用累计预扣法）</span></span><span class="wd-tax-val" id="wd-tax">¥17.53</span></div>
+      <div class="wd-tax-row wd-result-row"><span class="wd-tax-label">预估到账金额</span><span class="wd-tax-val wd-actual" id="wd-actual">¥3,982.47</span></div>
+    </div>
+    <div class="wd-section-v2">
+      <div class="wd-section-v2-title">实名信息</div>
+      <div class="wd-real-row"><svg class="wd-real-icon" viewBox="0 0 20 20" fill="none"><circle cx="10" cy="7" r="4" stroke="currentColor" stroke-width="1.5"/><path d="M3 18c0-3.3 2.7-6 7-6s7 3.3 7 6" stroke="currentColor" stroke-width="1.5"/></svg><span class="wd-real-label">姓名</span><span class="wd-real-value">**菊</span></div>
+      <div class="wd-real-row"><svg class="wd-real-icon" viewBox="0 0 20 20" fill="none"><rect x="3" y="4" width="14" height="12" rx="2" stroke="currentColor" stroke-width="1.5"/><path d="M7 9h6M7 12h4" stroke="currentColor" stroke-width="1" stroke-linecap="round"/></svg><span class="wd-real-label">身份证号</span><span class="wd-real-value">412722********3544</span></div>
+    </div>
+    <div class="wd-section-v2">
+      <div class="wd-section-v2-title">选择银行卡</div>
+      <div class="wd-bank-item selected" onclick="selectBank(this)"><div class="wd-bank-logo icbc">工</div><div class="wd-bank-info"><div class="wd-bank-name">周会菊</div><div class="wd-bank-card">中国工商银行 (7455)</div></div><div class="wd-bank-radio"></div></div>
+      <div class="wd-bank-item" onclick="selectBank(this)"><div class="wd-bank-logo psbc">邮</div><div class="wd-bank-info"><div class="wd-bank-name">周会菊</div><div class="wd-bank-card">中国邮政储蓄银行 (4411)</div></div><div class="wd-bank-radio"></div></div>
+      <div class="wd-add-bank" onclick="protoAction('添加银行卡')">+ 添加银行卡</div>
+    </div>
+    <div style="margin-top:auto">
+      <button class="btn btn-primary" id="wd-submit" onclick="goPage('page-withdraw-result')" style="width:100%">确认提现</button>
+      <div style="text-align:center;margin-top:10px"><a style="font-size:12px;color:var(--blue);cursor:pointer;text-decoration:none" onclick="protoAction('我有问题')">我有问题?</a></div>
+      <p class="wd-hint">预估个税仅供参考，最终代扣税额以到账为准</p>
+    </div>
+  </div>
+</div>
+
+<!-- ===== 提现结果 C5续 ===== -->
+<div class="phone-screen" id="page-withdraw-result" style="display:none">
+  <div class="phone-notch"><span class="phone-notch-time">9:41</span></div>
+  <div class="nav-bar"><span class="title">提现结果</span></div>
+  <div class="success-page">
+    <div class="success-icon">✓</div>
+    <div class="success-title">提现申请已提交</div>
+    <div class="success-desc">提现申请已提交，审核通过后将计算实扣个税并打款</div>
+    <div class="success-info" style="margin-bottom:8px">
+      <div class="success-row"><span class="success-key">提现金额</span><span class="success-val">¥2,000.00</span></div>
+      <div class="success-row"><span class="success-key">预估个税</span><span class="success-val">¥17.53 <span style="font-size:11px;color:#BBB">仅供参考</span></span></div>
+      <div class="success-row"><span class="success-key">预估到账金额</span><span class="success-val" style="color:#52C41A;font-weight:700">¥1,982.47</span></div>
+      <div class="success-row"><span class="success-key">计算方式</span><span class="success-val">连续劳务报酬（适用累计预扣法）</span></div>
+    </div>
+    <div class="success-info">
+      <div class="success-row"><span class="success-key">提现状态</span><span class="success-val"><span style="background:#FFF7E6;color:#FA8C16;padding:2px 8px;border-radius:4px;font-size:11px">待审核</span></span></div>
+      <div class="success-row"><span class="success-key">预计到账时间</span><span class="success-val">审核通过后 1-3 个工作日</span></div>
+    </div>
+    <p style="font-size:11px;color:#BBB;margin-bottom:16px">实扣个税将在审核通过后基于当时累计数据计算，可能与预估金额存在差异。</p>
+    <button class="btn btn-primary" onclick="goPage('page-center')" style="width:100%;max-width:280px">返回个人中心</button>
+    <button class="btn-text" onclick="goPage('page-balance')" style="font-weight:400;color:var(--gray)">查看余额</button>
+  </div>
+</div>
+
+<!-- ===== 税费测算 C10 ===== -->
+<div class="phone-screen" id="page-tax-calc" style="display:none">
+  <div class="phone-notch"><span class="phone-notch-time">9:41</span></div>
+  <div class="nav-bar"><span class="back" onclick="goPage('page-center')">‹</span><span class="title">税费测算</span></div>
+  <div class="calc-tabs"><div class="calc-tab active" onclick="switchCalcTab('cumulative',this)">连续劳务报酬（适用累计预扣法）</div><div class="calc-tab" onclick="switchCalcTab('per',this)">一般劳务报酬（使用按次预扣法）</div></div>
+  <div class="calc-panel active" id="calc-panel-cumulative">
+    <div class="calc-desc">适用连续取得劳务报酬：按当年截至本月、本平台累计收入逐月累进，预扣率 3%-45%（七级）。</div>
+    <div class="calc-section">
+      <div class="calc-section-title">测算参数</div>
+      <div class="calc-form-group"><div class="calc-form-label">本年在本平台累计税前收入 <span style="color:var(--red)">*</span></div><input type="text" class="calc-form-input" id="calc-c-income" placeholder="请输入累计税前收入"><div class="calc-form-hint">含本次</div></div>
+      <div class="calc-form-group"><div class="calc-form-label">连续取得劳务报酬的月份数</div><input type="text" class="calc-form-input" id="calc-c-months" value="1" placeholder="默认1"><div class="calc-form-hint">决定减除费用</div></div>
+      <div class="calc-form-group"><div class="calc-form-label">累计已预扣个税金额</div><input type="text" class="calc-form-input" id="calc-c-prepaid" value="0" placeholder="默认0"></div><div class="calc-form-hint">此前月份已扣</div>
+      <div class="calc-form-group"><div class="calc-form-label">免税收入 / 其他扣除 / 减免税额</div><input type="text" class="calc-form-input" id="calc-c-deduction" value="0" placeholder="默认0，可合计填"><div class="calc-form-hint">默认 0，可合计填</div></div>
+      <button class="btn btn-primary btn-calc" id="calc-c-btn" onclick="calcCumulative()">计算个税</button>
+    </div>
+    <div class="calc-result" id="calc-c-result" style="display:none">
+      <div class="calc-result-top"><div class="calc-result-label">本期应预扣个税</div><div class="calc-result-amount" id="calc-c-tax" style="color:var(--red)">—</div></div>
+      <div class="calc-result-row"><span class="calc-result-key">累计应预扣个税金额</span><span class="calc-result-val" id="calc-c-total-tax">—</span></div>
+      <div class="calc-result-row"><span class="calc-result-key">税后收入金额（累计）</span><span class="calc-result-val" id="calc-c-after-tax">—</span></div>
+    </div>
+    <div class="calc-detail" id="calc-c-detail" style="display:none"><div class="calc-detail-title">计算明细</div><div class="calc-detail-body" id="calc-c-detail-body">
+      <div style="background:#f0f7ff;border:1px solid #d6e8fa;border-radius:6px;padding:8px 10px;margin-bottom:10px;font-size:11px;color:#666;line-height:1.8">
+        <div style="font-size:12px;font-weight:600;color:#1890ff;margin-bottom:4px">计算公式</div>
+        <div><b>本期应预扣税额</b> = (累计收入 − 累计费用 − 累计免税收入 − 累计减除费用 − 其他扣除) × 预扣率 − 速算扣除数 − 累计减免税额 − 累计已预扣</div>
+        <div>累计费用 = 累计收入 × 20%</div>
+        <div>累计减除费用 = 5,000 × 连续月份数</div>
+      </div>
+      <div class="calc-detail-row"><span class="calc-detail-key">累计收入</span><span class="calc-detail-val" id="cd-c-acc-income">—</span></div>
+      <div class="calc-detail-row"><span class="calc-detail-key">减：累计费用（20%）</span><span class="calc-detail-val" id="cd-c-acc-fee">—</span></div>
+      <div class="calc-detail-row"><span class="calc-detail-key">减：累计减除费用（5000×月）</span><span class="calc-detail-val" id="cd-c-acc-deduct">—</span></div>
+      <div class="calc-detail-row"><span class="calc-detail-key">减：其他扣除合计</span><span class="calc-detail-val" id="cd-c-other">—</span></div>
+      <div class="calc-detail-row"><span class="calc-detail-key">累计应纳税所得额</span><span class="calc-detail-val" id="cd-c-taxable">—</span></div>
+      <div class="calc-detail-row"><span class="calc-detail-key">适用预扣率 / 速算扣除数</span><span class="calc-detail-val" id="cd-c-rate">—</span></div>
+      <div class="calc-detail-row"><span class="calc-detail-key">累计应预扣个税金额</span><span class="calc-detail-val" id="cd-c-total-tax">—</span></div>
+      <div class="calc-detail-row"><span class="calc-detail-key">减：累计已预扣</span><span class="calc-detail-val" id="cd-c-prepaid">—</span></div>
+      <div class="calc-detail-row"><span class="calc-detail-key">本期应预扣个税金额</span><span class="calc-detail-val" id="cd-c-current-tax" style="color:var(--red);font-weight:700">—</span></div>
+    </div></div>
+    <div class="calc-footnote">⚠ 测算说明：本工具按现行连续劳务报酬（适用累计预扣法）规则估算，结果仅作参考；实际个税以打款时代扣金额及年度汇算清缴为准。</div>
+  </div>
+  <div class="calc-panel" id="calc-panel-per">
+    <div class="calc-desc">适用非连续取得劳务报酬：每笔独立计算，不累计、不跨月；预扣率 20%-40%（三级，单笔应税超 2 万进 30% 档）。</div>
+    <div class="calc-section">
+      <div class="calc-section-title">测算参数</div>
+      <div class="calc-form-group"><div class="calc-form-label">单笔税前收入 <span style="color:var(--red)">*</span></div><input type="text" class="calc-form-input" id="calc-p-income" placeholder="请输入单笔税前收入"></div>
+      <button class="btn btn-primary btn-calc" id="calc-p-btn" onclick="calcPerOccurrence()">计算个税</button>
+    </div>
+    <div class="calc-result" id="calc-p-result" style="display:none">
+      <div class="calc-result-top"><div class="calc-result-label">本笔应预扣个税</div><div class="calc-result-amount" id="calc-p-tax" style="color:var(--red)">—</div></div>
+      <div class="calc-result-row"><span class="calc-result-key">税后收入（本笔）</span><span class="calc-result-val" id="calc-p-after-tax">—</span></div>
+    </div>
+    <div class="calc-detail" id="calc-p-detail" style="display:none"><div class="calc-detail-title">计算明细</div><div class="calc-detail-body" id="calc-p-detail-body">
+      <div style="background:#f0f7ff;border:1px solid #d6e8fa;border-radius:6px;padding:8px 10px;margin-bottom:10px;font-size:11px;color:#666;line-height:1.8">
+        <div style="font-size:12px;font-weight:600;color:#1890ff;margin-bottom:4px">计算公式</div>
+        <div><b>本笔应预扣税额</b> = 应纳税所得额 × 预扣率 − 速算扣除数</div>
+        <div>减除费用：收入 ≤ 4,000 元减 800 元；收入 > 4,000 元减 收入 × 20%</div>
+        <div>应纳税所得额 = 单笔收入 − 减除费用</div>
+      </div>
+      <div class="calc-detail-row"><span class="calc-detail-key">单笔收入</span><span class="calc-detail-val" id="cd-p-income">—</span></div>
+      <div class="calc-detail-row"><span class="calc-detail-key">减：减除费用</span><span class="calc-detail-val" id="cd-p-deduct">—</span></div>
+      <div class="calc-detail-row"><span class="calc-detail-key">应纳税所得额</span><span class="calc-detail-val" id="cd-p-taxable">—</span></div>
+      <div class="calc-detail-row"><span class="calc-detail-key">适用预扣率 / 速算扣除数</span><span class="calc-detail-val" id="cd-p-rate">—</span></div>
+      <div class="calc-detail-row"><span class="calc-detail-key">本笔应预扣税额</span><span class="calc-detail-val" id="cd-p-current-tax" style="color:var(--red);font-weight:700">—</span></div>
+      <div class="calc-detail-row"><span class="calc-detail-key">本笔税后</span><span class="calc-detail-val" id="cd-p-after-tax">—</span></div>
+    </div></div>
+    <div class="calc-footnote">⚠ 测算说明：本工具按居民个人劳务报酬所得预扣率表二估算，结果仅作参考；实际个税以审核通过后计算、打款时代扣金额为准。按次法每笔独立，不与其它笔累计。</div>
+  </div>
+</div>
+
+<!-- ===== 授权记录 ===== -->
+<div class="phone-screen" id="page-auth-records" style="display:none">
+  <div class="phone-notch"><span class="phone-notch-time">9:41</span></div>
+  <div class="nav-bar"><span class="back" onclick="goPage('page-center')">‹</span><span class="title">授权记录</span></div>
+  <div class="auth-records">
+    <div id="data-auth-records">
+    <div class="auth-record-item active-sign">
+      <span class="auth-record-tag sign">签署授权</span>
+      <div class="auth-record-type">连续劳务报酬（适用累计预扣法）</div>
+      <div class="auth-record-status">生效中</div>
+      <div class="auth-record-meta">2026-09-01 14:23:05 · 协议V1.0</div>
+      <div class="auth-record-view" onclick="openPdf('pdf-auth-view')">查看协议 ›</div>
+      <div class="auth-record-cancel" onclick="goPage('page-cancel-auth')">取消授权 ›</div>
+    </div>
+    <div class="auth-record-item cancel">
+      <span class="auth-record-tag cancel">取消授权</span>
+      <div class="auth-record-meta">2026-08-15 09:12:33 · 协议V1.0</div>
+      <div class="auth-record-meta">原因：个人税务安排变更</div>
+    </div>
+    <div class="auth-record-item history" style="border-left:3px solid #fa8c16">
+      <span class="auth-record-tag" style="background:#fff7e6;color:#fa8c16;border-radius:3px;padding:2px 6px;font-size:10px;font-weight:600">协议到期重签</span>
+      <div class="auth-record-type">连续劳务报酬（适用累计预扣法）</div>
+      <div class="auth-record-meta">2026-06-01 10:30:00 · 协议V0.8（已到期）</div>
+      <div class="auth-record-view" onclick="openPdf('pdf-auth-view')">查看协议 ›</div>
+    </div>
+    <div class="auth-record-item history">
+      <span class="auth-record-tag sign">签署授权</span>
+      <div class="auth-record-type">一般劳务报酬（使用按次预扣法）</div>
+      <div class="auth-record-meta">2026-07-20 16:45:00 · 协议V0.9</div>
+      <div class="auth-record-view" onclick="openPdf('pdf-auth-view')">查看协议 ›</div>
+    </div>
+    </div>
+  </div>
+  <div class="pdf-overlay" id="pdf-auth-view"><div class="pdf-nav"><span class="back" onclick="closePdf('pdf-auth-view')">‹</span><span class="title">知情同意书</span></div><div class="pdf-body"><div class="pdf-page"><h2>个人所得税、增值税等代办申报<br>知情同意书</h2><p><b>版本：V1.0</b></p><p><b>甲方：</b>观严（北京）科技有限公司</p><p><b>乙方：</b>周会菊</p><p><b>证件号码：</b>310***********3186</p><p><b>申报方式：</b>连续劳务报酬（适用累计预扣法）</p><p class="clause">第一条 代扣代缴范围</p><p>甲方按照乙方选择的个税申报方式，依法代扣代缴个人所得税。</p><p class="clause">第二条 申报方式选择</p><p>（一）连续劳务报酬（适用累计预扣法）（二）一般劳务报酬（使用按次预扣法）</p><p class="clause">第三条 扣税时点</p><p>入账全额进余额→提现时计算个税→打款时执行代扣代缴。</p><p class="clause">第四条 乙方权利与义务</p><p>乙方有权选择申报方式，取消授权后可重新选择。</p><p class="clause">第五条 协议变更</p><p>甲方有权根据法律法规变化更新本协议。</p><div class="pdf-sign-area"><div class="pdf-sign-box"><div class="pdf-sign-label">乙方（签名）</div><div style="color:#1a1a1a;font-size:16px;font-family:cursive;font-weight:600;margin-top:4px">周会菊</div></div><div class="pdf-sign-box"><div class="pdf-sign-label">甲方（盖章）</div><div style="width:80px;height:80px;border:2px solid #FF4D4F;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#FF4D4F;font-size:10px;font-weight:700;margin:4px auto 0;line-height:1.2;text-align:center">观严（北京）<br>科技有限公司</div></div></div><p style="text-align:center;margin-top:20px;font-size:11px;color:#999">签署时间：2026-09-01 14:23:05</p></div></div></div>
+</div>
+
+<!-- ===== 取消授权 ===== -->
+<div class="phone-screen" id="page-cancel-auth" style="display:none">
+  <div class="phone-notch"><span class="phone-notch-time">9:41</span></div>
+  <div class="nav-bar"><span class="back" onclick="goPage('page-auth-records')">‹</span><span class="title">取消授权</span></div>
+  <div class="cancel-page">
+    <div style="background:#fff;border-radius:12px;padding:16px;margin-bottom:12px">
+    <div class="cancel-title">请选择取消原因</div>
+    <div class="cancel-subtitle">取消后，您可随时重新授权，重新授权时可重新选择申报方式</div>
+    </div>
+    <div style="background:#fff;border-radius:12px;padding:16px">
+    <div class="cancel-reason-item selected" onclick="selectReason(this)"><div class="cancel-radio"></div><div class="cancel-reason-text">个人税务安排变更</div></div>
+    <div class="cancel-reason-item" onclick="selectReason(this)"><div class="cancel-radio"></div><div class="cancel-reason-text">不再需要提现</div></div>
+    <div class="cancel-reason-item" onclick="selectReason(this)"><div class="cancel-radio"></div><div class="cancel-reason-text">对代扣方有疑虑</div></div>
+    <div class="cancel-reason-item" onclick="selectReason(this)"><div class="cancel-radio"></div><div class="cancel-reason-text">其他</div></div>
+    <input class="cancel-reason-input" id="cancel-other-input" placeholder="请输入取消原因…" maxlength="50" style="display:none">
+    </div>
+    <div class="btn-row" style="margin-top:16px;padding-top:0"><button class="btn btn-secondary" style="border:1px solid #D9D9D9" onclick="goPage('page-auth-records')">暂不取消</button><button class="btn btn-primary" style="background:var(--red)" onclick="tryCancelAuth()">确认取消</button></div>
+  </div>
+  <!-- 有余额拦截弹窗 -->
+  <div class="sheet-mask intercept-sheet" id="intercept-balance" onclick="if(event.target===this)hideSheet('intercept-balance')"><div class="sheet-body"><div class="sheet-handle"></div><div class="intercept-icon orange"><svg viewBox="0 0 24 24" fill="none"><path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10 10-4.5 10-10S17.5 2 12 2z" fill="currentColor" opacity=".15"/><path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10 10-4.5 10-10S17.5 2 12 2z" stroke="currentColor" stroke-width="1.5"/><path d="M12 8v4M12 16v.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></div><div class="intercept-title">暂无法取消授权</div><div class="intercept-body">您当前还有可提现余额 ¥1,200.00。<br>需全额提现后方可取消授权。</div><div class="btn-row"><button class="btn btn-secondary" onclick="hideSheet('intercept-balance')">暂不取消</button><button class="btn btn-primary" onclick="hideSheet('intercept-balance');goPage('page-balance')">去提现</button></div></div></div>
+</div>
+
+<!-- ===== 实名认证 ===== -->
+<div class="phone-screen" id="page-realname" style="display:none">
+  <div class="phone-notch"><span class="phone-notch-time">9:41</span></div>
+  <div class="nav-bar"><span class="back" onclick="goPage('page-center')">‹</span><span class="title">实名认证</span></div>
+  <div class="page-content">
+    <div class="rn-intro">根据国家相关法规要求，使用平台服务需先完成实名认证。认证信息仅用于身份核实，不会泄露给第三方。</div>
+    <div class="rn-upload-group">
+      <div class="rn-upload-label">身份证照片</div>
+      <div class="rn-upload-row">
+        <div class="rn-upload-item">
+          <div class="rn-upload-box" id="id-front" onclick="mockUpload('id-front')">
+            <svg viewBox="0 0 28 28" fill="none"><rect x="4" y="6" width="20" height="16" rx="3" stroke="currentColor" stroke-width="1.5"/><circle cx="11" cy="12" r="2.5" stroke="currentColor" stroke-width="1.2"/><path d="M7 20c0-2.2 1.8-4 4-4s4 1.8 4 4" stroke="currentColor" stroke-width="1.2"/><path d="M17 11h4M17 14h3" stroke="currentColor" stroke-width="1" stroke-linecap="round"/></svg>
+            <span class="rn-upload-text">人像面</span>
+          </div>
+          <div class="rn-upload-hint">点击上传正面</div>
+        </div>
+        <div class="rn-upload-item">
+          <div class="rn-upload-box" id="id-back" onclick="mockUpload('id-back')">
+            <svg viewBox="0 0 28 28" fill="none"><rect x="4" y="6" width="20" height="16" rx="3" stroke="currentColor" stroke-width="1.5"/><path d="M9 11h10M9 14h10M9 17h6" stroke="currentColor" stroke-width="1" stroke-linecap="round"/></svg>
+            <span class="rn-upload-text">国徽面</span>
+          </div>
+          <div class="rn-upload-hint">点击上传反面</div>
+        </div>
+      </div>
+      <div style="font-size:11px;color:#BBB;margin-top:6px">上传后将自动识别姓名和证件号码</div>
+    </div>
+    <div class="rn-form-group">
+      <div class="rn-form-label">真实姓名</div>
+      <input class="rn-form-input" id="rn-name" placeholder="上传身份证后自动识别" value="">
+    </div>
+    <div class="rn-form-group">
+      <div class="rn-form-label">证件类型</div>
+      <input class="rn-form-input readonly" value="居民身份证" readonly>
+    </div>
+    <div class="rn-form-group">
+      <div class="rn-form-label">证件号码</div>
+      <input class="rn-form-input" id="rn-id" placeholder="上传身份证后自动识别" value="">
+    </div>
+    <div style="margin-top:auto;padding-top:16px">
+      <button class="btn btn-primary" id="rn-submit" style="width:100%" disabled onclick="submitRealname()">提交认证</button>
+      <div class="rn-note">提交即表示您同意《用户服务协议》及《隐私政策》</div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== 实名认证完成 ===== -->
+<div class="phone-screen" id="page-realname-done" style="display:none">
+  <div class="phone-notch"><span class="phone-notch-time">9:41</span></div>
+  <div class="nav-bar"><span class="title">实名认证</span></div>
+  <div class="success-page">
+    <div class="success-icon">✓</div>
+    <div class="success-title">实名认证已完成</div>
+    <div class="success-desc">您的实名信息已认证通过</div>
+    <div class="rn-result-card">
+      <div class="rn-result-row"><span class="rn-result-key">姓名</span><span class="rn-result-val">周会菊</span></div>
+      <div class="rn-result-row"><span class="rn-result-key">证件号码</span><span class="rn-result-val">310***********3186</span></div>
+      <div class="rn-result-row"><span class="rn-result-key">认证时间</span><span class="rn-result-val">2026-11-10 15:20</span></div>
+    </div>
+    <!-- 已签署：直接返回 -->
+    <div id="rn-done-signed"><button class="btn btn-primary" style="width:100%" onclick="goPage('page-center')">返回个人中心</button></div>
+    <!-- 未签署：引导签署 -->
+    <div id="rn-done-unsigned" style="display:none">
+      <div class="rn-guide-card">
+        <div class="rn-guide-title">您还未完成观严代办申报授权签署</div>
+        <div class="rn-guide-body">依据《国家税务总局关于互联网平台企业为平台内从业人员办理扣缴申报、代办申报若干事项的公告》（国家税务总局公告2025年第16号），与观严合作取得相关收入时，涉及的个人所得税、增值税及附加税（如有）应由您本人依法缴纳。为依法为您办理上述税费的代扣代缴与代办申报，在费用计入您的账户余额前，请您选择个税申报方式并签署《个人所得税、增值税等代办申报知情同意书》。</div>
+      </div>
+      <div class="btn-row"><button class="btn btn-secondary" onclick="goPage('page-center')">稍后再说</button><button class="btn btn-primary" onclick="openSignFlow()">去签署</button></div>
+    </div>
+    <!-- 需重签：引导重签 -->
+    <div id="rn-done-resign" style="display:none">
+      <div class="rn-guide-card">
+        <div class="rn-guide-title">协议已更新，请重新签署</div>
+        <div class="rn-guide-body">知情同意书已发布新版本（V1.1），重新签署后方可继续使用此功能。</div>
+      </div>
+      <div class="btn-row"><button class="btn btn-secondary" onclick="goPage('page-center')">暂不签署</button><button class="btn btn-primary" onclick="openResignFlow()">去重签</button></div>
+    </div>
+  </div>
+</div>
+
+</div><!-- end phone -->
+
+<script>
+/* ========== State ========== */
+let currentState='unsigned';
+function switchState(state){currentState=state;document.querySelectorAll('.proto-switcher button').forEach(b=>b.classList.remove('active'));event.target.classList.add('active');applyState(state);goPage('page-center');if(state==='unsigned')showModal('modal-login-unsigned');else if(state==='resign')showModal('modal-login-resign')}
+function applyState(s){
+  document.getElementById('balance-frozen').style.display=s==='signed'?'none':'';
+  document.getElementById('balance-normal').style.display=s==='signed'?'':'none';
+  document.getElementById('warning-5m').style.display=s==='signed'?'':'none';
+  document.getElementById('menu-unverified').style.display=s==='unverified'?'':'none';
+  document.getElementById('menu-unsigned').style.display=s==='unsigned'?'':'none';
+  document.getElementById('menu-signed').style.display=s==='signed'?'':'none';
+  document.getElementById('menu-resign').style.display=s==='resign'?'':'none';
+  document.getElementById('menu-calc').style.display=s==='signed'?'':'none';
+  document.getElementById('c4-frozen').style.display=s==='signed'?'none':'';
+  document.getElementById('c4-nofrozen').style.display=s==='signed'?'':'none';
+}
+/* ========== Navigation ========== */
+function goPage(id){closeAllOverlays();document.querySelectorAll('.phone-screen').forEach(s=>s.style.display='none');document.getElementById(id).style.display='flex';if(id==='page-realname'){resetRealname()}if(id==='page-realname-done'){document.getElementById('rn-done-signed').style.display=currentState==='signed'?'':'none';document.getElementById('rn-done-unsigned').style.display=(currentState==='unsigned'||currentState==='unverified')?'':'none';document.getElementById('rn-done-resign').style.display=currentState==='resign'?'':'none'}}
+function closeAllOverlays(){document.querySelectorAll('.pdf-overlay').forEach(o=>o.classList.remove('show'));document.querySelectorAll('.sheet-mask').forEach(m=>m.classList.remove('show'));document.querySelectorAll('.modal-mask').forEach(m=>m.classList.remove('show'))}
+/* ========== Sign/Resign flows ========== */
+function openSignFlow(){goPage('page-sign-step1');document.getElementById('sign-agree').checked=false;document.getElementById('sign-next').disabled=true}
+function openResignFlow(){goPage('page-resign-step1');document.getElementById('resign-agree').checked=false;document.getElementById('resign-next').disabled=true}
+function completeSign(){const sel=document.querySelector('#page-sign-step1 .option-card.selected .option-card-title');const m=sel?sel.textContent:'连续劳务报酬（适用累计预扣法）';document.getElementById('sign-sheet-method').textContent=m;document.getElementById('success-heading').textContent='授权成功';document.getElementById('success-desc').innerHTML='您已成功签署代办申报知情同意书，<br>系统将为您代扣代缴个人所得税';document.getElementById('success-method').textContent=m;document.getElementById('success-version').textContent='V1.0';document.getElementById('success-time').textContent='2026-11-09 14:30';goPage('page-success')}
+function completeResign(){document.getElementById('success-heading').textContent='重新签署成功';document.getElementById('success-desc').innerHTML='您已成功签署更新后的代办申报知情同意书';document.getElementById('success-method').textContent='连续劳务报酬（适用累计预扣法）';document.getElementById('success-version').textContent='V1.1';document.getElementById('success-time').textContent='2026-11-09 15:10';goPage('page-success')}
+function backToCenter(){currentState='signed';applyState('signed');document.querySelectorAll('.proto-switcher button').forEach(b=>{b.classList.toggle('active',b.textContent==='已签署')});goPage('page-center')}
+/* ========== Method selection (radio) ========== */
+function selectMethod(card){card.parentElement.querySelectorAll('.option-card').forEach(c=>c.classList.remove('selected'));card.classList.add('selected')}
+/* ========== Checkbox → Button ========== */
+function updateBtn(cId,bId){document.getElementById(bId).disabled=!document.getElementById(cId).checked}
+/* ========== PDF ========== */
+function openPdf(id){document.getElementById(id).classList.add('show')}
+function closePdf(id){document.getElementById(id).classList.remove('show')}
+/* ========== Sheets ========== */
+function showSheet(id){document.getElementById(id).classList.add('show')}
+function hideSheet(id){document.getElementById(id).classList.remove('show')}
+function showModal(id){document.getElementById(id).classList.add('show')}
+function hideModal(id){document.getElementById(id).classList.remove('show')}
+/* ========== Expense/Withdraw intercept ========== */
+function tryOpenExpense(){if(currentState==='unverified')showSheet('intercept-unverified');else if(currentState==='unsigned')showSheet('intercept-unsigned');else if(currentState==='resign')showSheet('intercept-resign');else goPage('page-expense')}
+function tryGoWithdraw(){if(currentState==='resign'){showSheet('intercept-resign-wd')}else{goPage('page-income-detail')}}
+/* ========== Bank card selection ========== */
+function selectBank(el){document.querySelectorAll('.wd-bank-item').forEach(i=>i.classList.remove('selected'));el.classList.add('selected')}
+/* ========== Tax detail expand ========== */
+function toggleTdExpand(el){var c=el.nextElementSibling;c.classList.toggle('open');el.querySelector('span:last-child').textContent=c.classList.contains('open')?'▲':'▼'}
+/* ========== Tax calc ========== */
+var CB=[{l:36000,r:.03,d:0},{l:144000,r:.10,d:2520},{l:300000,r:.20,d:16920},{l:420000,r:.25,d:31920},{l:660000,r:.30,d:52920},{l:960000,r:.35,d:85920},{l:Infinity,r:.45,d:181920}];
+var PB=[{l:20000,r:.20,d:0},{l:50000,r:.30,d:2000},{l:Infinity,r:.40,d:7000}];
+function findB(t,bs){for(var i=0;i<bs.length;i++)if(t<=bs[i].l)return bs[i];return bs[bs.length-1]}
+function fmt(n){return'¥'+n.toFixed(2)}
+function switchCalcTab(type,el){document.querySelectorAll('.calc-tab').forEach((t,i)=>{t.classList.toggle('active',(type==='cumulative'&&i===0)||(type==='per'&&i===1))});document.getElementById('calc-panel-cumulative').classList.toggle('active',type==='cumulative');document.getElementById('calc-panel-per').classList.toggle('active',type==='per')}
+function toggleCalcDetail(id){document.getElementById(id).classList.toggle('open')}
+function calcCumulative(){var inc=parseFloat(document.getElementById('calc-c-income').value)||0;if(inc<=0)return;var m=Math.max(1,parseInt(document.getElementById('calc-c-months').value)||1),pp=parseFloat(document.getElementById('calc-c-prepaid').value)||0,od=parseFloat(document.getElementById('calc-c-deduction').value)||0;var ai=inc,af=ai*.2,ad=5000*m,tb=ai-af-ad-od;if(tb<0)tb=0;var br=findB(tb,CB),tt=tb*br.r-br.d;if(tt<0)tt=0;var ct=tt-pp;if(ct<0)ct=0;var at=ai-tt;
+  document.getElementById('calc-c-result').style.display='block';document.getElementById('calc-c-tax').textContent=fmt(ct);document.getElementById('calc-c-total-tax').textContent=fmt(tt);document.getElementById('calc-c-after-tax').textContent=fmt(at);
+  document.getElementById('calc-c-detail').style.display='block';document.getElementById('calc-c-btn').textContent='重新测算';document.getElementById('cd-c-acc-income').textContent=fmt(ai);document.getElementById('cd-c-acc-fee').textContent=fmt(af);document.getElementById('cd-c-acc-deduct').textContent=fmt(ad);document.getElementById('cd-c-other').textContent=fmt(od);document.getElementById('cd-c-taxable').textContent=fmt(tb);document.getElementById('cd-c-rate').textContent=(br.r*100)+'% / '+fmt(br.d);document.getElementById('cd-c-total-tax').textContent=fmt(tt);document.getElementById('cd-c-prepaid').textContent=fmt(pp);document.getElementById('cd-c-current-tax').textContent=fmt(ct)}
+function calcPerOccurrence(){var inc=parseFloat(document.getElementById('calc-p-income').value)||0;if(inc<=0)return;var dc=inc<=4000?800:inc*.2,tb=inc-dc;if(tb<0)tb=0;var br=findB(tb,PB),tax=tb*br.r-br.d;if(tax<0)tax=0;var ar=inc-tax,at=inc-tax;
+  document.getElementById('calc-p-result').style.display='block';document.getElementById('calc-p-tax').textContent=fmt(tax);document.getElementById('calc-p-after-tax').textContent=fmt(at);
+  document.getElementById('calc-p-detail').style.display='block';document.getElementById('calc-p-btn').textContent='重新测算';document.getElementById('cd-p-income').textContent=fmt(inc);document.getElementById('cd-p-deduct').textContent=inc<=4000?'¥800（定额）':fmt(dc)+'（定率20%）';document.getElementById('cd-p-taxable').textContent=fmt(tb);document.getElementById('cd-p-rate').textContent=(br.r*100)+'% / '+fmt(br.d);document.getElementById('cd-p-current-tax').textContent=fmt(tax);document.getElementById('cd-p-after-tax').textContent=fmt(at)}
+/* ========== Real-name auth ========== */
+function resetRealname(){document.getElementById('rn-name').value='';document.getElementById('rn-id').value='';document.getElementById('rn-submit').disabled=true;document.getElementById('id-front').classList.remove('uploaded');document.getElementById('id-back').classList.remove('uploaded')}
+function mockUpload(id){var box=document.getElementById(id);box.classList.add('uploaded');box.innerHTML='<svg viewBox="0 0 28 28" fill="none"><path d="M6 14l4 4 8-8" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><rect x="4" y="6" width="20" height="16" rx="3" stroke="currentColor" stroke-width="1.5"/></svg><span class="rn-upload-text">'+(id==='id-front'?'人像面':'国徽面')+' ✓</span>';document.getElementById('rn-name').value='周会菊';document.getElementById('rn-id').value='310102199001013186';document.getElementById('rn-submit').disabled=false}
+function submitRealname(){protoAction('认证成功');goPage('page-realname-done')}
+/* ========== Empty state toggle ========== */
+var emptyMode=false;
+var emptyPairs=[['data-wd-records','empty-wd-records']];
+function toggleEmpty(){emptyMode=!emptyMode;document.querySelector('.toggle-empty').classList.toggle('active',emptyMode);emptyPairs.forEach(function(p){document.getElementById(p[0]).style.display=emptyMode?'none':'';document.getElementById(p[1]).style.display=emptyMode?'':'none'})}
+/* ========== Cancel auth ========== */
+function tryCancelAuth(){if(currentState==='signed'){showSheet('intercept-balance')}else{protoAction('已取消授权');goPage('page-center')}}
+function selectReason(el){document.querySelectorAll('.cancel-reason-item').forEach(i=>i.classList.remove('selected'));el.classList.add('selected');var otherInput=document.getElementById('cancel-other-input');var isOther=el.querySelector('.cancel-reason-text').textContent==='其他';if(otherInput){otherInput.style.display=isOther?'block':'none';if(isOther)setTimeout(function(){otherInput.focus()},100)}}
+/* ========== Toast ========== */
+function protoAction(msg){var t=document.createElement('div');t.style.cssText='position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:rgba(0,0,0,.75);color:#fff;padding:10px 20px;border-radius:8px;font-size:13px;z-index:99999;pointer-events:none;animation:toastFade 1.5s forwards';t.textContent=msg;document.body.appendChild(t);setTimeout(()=>t.remove(),1500)}
+/* ========== Init ========== */
+applyState('unsigned');
+</script>
+<style>@keyframes toastFade{0%{opacity:0;transform:translate(-50%,-50%) scale(.9)}15%{opacity:1;transform:translate(-50%,-50%) scale(1)}85%{opacity:1}100%{opacity:0}}</style>

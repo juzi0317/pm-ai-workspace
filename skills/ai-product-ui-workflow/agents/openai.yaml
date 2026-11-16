@@ -1,0 +1,4 @@
+interface:
+  display_name: "AI 产品 UI 全流程"
+  short_description: "把产品想法转成 PRD、原型、视觉规范和完整 UI"
+  default_prompt: "Use $ai-product-ui-workflow to turn my product idea into a PRD, wireframe, visual spec, optional IP kit, and final UI."
