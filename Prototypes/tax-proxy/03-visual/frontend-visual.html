@@ -421,6 +421,53 @@ body{font-family:-apple-system,"PingFang SC","Helvetica Neue","Microsoft YaHei",
 /* Calc button */
 .btn-calc{height:44px;font-size:14px;border-radius:10px;margin-top:12px;width:100%;flex:none}
 .calc-form-hint{font-size:11px;color:#BBB;margin-top:3px}
+/* Center header - gradient */
+.center-header{background:linear-gradient(135deg,#6366F1 0%,#8B5CF6 100%);padding:20px 20px 24px;color:#fff;border-radius:0 0 20px 20px}
+.center-header-top{display:flex;align-items:center;gap:14px}
+.center-avatar{width:56px;height:56px;border-radius:50%;overflow:hidden;flex-shrink:0;border:2.5px solid rgba(255,255,255,.3);background:rgba(255,255,255,.15);display:flex;align-items:center;justify-content:center}
+.center-avatar svg{width:36px;height:36px}
+.center-user-info{flex:1;min-width:0}
+.center-user-name{font-size:17px;font-weight:600;color:#fff;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.center-badge{font-size:10px;padding:2px 8px;border-radius:10px;background:rgba(255,255,255,.2);color:#fff;font-weight:400;display:inline-flex;align-items:center;gap:3px;white-space:nowrap}
+.center-badge svg{width:10px;height:10px}
+.center-user-phone{font-size:13px;color:rgba(255,255,255,.7);margin-top:4px}
+.center-edit-btn{width:32px;height:32px;border-radius:50%;background:rgba(255,255,255,.15);display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0}
+.center-edit-btn svg{width:16px;height:16px;color:rgba(255,255,255,.8)}
+.center-stats{display:flex;margin-top:20px;text-align:center}
+.center-stat{flex:1;cursor:pointer;position:relative}
+.center-stat+.center-stat{border-left:1px solid rgba(255,255,255,.15)}
+.center-stat-num{font-size:18px;font-weight:700;color:#fff}
+.center-stat-label{font-size:11px;color:rgba(255,255,255,.6);margin-top:4px}
+.center-stat-frozen{font-size:9px;color:rgba(255,255,255,.5);margin-top:2px}
+/* Function icon grid */
+.func-section{background:#fff;margin:10px 16px;border-radius:10px;padding:14px 16px 10px;box-shadow:0 1px 4px rgba(0,0,0,.04)}
+.func-section-title{font-size:15px;font-weight:600;color:#1a1a1a;margin-bottom:12px}
+.func-grid{display:grid;gap:14px 0}
+.func-grid-5{grid-template-columns:repeat(5,1fr)}
+.func-grid-4{grid-template-columns:repeat(4,1fr)}
+.func-item{text-align:center;cursor:pointer;position:relative;padding:2px 0}
+.func-item:active{opacity:.7}
+.func-icon{width:40px;height:40px;border-radius:12px;margin:0 auto 6px;display:flex;align-items:center;justify-content:center}
+.func-icon svg{width:22px;height:22px}
+.func-icon.blue{background:#E8F4FD;color:#5BA0E8}
+.func-icon.green{background:#F0FFE8;color:#52C41A}
+.func-icon.orange{background:#FFF7E6;color:#FA8C16}
+.func-icon.red{background:#FFF1F0;color:#FF4D4F}
+.func-icon.teal{background:#E6FFFB;color:#13C2C2}
+.func-icon.purple{background:#F9F0FF;color:#722ED1}
+.func-icon.indigo{background:#F0F5FF;color:#2F54EB}
+.func-icon.cyan{background:#E6FFFB;color:#08979C}
+.func-icon.gold{background:#FFFBE6;color:#FAAD14}
+.func-icon.gray{background:#F5F5F5;color:#999}
+.func-text{font-size:11px;color:#666;line-height:1.3;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%;display:inline-block}
+.func-status{font-size:9px;margin-top:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.func-status.alert{color:var(--red);font-weight:500}
+.func-status.warning{color:#FA8C16;font-weight:500}
+.func-status.info{color:var(--blue);font-weight:500}
+.func-red-dot{position:absolute;top:-1px;left:calc(50% + 6px);width:6px;height:6px;background:var(--red);border-radius:50%}
+/* Page-center notch gradient */
+#page-center .phone-notch{background:linear-gradient(135deg,#6366F1 0%,#8B5CF6 100%)}
+#page-center .phone-notch-time{color:#fff}
 /* Proto switcher */
 .proto-switcher{position:fixed;top:16px;left:50%;transform:translateX(-50%);background:#1a1a1a;border-radius:12px;padding:8px;display:flex;gap:4px;z-index:9999;box-shadow:0 4px 20px rgba(0,0,0,.2)}
 .proto-switcher button{padding:5px 10px;border-radius:8px;border:1px solid #444;background:transparent;color:#999;font-size:11px;cursor:pointer;font-weight:500;white-space:nowrap}
@@ -446,22 +493,31 @@ body{font-family:-apple-system,"PingFang SC","Helvetica Neue","Microsoft YaHei",
 <!-- ===== 个人中心 ===== -->
 <div class="phone-screen" id="page-center">
   <div class="phone-notch"><span class="phone-notch-time">9:41</span></div>
-  <div class="profile-header">
-    <div class="avatar"><svg viewBox="0 0 36 36" fill="none"><circle cx="18" cy="14" r="8" fill="#B8D4F0"/><path d="M18 22c-7 0-12 3.5-12 7v3h24v-3c0-3.5-5-7-12-7z" fill="#8BB8E8"/></svg></div>
-    <div class="profile-info"><div class="profile-name">周会菊</div><div class="profile-meta"><span>♀ 35岁</span><span>155****3186</span></div></div>
-    <div class="profile-edit"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M11 2l3 3-8.5 8.5H2.5v-3L11 2z"/></svg></div>
+  <!-- Gradient Header -->
+  <div class="center-header">
+    <div class="center-header-top">
+      <div class="center-avatar"><svg viewBox="0 0 36 36" fill="none"><circle cx="18" cy="14" r="8" fill="rgba(255,255,255,.6)"/><path d="M18 22c-7 0-12 3.5-12 7v3h24v-3c0-3.5-5-7-12-7z" fill="rgba(255,255,255,.4)"/></svg></div>
+      <div class="center-user-info">
+        <div class="center-user-name">周会菊 <span class="center-badge"><svg viewBox="0 0 10 10" fill="none"><path d="M2 5.5l2.5 2.5 4.5-5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>已实名认证</span></div>
+        <div class="center-user-phone">155****3186</div>
+      </div>
+      <div class="center-edit-btn" onclick="protoAction('编辑资料')"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M11 2l3 3-8.5 8.5H2.5v-3L11 2z"/></svg></div>
+    </div>
+    <div class="center-stats">
+      <div class="center-stat"><div class="center-stat-num">9</div><div class="center-stat-label">推荐患者</div></div>
+      <div class="center-stat"><div class="center-stat-num">1</div><div class="center-stat-label">成功入组</div></div>
+      <div class="center-stat"><div class="center-stat-num">4</div><div class="center-stat-label">待审核</div></div>
+      <div class="center-stat" id="stat-balance" onclick="handleBalanceClick()">
+        <div class="center-stat-num" id="stat-balance-num">0.00<span style="font-size:12px;font-weight:400">元</span></div>
+        <div class="center-stat-label">余额</div>
+        <div class="center-stat-frozen" id="stat-balance-frozen">冻结 ¥3,500.00</div>
+      </div>
+    </div>
   </div>
-  <div class="balance-card frozen" id="balance-frozen" onclick="openSignFlow()">
-    <div class="balance-col"><div class="balance-label">银行卡</div><div class="balance-num">2</div></div>
-    <div class="balance-col"><div class="balance-label">余额(元)</div><div class="balance-num">0.00</div><div class="balance-sub sign-link">冻结 ¥3,500.00 · 去签署<svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 2l4 4-4 4"/></svg></div></div>
-  </div>
-  <div class="balance-card normal" id="balance-normal" style="display:none" onclick="goPage('page-balance')">
-    <div class="balance-col"><div class="balance-label">银行卡</div><div class="balance-num">2</div></div>
-    <div class="balance-col"><div class="balance-label">余额(元)</div><div class="balance-num">4,000.00</div></div>
-  </div>
+  <!-- Notice bar -->
   <div class="notice-bar">
     <div class="notice-icon"><svg viewBox="0 0 18 18" fill="none"><path d="M9 1.5L16 5.5v4c0 4-3 7.5-7 8.5-4-1-7-4.5-7-8.5V5.5l7-4z" fill="#FA8C16" opacity=".15"/><path d="M9 1.5L16 5.5v4c0 4-3 7.5-7 8.5-4-1-7-4.5-7-8.5V5.5l7-4z" stroke="#FA8C16" stroke-width="1.2"/><path d="M9 6v4M9 12.5v.5" stroke="#FA8C16" stroke-width="1.5" stroke-linecap="round"/></svg></div>
-    <span class="notice-text"><strong>人脸核验</strong> 保障您的账户资金安全…</span>
+    <span class="notice-text"><strong>人脸核验</strong> 自2026年7月10日起，个人提现需先完成…</span>
     <button class="notice-btn orange" onclick="protoAction('去查看')">去查看</button>
   </div>
   <div class="warning-card" id="warning-5m" style="display:none" onclick="this.classList.toggle('expanded')">
@@ -469,33 +525,117 @@ body{font-family:-apple-system,"PingFang SC","Helvetica Neue","Microsoft YaHei",
     <div class="warning-card-body"><div class="warning-card-title">本年度累计收入已达 ¥4,200,000，请注意税务安排</div><div class="warning-card-detail">连续 12 个月服务收入达到 500 万元时，需办理市场主体登记并自行申报。</div></div>
     <div class="warning-card-arrow"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 6l4 4 4-4"/></svg></div>
   </div>
-  <div class="section-card">
-    <div class="section-header"><span class="section-title">问诊订单</span><span class="section-more">全部 <svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M5 3l4 4-4 4"/></svg></span></div>
-    <div class="order-row">
-      <div class="order-item"><div class="order-icon orange"><svg viewBox="0 0 22 22" fill="none"><rect x="3" y="5" width="16" height="12" rx="2" stroke="currentColor" stroke-width="1.5"/></svg></div><div class="order-text">待支付</div></div>
-      <div class="order-item"><div class="order-icon blue"><svg viewBox="0 0 22 22" fill="none"><circle cx="11" cy="11" r="8" stroke="currentColor" stroke-width="1.5"/></svg></div><div class="order-text">进行中</div></div>
-      <div class="order-item"><div class="order-icon green"><svg viewBox="0 0 22 22" fill="none"><circle cx="11" cy="11" r="8" stroke="currentColor" stroke-width="1.5"/></svg></div><div class="order-text">已完成</div></div>
-      <div class="order-item"><div class="order-icon gray"><svg viewBox="0 0 22 22" fill="none"><circle cx="11" cy="11" r="8" stroke="currentColor" stroke-width="1.5"/></svg></div><div class="order-text">已取消</div></div>
-      <div class="order-item"><div class="order-icon red"><svg viewBox="0 0 22 22" fill="none"><circle cx="11" cy="11" r="8" stroke="currentColor" stroke-width="1.5"/></svg></div><div class="order-text">已退款</div></div>
+  <!-- 常用功能 -->
+  <div class="func-section">
+    <div class="func-section-title">常用功能</div>
+    <div class="func-grid func-grid-4">
+      <div class="func-item" onclick="tryOpenExpense()">
+        <div class="func-icon orange"><svg viewBox="0 0 22 22" fill="none"><rect x="3" y="2" width="16" height="18" rx="2" stroke="currentColor" stroke-width="1.5"/><path d="M7 7h8M7 10h6M7 13h4" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg></div>
+        <div class="func-text">费用申请</div>
+      </div>
+      <div class="func-item" id="func-unsigned" onclick="openSignFlow()">
+        <div class="func-icon blue"><svg viewBox="0 0 22 22" fill="none"><path d="M3 6h16M3 10h16M3 14h10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><path d="M16 12v5M14 14.5h4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></div>
+        <div class="func-text">代办申报</div>
+        <div class="func-red-dot"></div>
+        <div class="func-status alert">请完成授权</div>
+      </div>
+      <div class="func-item" id="func-resign" style="display:none" onclick="openResignFlow()">
+        <div class="func-icon blue"><svg viewBox="0 0 22 22" fill="none"><path d="M3 6h16M3 10h16M3 14h10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><path d="M16 12v5M14 14.5h4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></div>
+        <div class="func-text">代办申报</div>
+        <div class="func-red-dot"></div>
+        <div class="func-status warning">请重新签署</div>
+      </div>
+      <div class="func-item" id="func-signed" style="display:none" onclick="goPage('page-auth-records')">
+        <div class="func-icon blue"><svg viewBox="0 0 22 22" fill="none"><path d="M3 6h16M3 10h16M3 14h10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><path d="M16 12v5M14 14.5h4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></div>
+        <div class="func-text">代办申报</div>
+        <div class="func-status info">累计预扣法</div>
+      </div>
+      <div class="func-item" id="func-unverified" style="display:none" onclick="goPage('page-realname')">
+        <div class="func-icon blue"><svg viewBox="0 0 22 22" fill="none"><path d="M3 6h16M3 10h16M3 14h10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><path d="M16 12v5M14 14.5h4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></div>
+        <div class="func-text">代办申报</div>
+        <div class="func-red-dot"></div>
+        <div class="func-status alert">请先实名认证</div>
+      </div>
+      <div class="func-item" id="func-calc" onclick="handleCalcClick()">
+        <div class="func-icon teal"><svg viewBox="0 0 22 22" fill="none"><rect x="3" y="3" width="16" height="16" rx="2" stroke="currentColor" stroke-width="1.5"/><path d="M7 8h8M7 11h5M7 14h3" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg></div>
+        <div class="func-text">税费测算</div>
+        <div class="func-status" id="func-calc-status" style="color:#999">请先授权</div>
+      </div>
+      <div class="func-item" onclick="protoAction('志愿者记录')">
+        <div class="func-icon purple"><svg viewBox="0 0 22 22" fill="none"><circle cx="11" cy="8" r="4" stroke="currentColor" stroke-width="1.5"/><path d="M4 19c0-3.3 3.1-6 7-6s7 2.7 7 6" stroke="currentColor" stroke-width="1.5"/></svg></div>
+        <div class="func-text">志愿者记录</div>
+      </div>
+      <div class="func-item" onclick="protoAction('医药订单')">
+        <div class="func-icon red"><svg viewBox="0 0 22 22" fill="none"><rect x="6" y="3" width="10" height="16" rx="4" stroke="currentColor" stroke-width="1.5"/><path d="M11 7v4M9 9h4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></div>
+        <div class="func-text">医药订单</div>
+      </div>
+      <div class="func-item" onclick="protoAction('申请记录')">
+        <div class="func-icon indigo"><svg viewBox="0 0 22 22" fill="none"><rect x="4" y="3" width="14" height="16" rx="2" stroke="currentColor" stroke-width="1.5"/><path d="M8 7h6M8 10h4M8 13h2" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg></div>
+        <div class="func-text">申请记录</div>
+      </div>
+      <div class="func-item" onclick="protoAction('报告记录')">
+        <div class="func-icon cyan"><svg viewBox="0 0 22 22" fill="none"><rect x="4" y="2" width="14" height="18" rx="2" stroke="currentColor" stroke-width="1.5"/><path d="M8 6h6M8 9h5M8 12h3" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg></div>
+        <div class="func-text">报告记录</div>
+      </div>
+      <div class="func-item" onclick="protoAction('银行卡')">
+        <div class="func-icon gold"><svg viewBox="0 0 22 22" fill="none"><rect x="2" y="5" width="18" height="12" rx="2" stroke="currentColor" stroke-width="1.5"/><path d="M2 9h18" stroke="currentColor" stroke-width="1.5"/></svg></div>
+        <div class="func-text">银行卡</div>
+      </div>
     </div>
   </div>
-  <div class="section-card" style="margin-top:10px">
-    <div class="menu-item" id="menu-unverified" style="display:none" onclick="goPage('page-realname')"><div class="menu-left"><div class="menu-icon tax"><svg viewBox="0 0 18 18" fill="none"><path d="M3 5h12M3 9h12M3 13h8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><path d="M14 11v4M12 13h4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></div><div class="menu-text">代办申报<span class="red-dot" style="margin-left:6px"></span></div></div><div class="menu-right"><span class="menu-sub alert">请先完成实名认证</span><span class="menu-arrow"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 4l4 4-4 4"/></svg></span></div></div>
-    <div class="menu-item" id="menu-unsigned" onclick="openSignFlow()"><div class="menu-left"><div class="menu-icon tax"><svg viewBox="0 0 18 18" fill="none"><path d="M3 5h12M3 9h12M3 13h8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><path d="M14 11v4M12 13h4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></div><div class="menu-text">代办申报<span class="red-dot" style="margin-left:6px"></span></div></div><div class="menu-right"><span class="menu-sub alert">请完成代办申报授权</span><span class="menu-arrow"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 4l4 4-4 4"/></svg></span></div></div>
-    <div class="menu-item" id="menu-signed" style="display:none" onclick="goPage('page-auth-records')"><div class="menu-left"><div class="menu-icon tax"><svg viewBox="0 0 18 18" fill="none"><path d="M3 5h12M3 9h12M3 13h8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><path d="M14 11v4M12 13h4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></div><div class="menu-text">代办申报</div></div><div class="menu-right"><span class="menu-sub info">连续劳务报酬（适用累计预扣法）</span><span class="menu-arrow"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 4l4 4-4 4"/></svg></span></div></div>
-    <div class="menu-item" id="menu-resign" style="display:none" onclick="openResignFlow()"><div class="menu-left"><div class="menu-icon tax"><svg viewBox="0 0 18 18" fill="none"><path d="M3 5h12M3 9h12M3 13h8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><path d="M14 11v4M12 13h4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></div><div class="menu-text">代办申报<span class="red-dot" style="margin-left:6px"></span></div></div><div class="menu-right"><span class="menu-sub warning">协议已更新，请重新签署</span><span class="menu-arrow"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 4l4 4-4 4"/></svg></span></div></div>
-    <div class="menu-item" id="menu-calc" style="display:none" onclick="goPage('page-tax-calc')"><div class="menu-left"><div class="menu-icon calc"><svg viewBox="0 0 18 18" fill="none"><rect x="3" y="3" width="12" height="12" rx="2" stroke="currentColor" stroke-width="1.5"/><path d="M6 7h6M6 10h3" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg></div><div class="menu-text">税费测算</div></div><div class="menu-right"><span class="menu-sub">预估个税</span><span class="menu-arrow"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 4l4 4-4 4"/></svg></span></div></div>
-    <div class="menu-item" onclick="goPage('page-realname')"><div class="menu-left"><div class="menu-icon" style="background:linear-gradient(135deg,#13C2C2,#08979C)"><svg viewBox="0 0 18 18" fill="none"><rect x="4" y="2" width="10" height="14" rx="2" stroke="currentColor" stroke-width="1.5"/><circle cx="9" cy="7" r="2" stroke="currentColor" stroke-width="1.2"/><path d="M6 13c0-1.7 1.3-3 3-3s3 1.3 3 3" stroke="currentColor" stroke-width="1.2"/></svg></div><div class="menu-text">实名认证</div></div><div class="menu-right"><span class="menu-arrow"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 4l4 4-4 4"/></svg></span></div></div>
-    <div class="menu-item" onclick="protoAction('我的问卷')"><div class="menu-left"><div class="menu-icon survey"><svg viewBox="0 0 18 18" fill="none"><rect x="3" y="2" width="12" height="14" rx="2" stroke="currentColor" stroke-width="1.5"/><path d="M6 7h6M6 10h4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></div><div class="menu-text">我的问卷</div></div><div class="menu-right"><span class="menu-arrow"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 4l4 4-4 4"/></svg></span></div></div>
-    <div class="menu-item" onclick="protoAction('我的研究')"><div class="menu-left"><div class="menu-icon research"><svg viewBox="0 0 18 18" fill="none"><path d="M3 4h8v10H3zM11 7h4v7h-4z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg></div><div class="menu-text">我的研究</div></div><div class="menu-right"><span class="menu-arrow"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 4l4 4-4 4"/></svg></span></div></div>
-    <div class="menu-item" onclick="protoAction('志愿者记录')"><div class="menu-left"><div class="menu-icon volunteer"><svg viewBox="0 0 18 18" fill="none"><circle cx="9" cy="6" r="3" stroke="currentColor" stroke-width="1.5"/><path d="M3 16c0-3.3 2.7-6 6-6s6 2.7 6 6" stroke="currentColor" stroke-width="1.5"/></svg></div><div class="menu-text">志愿者记录</div></div><div class="menu-right"><span class="menu-arrow"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 4l4 4-4 4"/></svg></span></div></div>
-    <div class="menu-item" onclick="protoAction('入组记录')"><div class="menu-left"><div class="menu-icon enroll"><svg viewBox="0 0 18 18" fill="none"><rect x="3" y="3" width="12" height="12" rx="2" stroke="currentColor" stroke-width="1.5"/></svg></div><div class="menu-text">入组记录</div></div><div class="menu-right"><span class="menu-arrow"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 4l4 4-4 4"/></svg></span></div></div>
-    <div class="menu-item" onclick="protoAction('医药订单')"><div class="menu-left"><div class="menu-icon medicine"><svg viewBox="0 0 18 18" fill="none"><rect x="5" y="2" width="8" height="14" rx="3" stroke="currentColor" stroke-width="1.5"/></svg></div><div class="menu-text">医药订单</div></div><div class="menu-right"><span class="menu-arrow"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 4l4 4-4 4"/></svg></span></div></div>
-    <div class="menu-item" onclick="protoAction('收货地址')"><div class="menu-left"><div class="menu-icon address"><svg viewBox="0 0 18 18" fill="none"><path d="M9 2C6.2 2 4 4.2 4 7c0 4 5 9 5 9s5-5 5-9c0-2.8-2.2-5-5-5z" stroke="currentColor" stroke-width="1.5"/><circle cx="9" cy="7" r="2" stroke="currentColor" stroke-width="1.2"/></svg></div><div class="menu-text">收货地址</div></div><div class="menu-right"><span class="menu-arrow"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 4l4 4-4 4"/></svg></span></div></div>
-  </div>
-  <!-- 费用申请入口 -->
-  <div class="section-card" style="margin-top:10px">
-    <div class="menu-item" onclick="tryOpenExpense()"><div class="menu-left"><div class="menu-icon" style="background:linear-gradient(135deg,#FF7A45,#FA541C)"><svg viewBox="0 0 18 18" fill="none"><rect x="3" y="2" width="12" height="14" rx="2" stroke="currentColor" stroke-width="1.5"/><path d="M6 6h6M6 9h4M6 12h2" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg></div><div class="menu-text">费用申请</div></div><div class="menu-right"><span class="menu-sub">在线申请</span><span class="menu-arrow"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 4l4 4-4 4"/></svg></span></div></div>
+  <!-- 辅助功能 -->
+  <div class="func-section">
+    <div class="func-section-title">辅助功能</div>
+    <div class="func-grid func-grid-4">
+      <div class="func-item" onclick="protoAction('我的问卷')">
+        <div class="func-icon green"><svg viewBox="0 0 22 22" fill="none"><rect x="3" y="2" width="16" height="18" rx="2" stroke="currentColor" stroke-width="1.5"/><path d="M7 7h8M7 10h6M7 13h4" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg></div>
+        <div class="func-text">我的问卷</div>
+      </div>
+      <div class="func-item" onclick="protoAction('收货地址')">
+        <div class="func-icon indigo"><svg viewBox="0 0 22 22" fill="none"><path d="M11 3C7.7 3 5 5.7 5 9.3c0 5 6 10.7 6 10.7s6-5.7 6-10.7C17 5.7 14.3 3 11 3z" stroke="currentColor" stroke-width="1.5"/><circle cx="11" cy="9" r="2.5" stroke="currentColor" stroke-width="1.2"/></svg></div>
+        <div class="func-text">收货地址</div>
+      </div>
+      <div class="func-item" onclick="protoAction('优惠券')">
+        <div class="func-icon gold"><svg viewBox="0 0 22 22" fill="none"><rect x="3" y="5" width="16" height="12" rx="2" stroke="currentColor" stroke-width="1.5"/><path d="M8 5v12M14 9h2M14 12h2" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg></div>
+        <div class="func-text">优惠券</div>
+      </div>
+      <div class="func-item" onclick="protoAction('日程管理')">
+        <div class="func-icon purple"><svg viewBox="0 0 22 22" fill="none"><rect x="3" y="4" width="16" height="15" rx="2" stroke="currentColor" stroke-width="1.5"/><path d="M3 9h16M8 2v4M14 2v4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></div>
+        <div class="func-text">日程管理</div>
+      </div>
+      <div class="func-item" onclick="protoAction('我的会议')">
+        <div class="func-icon blue"><svg viewBox="0 0 22 22" fill="none"><circle cx="11" cy="8" r="4" stroke="currentColor" stroke-width="1.5"/><path d="M4 19c0-3.3 3.1-6 7-6s7 2.7 7 6" stroke="currentColor" stroke-width="1.5"/></svg></div>
+        <div class="func-text">我的会议</div>
+      </div>
+      <div class="func-item" onclick="protoAction('我的作品')">
+        <div class="func-icon teal"><svg viewBox="0 0 22 22" fill="none"><rect x="4" y="3" width="14" height="16" rx="2" stroke="currentColor" stroke-width="1.5"/><path d="M8 10l3 3 5-5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        <div class="func-text">我的作品</div>
+      </div>
+      <div class="func-item" onclick="protoAction('我的论坛')">
+        <div class="func-icon orange"><svg viewBox="0 0 22 22" fill="none"><rect x="3" y="4" width="16" height="11" rx="2" stroke="currentColor" stroke-width="1.5"/><path d="M7 10h8M7 13h5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/><path d="M7 15l-2 3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></div>
+        <div class="func-text">我的论坛</div>
+      </div>
+      <div class="func-item" onclick="protoAction('我的征集')">
+        <div class="func-icon red"><svg viewBox="0 0 22 22" fill="none"><path d="M5 4h12a2 2 0 012 2v8a2 2 0 01-2 2H9l-4 4v-4H5a2 2 0 01-2-2V6a2 2 0 012-2z" stroke="currentColor" stroke-width="1.5"/></svg></div>
+        <div class="func-text">我的征集</div>
+      </div>
+      <div class="func-item" onclick="protoAction('我的研究')">
+        <div class="func-icon teal"><svg viewBox="0 0 22 22" fill="none"><path d="M4 5h7v12H4zM11 8h7v9h-7z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg></div>
+        <div class="func-text">我的研究</div>
+      </div>
+      <div class="func-item" onclick="protoAction('我的群聊')">
+        <div class="func-icon purple"><svg viewBox="0 0 22 22" fill="none"><circle cx="8" cy="9" r="3" stroke="currentColor" stroke-width="1.5"/><circle cx="15" cy="9" r="3" stroke="currentColor" stroke-width="1.5"/><path d="M3 17c0-2.8 2.2-5 5-5M14 12c2.8 0 5 2.2 5 5" stroke="currentColor" stroke-width="1.5"/></svg></div>
+        <div class="func-text">我的群聊</div>
+      </div>
+      <div class="func-item" onclick="goPage('page-realname')">
+        <div class="func-icon green"><svg viewBox="0 0 22 22" fill="none"><rect x="5" y="3" width="12" height="16" rx="2" stroke="currentColor" stroke-width="1.5"/><circle cx="11" cy="9" r="2.5" stroke="currentColor" stroke-width="1.2"/><path d="M8 16c0-1.7 1.3-3 3-3s3 1.3 3 3" stroke="currentColor" stroke-width="1.2"/></svg></div>
+        <div class="func-text">实名认证</div>
+      </div>
+      <div class="func-item" onclick="protoAction('更多功能')">
+        <div class="func-icon gray"><svg viewBox="0 0 22 22" fill="none"><circle cx="6" cy="11" r="2" fill="currentColor"/><circle cx="11" cy="11" r="2" fill="currentColor"/><circle cx="16" cy="11" r="2" fill="currentColor"/></svg></div>
+        <div class="func-text">更多功能</div>
+      </div>
+    </div>
   </div>
   <!-- 拦截弹窗 -->
   <div class="sheet-mask intercept-sheet" id="intercept-unverified" onclick="if(event.target===this)hideSheet('intercept-unverified')"><div class="sheet-body"><div class="sheet-handle"></div><div class="intercept-icon orange"><svg viewBox="0 0 24 24" fill="none"><path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10 10-4.5 10-10S17.5 2 12 2z" fill="currentColor" opacity=".15"/><path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10 10-4.5 10-10S17.5 2 12 2z" stroke="currentColor" stroke-width="1.5"/><path d="M12 8v4M12 16v.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></div><div class="intercept-title">请先完成实名认证</div><div class="intercept-body">使用费用申请等服务需先完成实名认证，认证通过后方可继续操作。</div><div class="btn-row"><button class="btn btn-secondary" onclick="hideSheet('intercept-unverified')">稍后再说</button><button class="btn btn-primary" onclick="hideSheet('intercept-unverified');goPage('page-realname')">去认证</button></div></div></div>
@@ -935,16 +1075,37 @@ body{font-family:-apple-system,"PingFang SC","Helvetica Neue","Microsoft YaHei",
 let currentState='unsigned';
 function switchState(state){currentState=state;document.querySelectorAll('.proto-switcher button').forEach(b=>b.classList.remove('active'));event.target.classList.add('active');applyState(state);goPage('page-center');if(state==='unsigned')showModal('modal-login-unsigned');else if(state==='resign')showModal('modal-login-resign')}
 function applyState(s){
-  document.getElementById('balance-frozen').style.display=s==='signed'?'none':'';
-  document.getElementById('balance-normal').style.display=s==='signed'?'':'none';
+  // Balance stat
+  var balanceNum=document.getElementById('stat-balance-num');
+  var balanceFrozen=document.getElementById('stat-balance-frozen');
+  if(s==='signed'){balanceNum.innerHTML='4,000.00<span style="font-size:12px;font-weight:400">元</span>';balanceFrozen.style.display='none'}
+  else{balanceNum.innerHTML='0.00<span style="font-size:12px;font-weight:400">元</span>';balanceFrozen.style.display=''}
+  // Warning
   document.getElementById('warning-5m').style.display=s==='signed'?'':'none';
-  document.getElementById('menu-unverified').style.display=s==='unverified'?'':'none';
-  document.getElementById('menu-unsigned').style.display=s==='unsigned'?'':'none';
-  document.getElementById('menu-signed').style.display=s==='signed'?'':'none';
-  document.getElementById('menu-resign').style.display=s==='resign'?'':'none';
-  document.getElementById('menu-calc').style.display=s==='signed'?'':'none';
+  // Func items - 代办申报
+  document.getElementById('func-unverified').style.display=s==='unverified'?'':'none';
+  document.getElementById('func-unsigned').style.display=s==='unsigned'?'':'none';
+  document.getElementById('func-signed').style.display=s==='signed'?'':'none';
+  document.getElementById('func-resign').style.display=s==='resign'?'':'none';
+  // 税费测算 status
+  var calcStatus=document.getElementById('func-calc-status');
+  if(s==='signed'){calcStatus.textContent='预估个税';calcStatus.style.color='var(--blue)';calcStatus.className='func-status info'}
+  else{calcStatus.textContent='请先授权';calcStatus.style.color='#999';calcStatus.className='func-status'}
+  // Account page
   document.getElementById('c4-frozen').style.display=s==='signed'?'none':'';
   document.getElementById('c4-nofrozen').style.display=s==='signed'?'':'none';
+}
+function handleBalanceClick(){
+  if(currentState==='unsigned')openSignFlow();
+  else if(currentState==='resign')openResignFlow();
+  else if(currentState==='unverified')goPage('page-realname');
+  else goPage('page-balance');
+}
+function handleCalcClick(){
+  if(currentState==='signed')goPage('page-tax-calc');
+  else if(currentState==='unsigned')openSignFlow();
+  else if(currentState==='resign')openResignFlow();
+  else if(currentState==='unverified')goPage('page-realname');
 }
 /* ========== Navigation ========== */
 function goPage(id){closeAllOverlays();document.querySelectorAll('.phone-screen').forEach(s=>s.style.display='none');document.getElementById(id).style.display='flex';if(id==='page-realname'){resetRealname()}if(id==='page-realname-done'){document.getElementById('rn-done-signed').style.display=currentState==='signed'?'':'none';document.getElementById('rn-done-unsigned').style.display=(currentState==='unsigned'||currentState==='unverified')?'':'none';document.getElementById('rn-done-resign').style.display=currentState==='resign'?'':'none'}}

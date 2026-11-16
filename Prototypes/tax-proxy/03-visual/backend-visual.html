@@ -1345,7 +1345,8 @@
     <div class="modal-header"><h3>开启观严代办</h3><button class="modal-close" onclick="hideModal('open-guanyan-modal')">✕</button></div>
     <div class="modal-body">
       <p>确认开启 <strong id="openName">—</strong> 的观严代办申报？</p>
-      <p>开启后，该人员需签署《个人所得税、增值税等代办申报知情同意书》，由观严主体进行个税及增值税、附加税的代扣代缴与申报</p>
+      <p id="openAlreadySigned" style="display:none">该人员此前已签署知情同意书且协议未更新，无需重新签署，可直接恢复代办申报</p>
+      <p id="openNeedSign">开启后，该人员需签署《个人所得税、增值税等代办申报知情同意书》，由观严主体进行个税及增值税、附加税的代扣代缴与申报</p>
     </div>
     <div class="modal-footer"><button class="btn-modal-cancel" onclick="hideModal('open-guanyan-modal')">取消</button><button class="btn-modal-primary" onclick="doOpenGuanyan()">确认开启</button></div>
   </div>
@@ -1357,7 +1358,8 @@
     <div class="modal-header"><h3>关闭观严代办</h3><button class="modal-close" onclick="hideModal('close-guanyan-modal')">✕</button></div>
     <div class="modal-body">
       <p>确认关闭 <strong id="closeName">—</strong> 的观严代办申报？</p>
-      <p>关闭后，该人员将由三方进行代扣代缴与申报，无需签署知情同意书</p>
+      <p>关闭后，该人员将由三方进行代扣代缴与申报</p>
+      <div style="background:#f0f7ff;padding:10px 14px;border-radius:4px;border-left:3px solid #1890ff;margin:12px 0;font-size:13px;color:#1890ff">已签署的授权不会取消，再次开启时若协议未更新，无需重新签署</div>
     </div>
     <div class="modal-footer"><button class="btn-modal-cancel" onclick="hideModal('close-guanyan-modal')">取消</button><button class="btn-modal-primary" onclick="doCloseGuanyan()">确认关闭</button></div>
   </div>
@@ -2083,9 +2085,16 @@ function doMasterConfirm() {
 }
 
 // ===== Row Toggle =====
-function openGuanyan(toggleEl, name) {
+function openGuanyan(toggleEl, name, signed) {
   if (!masterOn) return;
   document.getElementById('openName').textContent = name;
+  if (signed) {
+    document.getElementById('openAlreadySigned').style.display = '';
+    document.getElementById('openNeedSign').style.display = 'none';
+  } else {
+    document.getElementById('openAlreadySigned').style.display = 'none';
+    document.getElementById('openNeedSign').style.display = '';
+  }
   showModal('open-guanyan-modal'); window._pendingToggle = toggleEl;
 }
 function doOpenGuanyan() {
