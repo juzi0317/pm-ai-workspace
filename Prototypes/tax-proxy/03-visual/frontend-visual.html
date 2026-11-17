@@ -38,6 +38,15 @@ body{font-family:-apple-system,"PingFang SC","Helvetica Neue","Microsoft YaHei",
 .notice-text strong{color:#1a1a1a;font-weight:500}
 .notice-btn{padding:4px 12px;border-radius:14px;font-size:12px;font-weight:500;cursor:pointer;flex-shrink:0;border:none}
 .notice-btn.orange{background:#FA8C16;color:#fff}
+.notice-btn.blue{background:var(--blue);color:#fff}
+.declare-icon{background:linear-gradient(135deg,#E8F4FD,#BAE0FD)!important}
+.declare-icon svg{color:var(--blue)!important}
+.notice-bar.state-signed{background:linear-gradient(135deg,#F0FFE8,#E6FFD5)}
+.notice-bar.state-signed .declare-icon{background:linear-gradient(135deg,#F0FFE8,#D9F7BE)!important}
+.notice-bar.state-signed .declare-icon svg{color:#52C41A!important}
+.notice-bar.state-resign{background:linear-gradient(135deg,#FFF7E6,#FFE7BA)}
+.notice-bar.state-resign .declare-icon{background:linear-gradient(135deg,#FFF7E6,#FFE7BA)!important}
+.notice-bar.state-resign .declare-icon svg{color:#FA8C16!important}
 .section-card{background:#fff;margin:10px 16px;border-radius:10px;overflow:hidden;box-shadow:0 1px 4px rgba(0,0,0,.04)}
 .section-header{display:flex;justify-content:space-between;align-items:center;padding:14px 16px 10px}
 .section-title{font-size:15px;font-weight:600;color:#1a1a1a}
@@ -514,11 +523,11 @@ body{font-family:-apple-system,"PingFang SC","Helvetica Neue","Microsoft YaHei",
       </div>
     </div>
   </div>
-  <!-- Notice bar -->
-  <div class="notice-bar">
-    <div class="notice-icon"><svg viewBox="0 0 18 18" fill="none"><path d="M9 1.5L16 5.5v4c0 4-3 7.5-7 8.5-4-1-7-4.5-7-8.5V5.5l7-4z" fill="#FA8C16" opacity=".15"/><path d="M9 1.5L16 5.5v4c0 4-3 7.5-7 8.5-4-1-7-4.5-7-8.5V5.5l7-4z" stroke="#FA8C16" stroke-width="1.2"/><path d="M9 6v4M9 12.5v.5" stroke="#FA8C16" stroke-width="1.5" stroke-linecap="round"/></svg></div>
-    <span class="notice-text"><strong>人脸核验</strong> 自2026年7月10日起，个人提现需先完成…</span>
-    <button class="notice-btn orange" onclick="protoAction('去查看')">去查看</button>
+  <!-- 代办申报 entry bar -->
+  <div class="notice-bar" id="notice-declare" onclick="handleDeclareNotice()">
+    <div class="notice-icon declare-icon"><svg viewBox="0 0 18 18" fill="none"><rect x="2" y="2" width="14" height="14" rx="2" stroke="currentColor" stroke-width="1.2"/><path d="M6 6h6M6 9h4M6 12h2" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg></div>
+    <span class="notice-text" id="notice-declare-text"><strong>代办申报</strong> 请完成授权签署，方可办理代扣代缴</span>
+    <button class="notice-btn" id="notice-declare-btn" onclick="event.stopPropagation();handleDeclareNotice()">去签署</button>
   </div>
   <div class="warning-card" id="warning-5m" style="display:none" onclick="this.classList.toggle('expanded')">
     <div class="warning-card-icon"><svg viewBox="0 0 20 20" fill="none"><path d="M10 2L1 18h18L10 2z" fill="#FAAD14" opacity=".15"/><path d="M10 2L1 18h18L10 2z" stroke="#FAAD14" stroke-width="1.5" stroke-linejoin="round"/><path d="M10 8v4M10 14v1" stroke="#FAAD14" stroke-width="2" stroke-linecap="round"/></svg></div>
@@ -762,6 +771,7 @@ body{font-family:-apple-system,"PingFang SC","Helvetica Neue","Microsoft YaHei",
     <div class="acct-balance-card"><div class="acct-label">研究余额<span style="font-size:11px;color:#999;font-weight:400">（参与临床研究过程中获得费用）</span></div>
       <div class="acct-row"><div class="acct-amount">¥4,000.00</div><button class="acct-btn-sm primary" onclick="tryGoWithdraw()">提现</button></div>
       <div class="acct-divider"><div style="display:flex;justify-content:space-between;align-items:center"><div><span style="font-size:12px;color:#666">预估个税总额</span><span class="acct-tax-hint">动态估算值，仅作参考</span></div><span style="font-size:15px;font-weight:600;color:var(--red)">¥87.62</span></div></div>
+      <div class="acct-divider" style="margin-top:0;border-top:1px solid rgba(0,0,0,.06)"><div style="display:flex;justify-content:space-between;align-items:center"><span style="font-size:12px;color:#666">预估增附税</span><span style="font-size:14px;font-weight:600;color:var(--red)">¥104.95</span></div></div>
       <div class="acct-sign-link" onclick="openSignFlow()">待签署知情同意书，去签署 ›</div>
     </div>
   </div>
@@ -771,6 +781,7 @@ body{font-family:-apple-system,"PingFang SC","Helvetica Neue","Microsoft YaHei",
     <div class="acct-balance-card"><div class="acct-label">研究余额<span style="font-size:11px;color:#999;font-weight:400">（参与临床研究过程中获得费用）</span></div>
       <div class="acct-row"><div class="acct-amount">¥4,000.00</div><button class="acct-btn-sm primary" onclick="tryGoWithdraw()">提现</button></div>
       <div class="acct-divider"><div style="display:flex;justify-content:space-between;align-items:center"><div><span style="font-size:12px;color:#666">预估个税总额</span><span class="acct-tax-hint">动态估算值，仅作参考</span></div><span style="font-size:15px;font-weight:600;color:var(--red)">¥87.62</span></div></div>
+      <div class="acct-divider" style="margin-top:0;border-top:1px solid rgba(0,0,0,.06)"><div style="display:flex;justify-content:space-between;align-items:center"><span style="font-size:12px;color:#666">预估增附税</span><span style="font-size:14px;font-weight:600;color:var(--red)">¥104.95</span></div></div>
     </div>
   </div>
   <!-- 提现记录 -->
@@ -794,10 +805,10 @@ body{font-family:-apple-system,"PingFang SC","Helvetica Neue","Microsoft YaHei",
   <div style="padding:12px 0 0;flex:1">
     <div class="income-filter"><span class="income-filter-tag">全部项目 ▾</span><span></span></div>
     <div id="data-income-list">
-    <div class="income-item"><div class="income-item-top"><span class="income-project">测试正大01</span><span class="income-amount">¥2,000.00</span></div><div class="income-meta">郑州大学第一附属医院</div><div class="income-meta">病例征集费</div><div class="income-bottom"><span class="income-time">2026-01-14 16:54</span><span class="income-tax">预估个税 ¥87.62</span></div></div>
-    <div class="income-item"><div class="income-item-top"><span class="income-project">测试正大01</span><span class="income-amount">¥2,000.00</span></div><div class="income-meta">郑州大学第一附属医院</div><div class="income-meta">病例征集费</div><div class="income-bottom"><span class="income-time">2026-01-14 16:54</span><span class="income-tax">预估个税 ¥87.62</span></div></div>
-    <div class="income-item"><div class="income-item-top"><span class="income-project">测试正大02</span><span class="income-amount">¥1,500.00</span></div><div class="income-meta">北京协和医院</div><div class="income-meta">入组费</div><div class="income-bottom"><span class="income-time">2026-01-10 09:30</span><span class="income-tax">预估个税 ¥43.81</span></div></div>
-    <div class="income-hint">预估个税：仅根据当前条件估算，<b>非最终扣税金额</b></div>
+    <div class="income-item"><div class="income-item-top"><span class="income-project">测试正大01</span><span class="income-amount">¥2,000.00</span></div><div class="income-meta">郑州大学第一附属医院</div><div class="income-meta">病例征集费</div><div class="income-bottom"><span class="income-time">2026-01-14 16:54</span><span class="income-tax">预估个税 ¥87.62 · 增附税 ¥104.95</span></div></div>
+    <div class="income-item"><div class="income-item-top"><span class="income-project">测试正大01</span><span class="income-amount">¥2,000.00</span></div><div class="income-meta">郑州大学第一附属医院</div><div class="income-meta">病例征集费</div><div class="income-bottom"><span class="income-time">2026-01-14 16:54</span><span class="income-tax">预估个税 ¥87.62 · 增附税 ¥104.95</span></div></div>
+    <div class="income-item"><div class="income-item-top"><span class="income-project">测试正大02</span><span class="income-amount">¥1,500.00</span></div><div class="income-meta">北京协和医院</div><div class="income-meta">入组费</div><div class="income-bottom"><span class="income-time">2026-01-10 09:30</span><span class="income-tax">预估个税 ¥43.81 · 增附税 免征</span></div></div>
+    <div class="income-hint">预估个税及增附税：仅根据当前条件估算，<b>非最终扣税金额</b></div>
     </div>
   </div>
   <div style="position:sticky;bottom:0;background:#fff;padding:12px 16px;border-top:1px solid var(--border);display:flex;gap:10px;flex-shrink:0">
@@ -818,7 +829,8 @@ body{font-family:-apple-system,"PingFang SC","Helvetica Neue","Microsoft YaHei",
     </div>
     <div class="wd-tax-info">
       <div class="wd-tax-row"><span class="wd-tax-label">预估个税 <span class="wd-tax-tag">连续劳务报酬（适用累计预扣法）</span></span><span class="wd-tax-val" id="wd-tax">¥17.53</span></div>
-      <div class="wd-tax-row wd-result-row"><span class="wd-tax-label">预估到账金额</span><span class="wd-tax-val wd-actual" id="wd-actual">¥3,982.47</span></div>
+      <div class="wd-tax-row"><span class="wd-tax-label">预估增附税 <span style="font-size:11px;color:#BBB">仅供参考</span></span><span class="wd-tax-val" id="wd-vat">¥52.47</span></div>
+      <div class="wd-tax-row wd-result-row"><span class="wd-tax-label">预估到账金额</span><span class="wd-tax-val wd-actual" id="wd-actual">¥3,930.00</span></div>
     </div>
     <div class="wd-section-v2">
       <div class="wd-section-v2-title">实名信息</div>
@@ -834,7 +846,7 @@ body{font-family:-apple-system,"PingFang SC","Helvetica Neue","Microsoft YaHei",
     <div style="margin-top:auto">
       <button class="btn btn-primary" id="wd-submit" onclick="goPage('page-withdraw-result')" style="width:100%">确认提现</button>
       <div style="text-align:center;margin-top:10px"><a style="font-size:12px;color:var(--blue);cursor:pointer;text-decoration:none" onclick="protoAction('我有问题')">我有问题?</a></div>
-      <p class="wd-hint">预估个税仅供参考，最终代扣税额以到账为准</p>
+      <p class="wd-hint">预估个税及增附税仅供参考，实扣税费以审核通过后计算、打款时代扣金额为准</p>
     </div>
   </div>
 </div>
@@ -850,14 +862,15 @@ body{font-family:-apple-system,"PingFang SC","Helvetica Neue","Microsoft YaHei",
     <div class="success-info" style="margin-bottom:8px">
       <div class="success-row"><span class="success-key">提现金额</span><span class="success-val">¥2,000.00</span></div>
       <div class="success-row"><span class="success-key">预估个税</span><span class="success-val">¥17.53 <span style="font-size:11px;color:#BBB">仅供参考</span></span></div>
-      <div class="success-row"><span class="success-key">预估到账金额</span><span class="success-val" style="color:#52C41A;font-weight:700">¥1,982.47</span></div>
+      <div class="success-row"><span class="success-key">预估增附税</span><span class="success-val">¥52.47 <span style="font-size:11px;color:#BBB">仅供参考</span></span></div>
+      <div class="success-row"><span class="success-key">预估到账金额</span><span class="success-val" style="color:#52C41A;font-weight:700">¥1,930.00</span></div>
       <div class="success-row"><span class="success-key">计算方式</span><span class="success-val">连续劳务报酬（适用累计预扣法）</span></div>
     </div>
     <div class="success-info">
       <div class="success-row"><span class="success-key">提现状态</span><span class="success-val"><span style="background:#FFF7E6;color:#FA8C16;padding:2px 8px;border-radius:4px;font-size:11px">待审核</span></span></div>
       <div class="success-row"><span class="success-key">预计到账时间</span><span class="success-val">审核通过后 1-3 个工作日</span></div>
     </div>
-    <p style="font-size:11px;color:#BBB;margin-bottom:16px">实扣个税将在审核通过后基于当时累计数据计算，可能与预估金额存在差异。</p>
+    <p style="font-size:11px;color:#BBB;margin-bottom:16px">实扣个税及增附税将在审核通过后基于当时累计数据计算，打款时按该金额执行代扣，不重新计算。如提现与打款跨月，税额以提现时计算的金额为准。</p>
     <button class="btn btn-primary" onclick="goPage('page-center')" style="width:100%;max-width:280px">返回个人中心</button>
     <button class="btn-text" onclick="goPage('page-balance')" style="font-weight:400;color:var(--gray)">查看余额</button>
   </div>
@@ -879,7 +892,9 @@ body{font-family:-apple-system,"PingFang SC","Helvetica Neue","Microsoft YaHei",
       <button class="btn btn-primary btn-calc" id="calc-c-btn" onclick="calcCumulative()">计算个税</button>
     </div>
     <div class="calc-result" id="calc-c-result" style="display:none">
-      <div class="calc-result-top"><div class="calc-result-label">本期应预扣个税</div><div class="calc-result-amount" id="calc-c-tax" style="color:var(--red)">—</div></div>
+      <div class="calc-result-top"><div class="calc-result-label">预估实际到账</div><div class="calc-result-amount" id="calc-c-arrival" style="color:#52C41A">—</div></div>
+      <div class="calc-result-row"><span class="calc-result-key">本期应预扣个税</span><span class="calc-result-val" id="calc-c-tax" style="color:var(--red)">—</span></div>
+      <div class="calc-result-row"><span class="calc-result-key">增附税</span><span class="calc-result-val" id="calc-c-vat">—</span></div>
       <div class="calc-result-row"><span class="calc-result-key">累计应预扣个税金额</span><span class="calc-result-val" id="calc-c-total-tax">—</span></div>
       <div class="calc-result-row"><span class="calc-result-key">税后收入金额（累计）</span><span class="calc-result-val" id="calc-c-after-tax">—</span></div>
     </div>
@@ -899,8 +914,17 @@ body{font-family:-apple-system,"PingFang SC","Helvetica Neue","Microsoft YaHei",
       <div class="calc-detail-row"><span class="calc-detail-key">累计应预扣个税金额</span><span class="calc-detail-val" id="cd-c-total-tax">—</span></div>
       <div class="calc-detail-row"><span class="calc-detail-key">减：累计已预扣</span><span class="calc-detail-val" id="cd-c-prepaid">—</span></div>
       <div class="calc-detail-row"><span class="calc-detail-key">本期应预扣个税金额</span><span class="calc-detail-val" id="cd-c-current-tax" style="color:var(--red);font-weight:700">—</span></div>
+      <div class="calc-detail-sep" id="cd-c-vat-sep" style="display:none;text-align:center;font-size:11px;color:#bbb;font-weight:600;padding:8px 0">—— 增附税计算 ——</div>
+      <div class="calc-detail-row" id="cd-c-vat-income-row" style="display:none"><span class="calc-detail-key">含税收入</span><span class="calc-detail-val" id="cd-c-vat-income">—</span></div>
+      <div class="calc-detail-row" id="cd-c-vat-notax-row" style="display:none"><span class="calc-detail-key">不含税收入</span><span class="calc-detail-val" id="cd-c-vat-notax">—</span></div>
+      <div class="calc-detail-row" id="cd-c-vat-vat-row" style="display:none"><span class="calc-detail-key">增值税</span><span class="calc-detail-val" id="cd-c-vat-vat">—</span></div>
+      <div class="calc-detail-row" id="cd-c-vat-surcharge-row" style="display:none"><span class="calc-detail-key">附加税（含减半）</span><span class="calc-detail-val" id="cd-c-vat-surcharge">—</span></div>
+      <div class="calc-detail-row" id="cd-c-vat-total-row" style="display:none"><span class="calc-detail-key" style="font-weight:600">增附税合计</span><span class="calc-detail-val" id="cd-c-vat-total" style="color:var(--red);font-weight:700">—</span></div>
+      <div class="calc-detail-sep" style="text-align:center;font-size:11px;color:#bbb;font-weight:600;padding:8px 0">—— 合计 ——</div>
+      <div class="calc-detail-row"><span class="calc-detail-key" style="font-weight:600">税费总计</span><span class="calc-detail-val" id="cd-c-total-all" style="color:var(--red);font-weight:700">—</span></div>
+      <div class="calc-detail-row"><span class="calc-detail-key" style="font-weight:600">预估实际到账</span><span class="calc-detail-val" id="cd-c-arrival" style="color:#52C41A;font-weight:700">—</span></div>
     </div></div>
-    <div class="calc-footnote">⚠ 测算说明：本工具按现行连续劳务报酬（适用累计预扣法）规则估算，结果仅作参考；实际个税以打款时代扣金额及年度汇算清缴为准。</div>
+    <div class="calc-footnote">⚠ 测算说明：本工具按现行连续劳务报酬（适用累计预扣法）规则估算个税，增附税按月累计含税收入是否达到免税额度阈值（管理端配置，当前如10万元）估算，结果均仅作参考；实际税费以审核通过后计算、打款时代扣金额及年度汇算清缴为准。</div>
   </div>
   <div class="calc-panel" id="calc-panel-per">
     <div class="calc-desc">适用非连续取得劳务报酬：每笔独立计算，不累计、不跨月；预扣率 20%-40%（三级，单笔应税超 2 万进 30% 档）。</div>
@@ -910,7 +934,9 @@ body{font-family:-apple-system,"PingFang SC","Helvetica Neue","Microsoft YaHei",
       <button class="btn btn-primary btn-calc" id="calc-p-btn" onclick="calcPerOccurrence()">计算个税</button>
     </div>
     <div class="calc-result" id="calc-p-result" style="display:none">
-      <div class="calc-result-top"><div class="calc-result-label">本笔应预扣个税</div><div class="calc-result-amount" id="calc-p-tax" style="color:var(--red)">—</div></div>
+      <div class="calc-result-top"><div class="calc-result-label">预估实际到账</div><div class="calc-result-amount" id="calc-p-arrival" style="color:#52C41A">—</div></div>
+      <div class="calc-result-row"><span class="calc-result-key">本笔应预扣个税</span><span class="calc-result-val" id="calc-p-tax" style="color:var(--red)">—</span></div>
+      <div class="calc-result-row"><span class="calc-result-key">增附税</span><span class="calc-result-val" id="calc-p-vat">—</span></div>
       <div class="calc-result-row"><span class="calc-result-key">税后收入（本笔）</span><span class="calc-result-val" id="calc-p-after-tax">—</span></div>
     </div>
     <div class="calc-detail" id="calc-p-detail" style="display:none"><div class="calc-detail-title">计算明细</div><div class="calc-detail-body" id="calc-p-detail-body">
@@ -925,9 +951,18 @@ body{font-family:-apple-system,"PingFang SC","Helvetica Neue","Microsoft YaHei",
       <div class="calc-detail-row"><span class="calc-detail-key">应纳税所得额</span><span class="calc-detail-val" id="cd-p-taxable">—</span></div>
       <div class="calc-detail-row"><span class="calc-detail-key">适用预扣率 / 速算扣除数</span><span class="calc-detail-val" id="cd-p-rate">—</span></div>
       <div class="calc-detail-row"><span class="calc-detail-key">本笔应预扣税额</span><span class="calc-detail-val" id="cd-p-current-tax" style="color:var(--red);font-weight:700">—</span></div>
+      <div class="calc-detail-sep" id="cd-p-vat-sep" style="display:none;text-align:center;font-size:11px;color:#bbb;font-weight:600;padding:8px 0">—— 增附税计算 ——</div>
+      <div class="calc-detail-row" id="cd-p-vat-income-row" style="display:none"><span class="calc-detail-key">含税收入</span><span class="calc-detail-val" id="cd-p-vat-income">—</span></div>
+      <div class="calc-detail-row" id="cd-p-vat-notax-row" style="display:none"><span class="calc-detail-key">不含税收入</span><span class="calc-detail-val" id="cd-p-vat-notax">—</span></div>
+      <div class="calc-detail-row" id="cd-p-vat-vat-row" style="display:none"><span class="calc-detail-key">增值税</span><span class="calc-detail-val" id="cd-p-vat-vat">—</span></div>
+      <div class="calc-detail-row" id="cd-p-vat-surcharge-row" style="display:none"><span class="calc-detail-key">附加税（含减半）</span><span class="calc-detail-val" id="cd-p-vat-surcharge">—</span></div>
+      <div class="calc-detail-row" id="cd-p-vat-total-row" style="display:none"><span class="calc-detail-key" style="font-weight:600">增附税合计</span><span class="calc-detail-val" id="cd-p-vat-total" style="color:var(--red);font-weight:700">—</span></div>
+      <div class="calc-detail-sep" style="text-align:center;font-size:11px;color:#bbb;font-weight:600;padding:8px 0">—— 合计 ——</div>
+      <div class="calc-detail-row"><span class="calc-detail-key" style="font-weight:600">税费总计</span><span class="calc-detail-val" id="cd-p-total-all" style="color:var(--red);font-weight:700">—</span></div>
+      <div class="calc-detail-row"><span class="calc-detail-key" style="font-weight:600">预估实际到账</span><span class="calc-detail-val" id="cd-p-arrival" style="color:#52C41A;font-weight:700">—</span></div>
       <div class="calc-detail-row"><span class="calc-detail-key">本笔税后</span><span class="calc-detail-val" id="cd-p-after-tax">—</span></div>
     </div></div>
-    <div class="calc-footnote">⚠ 测算说明：本工具按居民个人劳务报酬所得预扣率表二估算，结果仅作参考；实际个税以审核通过后计算、打款时代扣金额为准。按次法每笔独立，不与其它笔累计。</div>
+    <div class="calc-footnote">⚠ 测算说明：本工具按居民个人劳务报酬所得预扣率表二估算个税，增附税按单次（日）含税收入是否超过1,000元起征点估算，结果均仅作参考；实际税费以审核通过后计算、打款时代扣金额为准。按次法每笔独立，不与其它笔累计。</div>
   </div>
 </div>
 
@@ -1094,6 +1129,22 @@ function applyState(s){
   // Account page
   document.getElementById('c4-frozen').style.display=s==='signed'?'none':'';
   document.getElementById('c4-nofrozen').style.display=s==='signed'?'':'none';
+  // 代办申报 notice bar
+  var nb=document.getElementById('notice-declare');
+  var nt=document.getElementById('notice-declare-text');
+  var nbtn=document.getElementById('notice-declare-btn');
+  nb.className='notice-bar';
+  nbtn.className='notice-btn';
+  if(s==='unsigned'){nb.classList.add('');nt.innerHTML='<strong>代办申报</strong> 请完成授权签署，方可办理代扣代缴';nbtn.textContent='去签署';nbtn.classList.add('blue')}
+  else if(s==='resign'){nb.classList.add('state-resign');nt.innerHTML='<strong>代办申报</strong> 协议已更新，请重新签署授权';nbtn.textContent='去签署';nbtn.classList.add('orange')}
+  else if(s==='unverified'){nt.innerHTML='<strong>代办申报</strong> 请先完成实名认证';nbtn.textContent='去认证';nbtn.classList.add('blue')}
+  else if(s==='signed'){nb.classList.add('state-signed');nt.innerHTML='<strong>代办申报</strong> 已授权 · 连续劳务报酬（累计预扣法）';nbtn.textContent='查看';nbtn.classList.add('blue')}
+}
+function handleDeclareNotice(){
+  if(currentState==='unsigned')openSignFlow();
+  else if(currentState==='resign')openResignFlow();
+  else if(currentState==='unverified')goPage('page-realname');
+  else if(currentState==='signed')goPage('page-auth-records');
 }
 function handleBalanceClick(){
   if(currentState==='unsigned')openSignFlow();
@@ -1142,12 +1193,18 @@ function findB(t,bs){for(var i=0;i<bs.length;i++)if(t<=bs[i].l)return bs[i];retu
 function fmt(n){return'¥'+n.toFixed(2)}
 function switchCalcTab(type,el){document.querySelectorAll('.calc-tab').forEach((t,i)=>{t.classList.toggle('active',(type==='cumulative'&&i===0)||(type==='per'&&i===1))});document.getElementById('calc-panel-cumulative').classList.toggle('active',type==='cumulative');document.getElementById('calc-panel-per').classList.toggle('active',type==='per')}
 function toggleCalcDetail(id){document.getElementById(id).classList.toggle('open')}
-function calcCumulative(){var inc=parseFloat(document.getElementById('calc-c-income').value)||0;if(inc<=0)return;var m=Math.max(1,parseInt(document.getElementById('calc-c-months').value)||1),pp=parseFloat(document.getElementById('calc-c-prepaid').value)||0,od=parseFloat(document.getElementById('calc-c-deduction').value)||0;var ai=inc,af=ai*.2,ad=5000*m,tb=ai-af-ad-od;if(tb<0)tb=0;var br=findB(tb,CB),tt=tb*br.r-br.d;if(tt<0)tt=0;var ct=tt-pp;if(ct<0)ct=0;var at=ai-tt;
-  document.getElementById('calc-c-result').style.display='block';document.getElementById('calc-c-tax').textContent=fmt(ct);document.getElementById('calc-c-total-tax').textContent=fmt(tt);document.getElementById('calc-c-after-tax').textContent=fmt(at);
-  document.getElementById('calc-c-detail').style.display='block';document.getElementById('calc-c-btn').textContent='重新测算';document.getElementById('cd-c-acc-income').textContent=fmt(ai);document.getElementById('cd-c-acc-fee').textContent=fmt(af);document.getElementById('cd-c-acc-deduct').textContent=fmt(ad);document.getElementById('cd-c-other').textContent=fmt(od);document.getElementById('cd-c-taxable').textContent=fmt(tb);document.getElementById('cd-c-rate').textContent=(br.r*100)+'% / '+fmt(br.d);document.getElementById('cd-c-total-tax').textContent=fmt(tt);document.getElementById('cd-c-prepaid').textContent=fmt(pp);document.getElementById('cd-c-current-tax').textContent=fmt(ct)}
-function calcPerOccurrence(){var inc=parseFloat(document.getElementById('calc-p-income').value)||0;if(inc<=0)return;var dc=inc<=4000?800:inc*.2,tb=inc-dc;if(tb<0)tb=0;var br=findB(tb,PB),tax=tb*br.r-br.d;if(tax<0)tax=0;var ar=inc-tax,at=inc-tax;
-  document.getElementById('calc-p-result').style.display='block';document.getElementById('calc-p-tax').textContent=fmt(tax);document.getElementById('calc-p-after-tax').textContent=fmt(at);
-  document.getElementById('calc-p-detail').style.display='block';document.getElementById('calc-p-btn').textContent='重新测算';document.getElementById('cd-p-income').textContent=fmt(inc);document.getElementById('cd-p-deduct').textContent=inc<=4000?'¥800（定额）':fmt(dc)+'（定率20%）';document.getElementById('cd-p-taxable').textContent=fmt(tb);document.getElementById('cd-p-rate').textContent=(br.r*100)+'% / '+fmt(br.d);document.getElementById('cd-p-current-tax').textContent=fmt(tax);document.getElementById('cd-p-after-tax').textContent=fmt(at)}
+function calcCumulative(){var inc=parseFloat(document.getElementById('calc-c-income').value)||0;if(inc<=0)return;var m=Math.max(1,parseInt(document.getElementById('calc-c-months').value)||1),pp=parseFloat(document.getElementById('calc-c-prepaid').value)||0,od=parseFloat(document.getElementById('calc-c-deduction').value)||0;var ai=inc,af=ai*.2,ad=5000*m,tb=ai-af-ad-od;if(tb<0)tb=0;var br=findB(tb,CB),tt=tb*br.r-br.d;if(tt<0)tt=0;var ct=tt-pp;if(ct<0)ct=0;
+  var vatTh=100000,vatR=0.01,surR=0.06,vatEx=inc<vatTh,vatA=0,surA=0,vatT=0;if(!vatEx){var nti=inc/(1+vatR);vatA=nti*vatR;surA=vatA*surR;vatT=vatA+surA}var arr=inc-ct-vatT,at=ai-tt;
+  document.getElementById('calc-c-result').style.display='block';document.getElementById('calc-c-tax').textContent=fmt(ct);document.getElementById('calc-c-vat').textContent=vatEx?'免征':fmt(vatT);document.getElementById('calc-c-vat').style.color=vatEx?'#bbb':'var(--red)';document.getElementById('calc-c-arrival').textContent=fmt(arr);document.getElementById('calc-c-total-tax').textContent=fmt(tt);document.getElementById('calc-c-after-tax').textContent=fmt(at);
+  document.getElementById('calc-c-detail').style.display='block';document.getElementById('calc-c-btn').textContent='重新测算';document.getElementById('cd-c-acc-income').textContent=fmt(ai);document.getElementById('cd-c-acc-fee').textContent=fmt(af);document.getElementById('cd-c-acc-deduct').textContent=fmt(ad);document.getElementById('cd-c-other').textContent=fmt(od);document.getElementById('cd-c-taxable').textContent=fmt(tb);document.getElementById('cd-c-rate').textContent=(br.r*100)+'% / '+fmt(br.d);document.getElementById('cd-c-total-tax').textContent=fmt(tt);document.getElementById('cd-c-prepaid').textContent=fmt(pp);document.getElementById('cd-c-current-tax').textContent=fmt(ct);
+  var vatRows=['cd-c-vat-sep','cd-c-vat-income-row','cd-c-vat-notax-row','cd-c-vat-vat-row','cd-c-vat-surcharge-row','cd-c-vat-total-row'];vatRows.forEach(function(id){document.getElementById(id).style.display=vatEx?'none':''});if(!vatEx){var nti=inc/(1+vatR);document.getElementById('cd-c-vat-income').textContent=fmt(inc);document.getElementById('cd-c-vat-notax').textContent=fmt(nti);document.getElementById('cd-c-vat-vat').textContent=fmt(vatA);document.getElementById('cd-c-vat-surcharge').textContent=fmt(surA);document.getElementById('cd-c-vat-total').textContent=fmt(vatT)}
+  var tAll=ct+vatT;document.getElementById('cd-c-total-all').textContent=fmt(tAll);document.getElementById('cd-c-arrival').textContent=fmt(arr)}
+function calcPerOccurrence(){var inc=parseFloat(document.getElementById('calc-p-income').value)||0;if(inc<=0)return;var dc=inc<=4000?800:inc*.2,tb=inc-dc;if(tb<0)tb=0;var br=findB(tb,PB),tax=tb*br.r-br.d;if(tax<0)tax=0;
+  var vatTh=1000,vatR=0.01,surR=0.06,vatEx=inc<=vatTh,vatA=0,surA=0,vatT=0;if(!vatEx){var nti=inc/(1+vatR);vatA=nti*vatR;surA=vatA*surR;vatT=vatA+surA}var arr=inc-tax-vatT,at=inc-tax;
+  document.getElementById('calc-p-result').style.display='block';document.getElementById('calc-p-tax').textContent=fmt(tax);document.getElementById('calc-p-vat').textContent=vatEx?'免征':fmt(vatT);document.getElementById('calc-p-vat').style.color=vatEx?'#bbb':'var(--red)';document.getElementById('calc-p-arrival').textContent=fmt(arr);document.getElementById('calc-p-after-tax').textContent=fmt(at);
+  document.getElementById('calc-p-detail').style.display='block';document.getElementById('calc-p-btn').textContent='重新测算';document.getElementById('cd-p-income').textContent=fmt(inc);document.getElementById('cd-p-deduct').textContent=inc<=4000?'¥800（定额）':fmt(dc)+'（定率20%）';document.getElementById('cd-p-taxable').textContent=fmt(tb);document.getElementById('cd-p-rate').textContent=(br.r*100)+'% / '+fmt(br.d);document.getElementById('cd-p-current-tax').textContent=fmt(tax);
+  var vatRows=['cd-p-vat-sep','cd-p-vat-income-row','cd-p-vat-notax-row','cd-p-vat-vat-row','cd-p-vat-surcharge-row','cd-p-vat-total-row'];vatRows.forEach(function(id){document.getElementById(id).style.display=vatEx?'none':''});if(!vatEx){var nti=inc/(1+vatR);document.getElementById('cd-p-vat-income').textContent=fmt(inc);document.getElementById('cd-p-vat-notax').textContent=fmt(nti);document.getElementById('cd-p-vat-vat').textContent=fmt(vatA);document.getElementById('cd-p-vat-surcharge').textContent=fmt(surA);document.getElementById('cd-p-vat-total').textContent=fmt(vatT)}
+  var tAll=tax+vatT;document.getElementById('cd-p-total-all').textContent=fmt(tAll);document.getElementById('cd-p-arrival').textContent=fmt(arr);document.getElementById('cd-p-after-tax').textContent=fmt(at)}
 /* ========== Real-name auth ========== */
 function resetRealname(){document.getElementById('rn-name').value='';document.getElementById('rn-id').value='';document.getElementById('rn-submit').disabled=true;document.getElementById('id-front').classList.remove('uploaded');document.getElementById('id-back').classList.remove('uploaded')}
 function mockUpload(id){var box=document.getElementById(id);box.classList.add('uploaded');box.innerHTML='<svg viewBox="0 0 28 28" fill="none"><path d="M6 14l4 4 8-8" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><rect x="4" y="6" width="20" height="16" rx="3" stroke="currentColor" stroke-width="1.5"/></svg><span class="rn-upload-text">'+(id==='id-front'?'人像面':'国徽面')+' ✓</span>';document.getElementById('rn-name').value='周会菊';document.getElementById('rn-id').value='310102199001013186';document.getElementById('rn-submit').disabled=false}
