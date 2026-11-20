@@ -173,6 +173,20 @@ function convertBlockquote(t) {
         const runs = runsFromTokens(tok.tokens, { color: '555555', italics: true });
         items.push(new Paragraph({ children: runs, indent: { left: convertInchesToTwip(0.4) }, border: { left: { style: BorderStyle.SINGLE, size: 6, color: 'AAAAAA', space: 8 } }, spacing: { before: 40, after: 40 } }));
       }
+    } else if (tok.type === 'list') {
+      // List items inside blockquote — check each for images
+      for (const item of tok.items) {
+        for (const sub of (item.tokens || [])) {
+          if (sub.type === 'paragraph') {
+            const imgTok = (sub.tokens || []).find(st => st.type === 'image');
+            if (imgTok) {
+              items.push(convertImage(imgTok));
+            }
+          } else if (sub.type === 'image') {
+            items.push(convertImage(sub));
+          }
+        }
+      }
     }
   }
   return items;
