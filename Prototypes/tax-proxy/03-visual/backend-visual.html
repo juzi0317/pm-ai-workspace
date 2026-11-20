@@ -606,7 +606,7 @@
         <div class="toolbar">
           <div class="toolbar-left"><span style="font-size:12px;color:#999">共 4 个协议版本</span></div>
           <div class="toolbar-right">
-            <button class="btn" onclick="showModal('esign-config-modal')">🔑 电子签配置</button>
+            <button class="btn" onclick="showModal('seal-modal')">🏛 公司印章管理</button>
             <button class="btn btn-primary" onclick="openCreateModal(null)">+ 新建版本</button>
           </div>
         </div>
@@ -1980,7 +1980,7 @@
 <!-- 公司电子章 -->
 <div id="seal-modal" class="modal-overlay" onclick="if(event.target===this)hideModal('seal-modal')">
   <div class="modal" style="width:480px">
-    <div class="modal-header"><h3>公司电子章管理</h3><button class="modal-close" onclick="hideModal('seal-modal')">✕</button></div>
+    <div class="modal-header"><h3>公司印章管理</h3><button class="modal-close" onclick="hideModal('seal-modal')">✕</button></div>
     <div class="modal-body">
       <div class="form-group"><label>当前电子章</label><div id="seal-current-area" style="display:flex;align-items:flex-start;gap:20px;margin-top:8px"><div class="seal-preview"><div class="seal-preview-circle">观严（北京）<br>科技有限公司</div></div><div style="font-size:12px;color:#999;line-height:1.8"><div id="seal-upload-time">上传时间：2026-04-20</div><div>格式：PNG 透明底</div><div>全局共用：所有协议版本共用此印章</div></div></div></div>
       <div class="form-group"><label>更换电子章</label><div class="seal-upload" id="seal-upload-area" onclick="mockSealUpload()"><div class="seal-upload-icon">📤</div><div class="seal-upload-text">点击或拖拽上传 PNG 图片（透明底）</div><div style="font-size:10px;color:#ccc;margin-top:4px">建议 200×200px，仅支持 PNG</div></div>
@@ -1992,26 +1992,6 @@
       <div class="warning-box" style="margin-top:12px">更换印章后仅影响新签署的协议，已签署的协议保持原印章不变</div></div>
     </div>
     <div class="modal-footer"><button class="btn" onclick="hideModal('seal-modal')">关闭</button><button class="btn btn-primary" id="seal-save-btn" onclick="saveSeal()">上传新印章</button></div>
-  </div>
-</div>
-
-<!-- 电子签配置 -->
-<div id="esign-config-modal" class="modal-overlay" onclick="if(event.target===this)hideModal('esign-config-modal')">
-  <div class="modal" style="width:560px">
-    <div class="modal-header"><h3>电子签配置</h3><button class="modal-close" onclick="hideModal('esign-config-modal')">✕</button></div>
-    <div class="modal-body">
-      <div class="form-group"><label>第三方电子签服务商</label><select class="form-input"><option>e签宝</option><option>法大大</option><option>上上签</option></select><div class="form-hint">平台已对接的电子签服务商</div></div>
-      <div class="form-group"><label>账号 / App ID <span class="required">*</span></label><input class="form-input" value="esign_20261028_001" placeholder="请输入电子签服务商分配的账号或 App ID"></div>
-      <div class="form-group"><label>API 密钥 <span class="required">*</span></label><input class="form-input" type="password" value="••••••••••••••••" placeholder="请输入 API 密钥"><div class="form-hint">用于接口调用鉴权，加密存储</div></div>
-      <div class="form-group"><label>企业印章</label>
-        <div style="display:flex;align-items:flex-start;gap:16px;margin-top:8px">
-          <div class="seal-preview"><div class="seal-preview-circle">观严（北京）<br>科技有限公司</div></div>
-          <div style="flex:1"><div style="font-size:12px;color:#999;line-height:1.8"><div>已上传 · 2026-04-20</div><div>格式：PNG 透明底</div><div>全局共用：所有协议版本共用此印章</div></div><button class="btn btn-sm" style="margin-top:8px" onclick="showModal('seal-modal');hideModal('esign-config-modal')">更换印章</button></div>
-        </div>
-      </div>
-      <div class="warning-box" style="margin-top:12px">更换账号/密钥后需重新验证连通性，确认后再保存</div>
-    </div>
-    <div class="modal-footer"><button class="btn" onclick="hideModal('esign-config-modal')">取消</button><button class="btn btn-primary" onclick="hideModal('esign-config-modal');protoAction('电子签配置已保存')">保存</button></div>
   </div>
 </div>
 
