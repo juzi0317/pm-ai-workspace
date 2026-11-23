@@ -296,12 +296,15 @@
   .position-mark:hover { box-shadow:0 0 0 3px rgba(0,0,0,.06); }
   .position-mark.sign { border-color:#1890ff; background:rgba(24,144,255,.06); color:#1890ff; }
   .position-mark.seal { border-color:#ff4d4f; background:rgba(212,56,13,.06); color:#ff4d4f; }
+  .position-mark.autofill { border-color:#52c41a; background:rgba(82,196,26,.06); color:#52c41a; font-size:10px; }
   .position-mark-label { pointer-events:none; display:flex; align-items:center; gap:4px; }
   .position-mark-del { position:absolute; top:-8px; right:-8px; width:18px; height:18px; border-radius:50%; background:#fff; border:1px solid #d9d9d9; display:none; align-items:center; justify-content:center; cursor:pointer; font-size:10px; color:#999; z-index:10; line-height:1; }
   .position-mark:hover .position-mark-del { display:flex; }
   .position-mark-del:hover { background:#ff4d4f; border-color:#ff4d4f; color:#fff; }
-  .position-toolbar { display:flex; align-items:center; gap:8px; margin-bottom:12px; }
+  .position-toolbar { display:flex; align-items:center; gap:8px; margin-bottom:12px; flex-wrap:wrap; }
   .position-toolbar .mode-hint { font-size:11px; color:#999; margin-left:auto; }
+  .autofill-menu-item { padding:7px 14px; font-size:12px; cursor:pointer; color:#333; white-space:nowrap; }
+  .autofill-menu-item:hover { background:#f0f0f0; }
 
   /* ===== Seal ===== */
   .seal-upload { border:2px dashed #d9d9d9; border-radius:8px; padding:32px; text-align:center; cursor:pointer; transition:all .15s; }
@@ -422,11 +425,11 @@
     <!-- ============================================================ -->
     <div id="module-config" class="page-section active">
       <h1 style="font-size:20px;font-weight:700;margin-bottom:4px">代扣配置管理</h1>
-      <p class="subtitle" style="font-size:13px;color:#888;margin-bottom:20px">管理代扣模式开关、增附税税点、公司打款账号</p>
+      <p class="subtitle" style="font-size:13px;color:#888;margin-bottom:20px">管理代扣模式开关、增附税税点、观严公司信息</p>
       <div class="tabs">
         <div class="tab active" onclick="switchConfigTab('config-guankou',this)">代扣模式配置</div>
         <div class="tab" onclick="switchConfigTab('config-tax',this)">增附税税点配置</div>
-        <div class="tab" onclick="switchConfigTab('config-payout',this)">公司打款账号管理</div>
+        <div class="tab" onclick="switchConfigTab('config-payout',this)">观严公司信息</div>
       </div>
 
       <!-- TAB: 代扣模式配置 (P1) -->
@@ -563,13 +566,17 @@
       <div style="margin-top:12px;font-size:11px;color:#bbb">生效中/已失效记录不可删除、不可修改 · 待生效记录可编辑或删除 · 同一生效日不可重复配置</div>
       </div>
 
-      <!-- TAB: 公司打款账号管理 (P9) -->
+      <!-- TAB: 观严公司信息 (P9) -->
       <div id="config-payout" class="page-section">
         <div class="config-card">
-          <div class="config-card-title">公司打款账号</div>
+          <div class="config-card-title">观严公司信息</div>
           <div class="form-group">
             <label>公司名称 <span class="required">*</span></label>
             <input class="form-input" id="payout-company" value="观严（北京）科技有限公司" placeholder="请输入公司名称">
+          </div>
+          <div class="form-group">
+            <label>统一社会信用代码 <span class="required">*</span></label>
+            <input class="form-input" id="payout-credit-code" value="91110108MA7LXXXXXX" placeholder="请输入18位统一社会信用代码">
           </div>
           <div class="form-group">
             <label>付款账号 <span class="required">*</span></label>
@@ -588,7 +595,7 @@
             <button class="btn btn-primary" onclick="savePayoutConfig()">保存</button>
           </div>
         </div>
-        <div class="warning-box" style="margin-top:16px">公司打款账号用于生成观严打款文件中的银行转账表付款信息。未配置时"生成观严打款文件"按钮将禁用。</div>
+        <div class="warning-box" style="margin-top:16px">观严公司信息用于生成打款文件中的付款方信息，以及协议签署时自动填充乙方（被授权人）企业信息。</div>
       </div>
     </div>
 
@@ -1950,11 +1957,11 @@
       <div class="form-group">
         <label>签署位置配置 <span class="required">*</span></label>
         <div id="position-unconfigured" style="border:1px solid #ffe58f;background:#fffbe6;border-radius:4px;padding:10px 14px;display:flex;align-items:center;justify-content:space-between">
-          <div style="display:flex;align-items:center;gap:8px;font-size:12px;color:#fa8c16"><span>⚠ 尚未配置签署位置</span><span style="color:#999">发布前需至少配置 1 个签名位 + 1 个盖章位</span></div>
+          <div style="display:flex;align-items:center;gap:8px;font-size:12px;color:#fa8c16"><span>⚠ 尚未配置签署位置</span></div>
           <button class="btn btn-sm" onclick="showModal('position-editor');markPositionConfigured()">去配置</button>
         </div>
         <div id="position-configured" style="display:none;border:1px solid #b7eb8f;background:#f6ffed;border-radius:4px;padding:10px 14px;display:flex;align-items:center;justify-content:space-between">
-          <div style="display:flex;align-items:center;gap:10px;font-size:12px"><span style="color:#52c41a">✓ 已配置</span><span class="sign-pos-info"><span class="pos-icon sign-icon">👤 1</span><span class="pos-icon seal-icon">🏛 1</span></span></div>
+          <div style="display:flex;align-items:center;gap:10px;font-size:12px"><span style="color:#52c41a">✓ 已配置</span><span class="sign-pos-info"><span class="pos-icon sign-icon">👤 1</span><span class="pos-icon seal-icon">🏛 1</span><span class="pos-icon" style="color:#52c41a">📋 7</span></span></div>
           <button class="btn btn-sm" onclick="showModal('position-editor')">修改</button>
         </div>
       </div>
@@ -2000,9 +2007,24 @@
   <div class="modal modal-wide">
     <div class="modal-header"><h3>签署位置配置 — V1.3</h3><button class="modal-close" onclick="hideModal('position-editor')">✕</button></div>
     <div class="modal-body" style="padding:16px">
-      <div class="position-toolbar"><button class="btn btn-sm" onclick="addMark('sign')">➕ 添加用户签名位</button><button class="btn btn-sm" onclick="addMark('seal')">➕ 添加公司盖章位</button><span class="mode-hint">拖拽标记可调整位置 ｜ 点击 ✕ 删除 ｜ 至少 1 个签名位 + 1 个盖章位</span></div>
+      <div class="position-toolbar">
+        <button class="btn btn-sm" onclick="addMark('sign')">➕ 添加用户签名位</button>
+        <button class="btn btn-sm" onclick="addMark('seal')">➕ 添加公司盖章位</button>
+        <div class="autofill-dropdown" style="position:relative;display:inline-block">
+          <button class="btn btn-sm" onclick="toggleAutofillMenu()">▼ 添加自动填充位</button>
+          <div id="autofill-menu" class="autofill-menu" style="display:none;position:absolute;top:100%;left:0;z-index:20;background:#fff;border:1px solid #e5e5e5;border-radius:6px;box-shadow:0 4px 12px rgba(0,0,0,.12);padding:4px 0;min-width:180px">
+            <div class="autofill-menu-item" onclick="addMark('autofill-date');toggleAutofillMenu()">📅 签署时间</div>
+            <div class="autofill-menu-item" onclick="addMark('autofill-name');toggleAutofillMenu()">👤 甲方姓名</div>
+            <div class="autofill-menu-item" onclick="addMark('autofill-idcard');toggleAutofillMenu()">🪪 甲方身份证编号</div>
+            <div class="autofill-menu-item" onclick="addMark('autofill-phone');toggleAutofillMenu()">📱 甲方联系电话</div>
+            <div class="autofill-menu-item" onclick="addMark('autofill-company');toggleAutofillMenu()">🏢 乙方企业名称</div>
+            <div class="autofill-menu-item" onclick="addMark('autofill-credit');toggleAutofillMenu()">📋 乙方信用代码</div>
+          </div>
+        </div>
+        <span class="mode-hint">拖拽标记可调整位置 ｜ 点击 ✕ 删除 ｜ 签署时间需添加 2 个</span>
+      </div>
       <div class="position-config">
-        <div class="position-config-header"><span>协议 PDF 预览</span><div style="display:flex;align-items:center;gap:12px;font-size:11px;color:#999"><span><span style="display:inline-block;width:10px;height:10px;border:2px dashed #1890ff;border-radius:2px;vertical-align:middle;margin-right:2px"></span> 用户签名位</span><span><span style="display:inline-block;width:10px;height:10px;border:2px dashed #d4380d;border-radius:2px;vertical-align:middle;margin-right:2px"></span> 公司盖章位</span></div></div>
+        <div class="position-config-header"><span>协议 PDF 预览</span><div style="display:flex;align-items:center;gap:12px;font-size:11px;color:#999"><span><span style="display:inline-block;width:10px;height:10px;border:2px dashed #1890ff;border-radius:2px;vertical-align:middle;margin-right:2px"></span> 用户签名位</span><span><span style="display:inline-block;width:10px;height:10px;border:2px dashed #d4380d;border-radius:2px;vertical-align:middle;margin-right:2px"></span> 公司盖章位</span><span><span style="display:inline-block;width:10px;height:10px;border:2px dashed #52c41a;border-radius:2px;vertical-align:middle;margin-right:2px"></span> 自动填充位</span></div></div>
         <div class="position-config-body" id="position-body">
           <div class="position-page" id="position-page">
             <div class="position-page-label">第 1 页 / 共 2 页</div>
@@ -2016,8 +2038,15 @@
             <div style="font-size:11px;font-weight:600;color:#333;margin:12px 0 4px">第三条 税费计算与代扣</div><div class="content-line"></div><div class="content-line"></div>
             <div style="font-size:11px;font-weight:600;color:#333;margin:12px 0 4px">第四条 乙方的权利与义务</div><div class="content-line"></div><div class="content-line"></div>
             <div style="font-size:11px;font-weight:600;color:#333;margin:12px 0 4px">第五条 甲方的权利与义务</div><div class="content-line"></div><div class="content-line"></div>
-            <div class="position-mark sign" style="bottom:80px;left:20px;width:140px;height:50px"><span class="position-mark-del" onclick="this.parentElement.remove()">✕</span><span class="position-mark-label">👤 用户签名位</span></div>
-            <div class="position-mark seal" style="bottom:60px;right:20px;width:80px;height:80px"><span class="position-mark-del" onclick="this.parentElement.remove()">✕</span><span class="position-mark-label">🏛 公司盖章位</span></div>
+            <div class="position-mark sign" style="bottom:170px;left:20px;width:140px;height:50px"><span class="position-mark-del" onclick="this.parentElement.remove()">✕</span><span class="position-mark-label">👤 用户签名位</span></div>
+            <div class="position-mark autofill" style="bottom:130px;left:20px;width:120px;height:28px"><span class="position-mark-del" onclick="this.parentElement.remove()">✕</span><span class="position-mark-label">📅 签署时间</span></div>
+            <div class="position-mark seal" style="bottom:170px;right:20px;width:80px;height:80px"><span class="position-mark-del" onclick="this.parentElement.remove()">✕</span><span class="position-mark-label">🏛 公司盖章位</span></div>
+            <div class="position-mark autofill" style="bottom:80px;right:20px;width:120px;height:28px"><span class="position-mark-del" onclick="this.parentElement.remove()">✕</span><span class="position-mark-label">📅 签署时间</span></div>
+            <div class="position-mark autofill" style="bottom:40px;left:20px;width:120px;height:28px"><span class="position-mark-del" onclick="this.parentElement.remove()">✕</span><span class="position-mark-label">👤 甲方姓名</span></div>
+            <div class="position-mark autofill" style="bottom:40px;left:170px;width:160px;height:28px"><span class="position-mark-del" onclick="this.parentElement.remove()">✕</span><span class="position-mark-label">🪪 甲方身份证编号</span></div>
+            <div class="position-mark autofill" style="bottom:40px;left:360px;width:140px;height:28px"><span class="position-mark-del" onclick="this.parentElement.remove()">✕</span><span class="position-mark-label">📱 甲方联系电话</span></div>
+            <div class="position-mark autofill" style="bottom:10px;left:20px;width:200px;height:28px"><span class="position-mark-del" onclick="this.parentElement.remove()">✕</span><span class="position-mark-label">🏢 乙方企业名称</span></div>
+            <div class="position-mark autofill" style="bottom:10px;left:250px;width:200px;height:28px"><span class="position-mark-del" onclick="this.parentElement.remove()">✕</span><span class="position-mark-label">📋 乙方信用代码</span></div>
           </div>
         </div>
       </div>
@@ -2026,12 +2055,62 @@
   </div>
 </div>
 
+<!-- 签署位置校验提示 -->
+<div id="position-validate-modal" class="modal-overlay" onclick="if(event.target===this)hideModal('position-validate-modal')">
+  <div class="modal" style="width:420px">
+    <div class="modal-header"><h3>签署位置配置不完整</h3><button class="modal-close" onclick="hideModal('position-validate-modal')">✕</button></div>
+    <div class="modal-body">
+      <p style="font-size:13px;color:#666;margin-bottom:12px">请补充以下签署位置：</p>
+      <div id="position-validate-msg" style="font-size:13px;color:#cf1322;line-height:1.8"></div>
+    </div>
+    <div class="modal-footer"><button class="btn btn-primary" onclick="hideModal('position-validate-modal')">知道了</button></div>
+  </div>
+</div>
+
 <!-- 查看协议 -->
 <div id="view-protocol" class="modal-overlay" onclick="if(event.target===this)hideModal('view-protocol')">
   <div class="modal modal-wide">
     <div class="modal-header"><h3>查看协议内容 — V1.3</h3><button class="modal-close" onclick="hideModal('view-protocol')">✕</button></div>
     <div class="modal-body" style="background:#f5f5f5;padding:24px">
-      <div class="protocol-preview"><h4>个人所得税、增值税等代办申报知情同意书</h4><p>甲方：观严（北京）科技有限公司（以下简称"甲方"）</p><p>乙方：签署人（以下简称"乙方"）</p><p>鉴于乙方通过甲方平台取得劳务报酬等收入……</p><p><b>第一条 代扣代缴范围</b></p><p>甲方按照乙方选择的个税申报方式……</p><p><b>第二条 申报方式选择</b></p><p>（一）连续劳务报酬（适用累计预扣法）……（二）一般劳务报酬（使用按次预扣法）……</p><div class="sign-area"><div class="sign-box"><div class="sign-label">乙方（签名）：</div><div class="sign-line"></div><div style="font-size:11px;color:#1890ff;margin-top:4px">👤 用户签名位</div></div><div class="sign-box" style="text-align:right"><div class="sign-label">甲方（盖章）：</div><div class="sign-line" style="display:flex;align-items:center;justify-content:center"><div class="seal-preview-circle" style="width:48px;height:48px;font-size:6px">观严（北京）<br>科技有限公司</div></div><div style="font-size:11px;color:#ff4d4f;margin-top:4px">🏛 公司盖章位</div></div></div></div>
+      <div class="protocol-preview"><h4>个人所得税、增值税等代办申报知情同意书</h4><p>甲方：观严（北京）科技有限公司（以下简称"甲方"）</p><p>乙方：签署人（以下简称"乙方"）</p><p>鉴于乙方通过甲方平台取得劳务报酬等收入……</p><p><b>第一条 代扣代缴范围</b></p><p>甲方按照乙方选择的个税申报方式……</p><p><b>第二条 申报方式选择</b></p><p>（一）连续劳务报酬（适用累计预扣法）……（二）一般劳务报酬（使用按次预扣法）……</p>
+      <div style="border-top:1px solid #e5e5e5;margin-top:24px;padding-top:16px">
+        <div style="display:flex;justify-content:space-between;margin-bottom:12px">
+          <div style="font-size:11px;font-weight:600;color:#333">甲方（授权人）电子签署</div>
+          <div style="font-size:11px;font-weight:600;color:#333;text-align:right">乙方（被授权人）电子签署</div>
+        </div>
+        <div style="display:flex;justify-content:space-between">
+          <div>
+            <div style="font-size:11px;color:#999;margin-bottom:4px">签名：</div><div style="border-bottom:1px solid #333;width:120px;height:20px;margin-bottom:8px"></div>
+            <div style="font-size:11px;color:#999">签署时间：</div>
+            <div style="font-size:11px;color:#1890ff;margin-top:4px">👤 用户签名位</div>
+            <div style="font-size:11px;color:#52c41a;margin-top:2px">📅 签署时间</div>
+          </div>
+          <div style="text-align:right">
+            <div style="font-size:11px;color:#999;margin-bottom:4px">电子印章（企业）：</div><div style="display:flex;align-items:center;justify-content:center;margin-bottom:8px"><div class="seal-preview-circle" style="width:48px;height:48px;font-size:6px">观严（北京）<br>科技有限公司</div></div>
+            <div style="font-size:11px;color:#999">签署时间：</div>
+            <div style="font-size:11px;color:#ff4d4f;margin-top:4px">🏛 公司盖章位</div>
+            <div style="font-size:11px;color:#52c41a;margin-top:2px">📅 签署时间</div>
+          </div>
+        </div>
+      </div>
+      <div style="border-top:1px solid #e5e5e5;margin-top:16px;padding-top:16px">
+        <div style="display:flex;justify-content:space-between;margin-bottom:8px">
+          <div style="font-size:11px;font-weight:600;color:#333">甲方（授权人 / 从业人员）</div>
+          <div style="font-size:11px;font-weight:600;color:#333;text-align:right">乙方（被授权人 / 互联网平台企业）</div>
+        </div>
+        <div style="display:flex;justify-content:space-between">
+          <div style="font-size:11px;line-height:2">
+            <div>姓名：<span style="color:#52c41a">👤 甲方姓名</span></div>
+            <div>身份证编号：<span style="color:#52c41a">🪪 甲方身份证编号</span></div>
+            <div>联系电话：<span style="color:#52c41a">📱 甲方联系电话</span></div>
+          </div>
+          <div style="font-size:11px;line-height:2;text-align:right">
+            <div>企业名称：<span style="color:#52c41a">🏢 乙方企业名称</span></div>
+            <div>统一社会信用代码：<span style="color:#52c41a">📋 乙方信用代码</span></div>
+          </div>
+        </div>
+      </div>
+      </div>
     </div>
     <div class="modal-footer"><button class="btn" onclick="hideModal('view-protocol')">关闭</button><button class="btn" onclick="protoAction('下载 PDF')">📥 下载 PDF</button></div>
   </div>
@@ -2049,7 +2128,41 @@
       <div class="info-row"><span class="info-row-label">申报方式</span><span class="info-row-value">连续劳务报酬（适用累计预扣法）</span></div>
       <div class="info-row"><span class="info-row-label">签署时间</span><span class="info-row-value">2026-10-28 15:23:41</span></div>
       <div style="margin-top:20px;font-size:12px;font-weight:600;margin-bottom:8px">协议内容预览</div>
-      <div style="background:#f5f5f5;padding:16px;border-radius:4px;border:1px solid #e5e5e5"><div style="background:#fff;padding:32px;border:1px solid #e5e5e5"><div style="text-align:center;font-size:14px;font-weight:600;margin-bottom:16px">个人所得税、增值税等代办申报知情同意书</div><div style="height:8px;border-bottom:1px solid #f0f0f0;margin-bottom:4px"></div><div style="height:8px;border-bottom:1px solid #f0f0f0;margin-bottom:4px"></div><div style="height:8px;border-bottom:1px solid #f0f0f0;margin-bottom:4px"></div><div style="height:8px;border-bottom:1px solid #f0f0f0;margin-bottom:4px"></div><div style="display:flex;justify-content:space-between;margin-top:32px"><div><div style="font-size:11px;color:#999;margin-bottom:4px">乙方（签名）：</div><div style="font-style:italic;color:#1890ff;font-size:11px;border-bottom:1px solid #333;padding-bottom:4px;width:100px">李明（手写）</div></div><div style="text-align:right"><div style="font-size:11px;color:#999;margin-bottom:4px">甲方（盖章）：</div><div style="display:flex;align-items:center;justify-content:center"><div style="width:48px;height:48px;border:2px solid #d4380d;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:5px;color:#ff4d4f;text-align:center;line-height:1.3">观严（北京）<br>科技有限公司</div></div></div></div></div></div>
+      <div style="background:#f5f5f5;padding:16px;border-radius:4px;border:1px solid #e5e5e5"><div style="background:#fff;padding:32px;border:1px solid #e5e5e5"><div style="text-align:center;font-size:14px;font-weight:600;margin-bottom:16px">个人所得税、增值税等代办申报知情同意书</div><div style="height:8px;border-bottom:1px solid #f0f0f0;margin-bottom:4px"></div><div style="height:8px;border-bottom:1px solid #f0f0f0;margin-bottom:4px"></div><div style="height:8px;border-bottom:1px solid #f0f0f0;margin-bottom:4px"></div><div style="height:8px;border-bottom:1px solid #f0f0f0;margin-bottom:4px"></div>
+        <div style="border-top:1px solid #e5e5e5;margin-top:24px;padding-top:16px">
+          <div style="display:flex;justify-content:space-between;margin-bottom:12px">
+            <div style="font-size:11px;font-weight:600;color:#333">甲方（授权人）电子签署</div>
+            <div style="font-size:11px;font-weight:600;color:#333;text-align:right">乙方（被授权人）电子签署</div>
+          </div>
+          <div style="display:flex;justify-content:space-between">
+            <div>
+              <div style="font-size:11px;color:#999;margin-bottom:4px">签名：</div><div style="font-style:italic;color:#1890ff;font-size:11px;border-bottom:1px solid #333;padding-bottom:4px;width:100px">李明（手写）</div>
+              <div style="font-size:11px;color:#999;margin-top:8px">签署时间：2026年10月28日</div>
+            </div>
+            <div style="text-align:right">
+              <div style="font-size:11px;color:#999;margin-bottom:4px">电子印章（企业）：</div><div style="display:flex;align-items:center;justify-content:center"><div style="width:48px;height:48px;border:2px solid #d4380d;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:5px;color:#ff4d4f;text-align:center;line-height:1.3">观严（北京）<br>科技有限公司</div></div>
+              <div style="font-size:11px;color:#999;margin-top:8px">签署时间：2026年10月28日</div>
+            </div>
+          </div>
+        </div>
+        <div style="border-top:1px solid #e5e5e5;margin-top:16px;padding-top:16px">
+          <div style="display:flex;justify-content:space-between;margin-bottom:8px">
+            <div style="font-size:11px;font-weight:600;color:#333">甲方（授权人 / 从业人员）</div>
+            <div style="font-size:11px;font-weight:600;color:#333;text-align:right">乙方（被授权人 / 互联网平台企业）</div>
+          </div>
+          <div style="display:flex;justify-content:space-between">
+            <div style="font-size:11px;line-height:2">
+              <div>姓名：李明</div>
+              <div>身份证编号：42010119****9012</div>
+              <div>联系电话：136****6543</div>
+            </div>
+            <div style="font-size:11px;line-height:2;text-align:right">
+              <div>企业名称：观严（北京）科技有限公司</div>
+              <div>统一社会信用代码：91110108MA7LXXXXXX</div>
+            </div>
+          </div>
+        </div>
+      </div></div>
     </div>
     <div class="modal-footer"><button class="btn" onclick="hideModal('protocol-pdf-panel')">关闭</button><button class="btn btn-primary" onclick="protoAction('下载协议 PDF')">📥 下载协议 PDF</button></div>
   </div>
@@ -2361,9 +2474,9 @@ function saveSeal() {
   hideModal('seal-modal');
 }
 
-// ===== P9: 公司打款账号 =====
+// ===== P9: 观严公司信息 =====
 function savePayoutConfig() {
-  protoAction('打款账号配置已保存');
+  protoAction('观严公司信息已保存');
 }
 
 // ===== Master Toggle =====
@@ -2383,14 +2496,44 @@ function showDetail() { openUserDetail('张明远'); }
 function closeDetail() { document.getElementById('slide-overlay').classList.remove('show'); document.getElementById('slide-panel').classList.remove('show'); }
 
 // ===== Position Editor =====
+var autofillConfig = {
+  'autofill-date':    { label: '📅 签署时间', w: 120, h: 28 },
+  'autofill-name':    { label: '👤 甲方姓名', w: 120, h: 28 },
+  'autofill-idcard':  { label: '🪪 甲方身份证编号', w: 160, h: 28 },
+  'autofill-phone':   { label: '📱 甲方联系电话', w: 140, h: 28 },
+  'autofill-company': { label: '🏢 乙方企业名称', w: 200, h: 28 },
+  'autofill-credit':  { label: '📋 乙方信用代码', w: 200, h: 28 }
+};
+function toggleAutofillMenu() {
+  var menu = document.getElementById('autofill-menu');
+  menu.style.display = menu.style.display === 'none' ? 'block' : 'none';
+}
+document.addEventListener('click', function(e) {
+  if (!e.target.closest('.autofill-dropdown')) {
+    var menu = document.getElementById('autofill-menu');
+    if (menu) menu.style.display = 'none';
+  }
+});
 function addMark(type) {
   var page = document.getElementById('position-page');
   var mark = document.createElement('div');
-  mark.className = 'position-mark ' + (type === 'sign' ? 'sign' : 'seal');
-  mark.style.top = '50%'; mark.style.left = type === 'sign' ? '30%' : '60%';
-  mark.style.width = type === 'sign' ? '140px' : '80px';
-  mark.style.height = type === 'sign' ? '50px' : '80px';
-  mark.innerHTML = '<span class="position-mark-del" onclick="this.parentElement.remove()">✕</span><span class="position-mark-label">' + (type === 'sign' ? '👤 用户签名位' : '🏛 公司盖章位') + '</span>';
+  if (type === 'sign') {
+    mark.className = 'position-mark sign';
+    mark.style.top = '50%'; mark.style.left = '30%';
+    mark.style.width = '140px'; mark.style.height = '50px';
+    mark.innerHTML = '<span class="position-mark-del" onclick="this.parentElement.remove()">✕</span><span class="position-mark-label">👤 用户签名位</span>';
+  } else if (type === 'seal') {
+    mark.className = 'position-mark seal';
+    mark.style.top = '50%'; mark.style.left = '60%';
+    mark.style.width = '80px'; mark.style.height = '80px';
+    mark.innerHTML = '<span class="position-mark-del" onclick="this.parentElement.remove()">✕</span><span class="position-mark-label">🏛 公司盖章位</span>';
+  } else if (autofillConfig[type]) {
+    var cfg = autofillConfig[type];
+    mark.className = 'position-mark autofill';
+    mark.style.top = '70%'; mark.style.left = '30%';
+    mark.style.width = cfg.w + 'px'; mark.style.height = cfg.h + 'px';
+    mark.innerHTML = '<span class="position-mark-del" onclick="this.parentElement.remove()">✕</span><span class="position-mark-label">' + cfg.label + '</span>';
+  }
   page.appendChild(mark); makeDraggable(mark);
 }
 function makeDraggable(el) {
@@ -2406,6 +2549,39 @@ document.querySelectorAll('.position-mark').forEach(makeDraggable);
 
 // ===== Position Save =====
 function savePositionConfig() {
+  var page = document.getElementById('position-page');
+  var marks = page.querySelectorAll('.position-mark');
+  var counts = { sign: 0, seal: 0, 'autofill-date': 0, 'autofill-name': 0, 'autofill-idcard': 0, 'autofill-phone': 0, 'autofill-company': 0, 'autofill-credit': 0 };
+  marks.forEach(function(m) {
+    if (m.classList.contains('sign')) counts.sign++;
+    else if (m.classList.contains('seal')) counts.seal++;
+    else if (m.classList.contains('autofill')) {
+      var label = m.querySelector('.position-mark-label');
+      if (label) {
+        var txt = label.textContent;
+        if (txt.indexOf('签署时间') >= 0) counts['autofill-date']++;
+        else if (txt.indexOf('甲方姓名') >= 0) counts['autofill-name']++;
+        else if (txt.indexOf('身份证编号') >= 0) counts['autofill-idcard']++;
+        else if (txt.indexOf('联系电话') >= 0) counts['autofill-phone']++;
+        else if (txt.indexOf('企业名称') >= 0) counts['autofill-company']++;
+        else if (txt.indexOf('信用代码') >= 0) counts['autofill-credit']++;
+      }
+    }
+  });
+  var missing = [];
+  if (counts.sign < 1) missing.push('用户签名位（至少1个）');
+  if (counts.seal < 1) missing.push('公司盖章位（至少1个）');
+  if (counts['autofill-date'] < 2) missing.push('签署时间（至少2个）');
+  if (counts['autofill-name'] < 1) missing.push('甲方姓名（至少1个）');
+  if (counts['autofill-idcard'] < 1) missing.push('甲方身份证编号（至少1个）');
+  if (counts['autofill-phone'] < 1) missing.push('甲方联系电话（至少1个）');
+  if (counts['autofill-company'] < 1) missing.push('乙方企业名称（至少1个）');
+  if (counts['autofill-credit'] < 1) missing.push('乙方信用代码（至少1个）');
+  if (missing.length > 0) {
+    showModal('position-validate-modal');
+    document.getElementById('position-validate-msg').innerHTML = missing.join('<br>');
+    return;
+  }
   hideModal('position-editor');
   // 原型中仅关闭弹窗，实际产品应保存签署位置数据
 }
